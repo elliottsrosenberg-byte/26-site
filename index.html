@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Elliott Rosenberg — Designer</title>
+  <meta name="description" content="Elliott Rosenberg is a designer based in Brooklyn, NY. Working across physical product, editorial, and digital software."/>
+
+  <!-- FOUC prevention: apply saved theme before paint -->
+  <script>
+    const t = localStorage.getItem('theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  </script>
+
+  <!-- Adobe Fonts: replace YOUR_KIT_ID once you have a GT America kit -->
+  <!-- <link rel="stylesheet" href="https://use.typekit.net/YOUR_KIT_ID.css"> -->
+
+  <link rel="stylesheet" href="main/style.css"/>
+  <link rel="stylesheet" href="main/home.css"/>
+  <!-- AI redesign override — populated by ai-redesign.js -->
+  <style id="ai-override"></style>
+</head>
+<body>
+
+<!-- <div id="cursor"><div id="cursor-dot"></div></div> -->
+
+<main class="page">
+
+  <div class="intro">
+    <div class="intro-left">
+      <p class="intro-headline">Elliott Rosenberg is a designer<br>based in Brooklyn, NY.</p>
+    </div>
+    <div class="intro-right">
+      <p class="bio-text">
+        Trained in furniture design at RISD and computer science at Brown, working across physical product, editorial, and digital software. Currently co-founding
+        <a href="https://waitingmag.com" target="_blank">Waiting Magazine</a>
+        and running
+        <a href="#" target="_blank">Perennial Design Studio</a>.
+        Previously Partnership and Innovation Lead at
+        <a href="#" target="_blank">Siegel</a>,
+        where I built the systems and teams behind a significant period of growth.
+      </p>
+      <p class="bio-text">
+        My practice sits at the intersection of making and thinking — interested in objects that carry their process visibly, publications built around a distinct point of view, and software that doesn't announce itself. I tend to work best at the early stage, when the problem is still being defined.
+      </p>
+      <p class="bio-text">
+        Outside of client work I teach occasionally, write sporadically, and collect things that have aged into usefulness. Based in Brooklyn with an ongoing interest in how things get built, distributed, and kept.
+      </p>
+      <p class="contact-line">
+        <a class="contact-trigger" href="#">Get in touch.</a>
+      </p>
+    </div>
+  </div>
+
+  <section class="work-section">
+    <div class="section-label">Selected work</div>
+    <ul class="work-list">
+
+      <a class="work-item" href="work/sedum-lamp.html">
+        <div class="work-image">
+          <img src="assets/images/HeroWEB.jpg" alt="Sedum Table Lamp">
+        </div>
+        <div class="work-item-footer">
+          <div class="work-item-text">
+            <span class="work-title">Sedum Table Lamp</span>
+            <p class="work-desc">From sketch to production: designing and managing a small-batch lighting object through material selection, prototyping, and manufacturer coordination.</p>
+          </div>
+          <div class="work-tags">
+            <span class="tag">Physical Product</span>
+            <span class="tag">Project Mgmt</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work-item" href="work/waiting-magazine.html">
+        <div class="work-image"></div>
+        <div class="work-item-footer">
+          <div class="work-item-text">
+            <span class="work-title">Waiting Magazine</span>
+            <p class="work-desc">Building a bi-annual print publication from the ground up: design system, editorial production, vendor coordination, and distribution.</p>
+          </div>
+          <div class="work-tags">
+            <span class="tag">Editorial</span>
+            <span class="tag">Production</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work-item" href="work/perennial.html">
+        <div class="work-image"></div>
+        <div class="work-item-footer">
+          <div class="work-item-text">
+            <span class="work-title">Perennial Brand Identity</span>
+            <p class="work-desc">Developing a complete visual system for an independent design practice: mark, typography, color, and the logic that governs how it behaves across contexts.</p>
+          </div>
+          <div class="work-tags">
+            <span class="tag">Brand</span>
+            <span class="tag">Identity</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work-item" href="work/subscription-ux.html">
+        <div class="work-image"></div>
+        <div class="work-item-footer">
+          <div class="work-item-text">
+            <span class="work-title">Subscription UX</span>
+            <p class="work-desc">Designing and implementing a metered access and account creation flow for a digital publication, from user journey mapping through Memberstack integration.</p>
+          </div>
+          <div class="work-tags">
+            <span class="tag">UX</span>
+            <span class="tag">Digital Product</span>
+          </div>
+        </div>
+      </a>
+
+    </ul>
+  </section>
+
+</main>
+
+<footer>
+  <ul class="footer-nav">
+    <li><a href="https://linkedin.com/in/YOUR_HANDLE" target="_blank">LinkedIn ↗</a></li>
+    <li><a href="https://YOUR_SUBSTACK.substack.com" target="_blank">Substack ↗</a></li>
+    <li><a href="https://are.na/YOUR_HANDLE" target="_blank">Are.na ↗</a></li>
+    <li><a href="https://instagram.com/YOUR_HANDLE" target="_blank">Instagram ↗</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">
+    <span class="toggle-pip"></span>
+    <span id="themeLabel">Light</span>
+  </button>
+</footer>
+
+<div class="popup-overlay" id="overlay"></div>
+<div class="popup-card" id="popup">
+  <div class="popup-title">Get in touch.</div>
+  <div class="popup-sub">A project, a question, or just want to talk through something.</div>
+  <!-- Formspree: replace YOUR_FORM_ID after signing up at formspree.io -->
+  <form class="popup-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+    <input type="text"  name="name"    placeholder="Name"    required/>
+    <input type="email" name="email"   placeholder="Email"   required/>
+    <textarea           name="message" placeholder="Message" required></textarea>
+    <div class="popup-actions">
+      <button type="submit" class="btn-submit">Send</button>
+      <button type="button" class="btn-close" id="closePopup">Close</button>
+    </div>
+  </form>
+</div>
+
+<script src="main/main.js"></script>
+<script src="main/ai-redesign.js"></script>
+</body>
+</html>
