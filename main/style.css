@@ -1,0 +1,300 @@
+/* ============================================================
+   Elliott Rosenberg — Shared Stylesheet
+   Font: GT America (self-hosted or Adobe Fonts kit)
+   ============================================================ */
+
+@font-face {
+  font-family: 'GT America';
+  src: url('../assets/fonts/GT-America-Bold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'GT America';
+  src: url('../assets/fonts/GT-America-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'GT America';
+  src: url('../assets/fonts/GT-America-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'GT America';
+  src: url('../assets/fonts/GT-America-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── TOKENS ── */
+:root {
+  --bg:     #F5F1EC;
+  --ink:    #1C1915;
+  --mid:    #8C8680;
+  --border: #D8D2C8;
+  --accent: #C68D4F;
+
+  --font: 'GT America', 'Helvetica Neue', Arial, sans-serif;
+
+  --pad-x: 72px;
+  --pad-top: 80px;
+}
+
+[data-theme="dark"] {
+  --bg:     #1C1915;
+  --ink:    #F5F1EC;
+  --mid:    #847B72;
+  --border: #2E2A26;
+  --accent: #C68D4F;
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.2s, color 0.2s;
+}
+
+a { text-decoration: none; color: inherit; }
+button { font-family: var(--font); }
+img { display: block; max-width: 100%; }
+
+/* ── SELECTION ── */
+[data-theme="light"] ::selection { background: var(--ink); color: var(--bg); }
+[data-theme="dark"]  ::selection { background: var(--accent); color: var(--bg); }
+
+/* ── CUSTOM CURSOR (disabled) ── */
+/*
+#cursor {
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.2s;
+  opacity: 0;
+}
+
+#cursor-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink);
+  transition:
+    width 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.15s;
+}
+
+body.cursor-hover #cursor-dot {
+  width: 1.5px;
+  height: 28px;
+  border-radius: 1px;
+}
+
+body.cursor-click #cursor-dot {
+  width: 1.5px;
+  height: 14px;
+  border-radius: 1px;
+}
+*/
+
+/* ── LAYOUT WRAPPER ── */
+.page {
+  flex: 1;
+  width: 100%;
+  padding: var(--pad-top) var(--pad-x) 96px;
+}
+
+/* ── FOOTER ── */
+footer {
+  width: 100%;
+  padding: 28px var(--pad-x) 52px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: border-color 0.2s;
+}
+
+.footer-nav {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+
+.footer-nav a {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mid);
+  transition: color 0.15s;
+}
+.footer-nav a:hover { color: var(--ink); }
+
+/* ── THEME TOGGLE ── */
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mid);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.theme-toggle:hover { color: var(--ink); border-color: var(--ink); }
+
+.toggle-pip {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--ink);
+  transition: background 0.2s;
+}
+
+/* ── SHARED TAGS ── */
+.tag {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mid);
+  border: 1px solid var(--border);
+  padding: 3px 7px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+/* ── POPUP ── */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 25, 21, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 100;
+  transition: opacity 0.2s;
+}
+.popup-overlay.open { opacity: 1; pointer-events: all; }
+
+.popup-card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.97);
+  opacity: 0;
+  pointer-events: none;
+  width: min(480px, calc(100vw - 48px));
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 36px 40px 40px;
+  z-index: 101;
+  transition:
+    transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s,
+    background 0.2s,
+    border-color 0.2s;
+}
+.popup-card.open {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.popup-title {
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.popup-sub {
+  font-size: 12px;
+  color: var(--mid);
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+.popup-form { display: flex; flex-direction: column; gap: 10px; }
+
+.popup-form input,
+.popup-form textarea {
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 11px 13px;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--ink);
+  outline: none;
+  resize: none;
+  width: 100%;
+  transition: border-color 0.15s, color 0.2s;
+}
+.popup-form input:focus,
+.popup-form textarea:focus { border-color: var(--ink); }
+.popup-form input::placeholder,
+.popup-form textarea::placeholder { color: var(--mid); }
+.popup-form textarea { height: 90px; }
+
+.popup-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.btn-submit {
+  font-family: var(--font);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--bg);
+  border: none;
+  padding: 11px 18px;
+  transition: background 0.15s;
+}
+.btn-submit:hover { background: var(--accent); }
+
+.btn-close {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mid);
+  background: none;
+  border: none;
+  font-family: var(--font);
+  padding: 0;
+  transition: color 0.15s;
+}
+.btn-close:hover { color: var(--ink); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  :root { --pad-x: 20px; --pad-top: 52px; }
+  body { cursor: auto; }
+  #cursor { display: none; }
+  footer { flex-direction: column; gap: 20px; align-items: flex-start; padding-bottom: 44px; }
+}
