@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Design Archive — Elliott Rosenberg</title>
+  <meta name="description" content="Visitor-generated redesigns of Elliott Rosenberg's portfolio."/>
+
+  <script>
+    const t = localStorage.getItem('theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  </script>
+
+  <link rel="stylesheet" href="main/style.css"/>
+  <style>
+    .gallery-header {
+      margin-bottom: 52px;
+    }
+    .gallery-title {
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .gallery-sub {
+      font-size: 13px;
+      color: var(--mid);
+      line-height: 1.6;
+      max-width: 440px;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .gallery-card {
+      border: 1px solid var(--border);
+      transition: border-color 0.15s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .gallery-card:hover { border-color: var(--ink); }
+    .gallery-card img {
+      width: 100%;
+      aspect-ratio: 16/10;
+      object-fit: cover;
+      display: block;
+    }
+    .gallery-card-body {
+      padding: 14px 16px 16px;
+      border-top: 1px solid var(--border);
+      transition: border-color 0.15s;
+    }
+    .gallery-vibe {
+      font-size: 13px;
+      font-weight: 300;
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .gallery-date {
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--mid);
+      text-transform: uppercase;
+    }
+    .gallery-empty {
+      font-size: 13px;
+      color: var(--mid);
+      line-height: 1.7;
+    }
+    .gallery-loading {
+      font-size: 12px;
+      color: var(--mid);
+      letter-spacing: 0.08em;
+    }
+    .gallery-card-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .gallery-view-btn {
+      font-family: var(--font);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--ink);
+      color: var(--bg);
+      border: none;
+      padding: 7px 12px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .gallery-view-btn:hover { background: var(--accent); }
+  </style>
+</head>
+<body>
+
+<main class="page">
+
+  <div class="gallery-header">
+    <h1 class="gallery-title">Design Archive</h1>
+    <p class="gallery-sub">
+      Visitor-generated redesigns of this site. Each one was made by describing a vibe
+      and letting Claude rewrite the CSS in real time.
+      <a href="/" style="color:var(--accent)">Make your own ↗</a>
+    </p>
+  </div>
+
+  <div id="gallery-grid" class="gallery-grid">
+    <div class="gallery-loading">Loading…</div>
+  </div>
+
+</main>
+
+<footer>
+  <ul class="footer-nav">
+    <li><a href="/">← Back to portfolio</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">
+    <span class="toggle-pip"></span>
+    <span id="themeLabel">Light</span>
+  </button>
+</footer>
+
+<script src="main/main.js"></script>
+<script>
+  function viewDesign(vibe, css) {
+    if (css) localStorage.setItem('ai-css', css);
+    if (vibe) localStorage.setItem('ai-vibe', vibe);
+    localStorage.removeItem('ai-js'); // don't carry over interactive scripts
+    window.location.href = '/';
+  }
+</script>
+<script>
+  const grid = document.getElementById('gallery-grid');
+  const hash = location.hash.slice(1);
+
+  fetch('/api/gallery')
+    .then(r => r.json())
+    .then(entries => {
+      if (!entries.length) {
+        grid.innerHTML = '<p class="gallery-empty">No submissions yet. Be the first to share a design.</p>';
+        return;
+      }
+
+      grid.innerHTML = entries.map(e => {
+        const date = new Date(e.timestamp).toLocaleDateString('en-US', {
+          month: 'short', day: 'numeric', year: 'numeric'
+        });
+        const highlight = e.id === hash ? 'border-color:var(--accent)' : '';
+        const cssJson = JSON.stringify(e.css || '').replace(/'/g, '&#39;');
+        const vibeEsc = (e.vibe || '').replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+        return `
+          <div class="gallery-card" id="${e.id}" style="${highlight}">
+            <a href="${e.imageUrl}" target="_blank">
+              <img src="${e.imageUrl}" alt="${e.vibe}" loading="lazy">
+            </a>
+            <div class="gallery-card-body">
+              <div class="gallery-vibe">"${e.vibe}"</div>
+              <div class="gallery-date">${date}</div>
+            </div>
+            <div class="gallery-card-footer">
+              <div></div>
+              <button class="gallery-view-btn" onclick="viewDesign('${vibeEsc}', ${cssJson})">
+                View this design ↗
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Scroll to highlighted entry if linked
+      if (hash) {
+        setTimeout(() => document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
+      }
+    })
+    .catch(() => {
+      grid.innerHTML = '<p class="gallery-empty">Couldn\'t load submissions.</p>';
+    });
+</script>
+</body>
+</html>

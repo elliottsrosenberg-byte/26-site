@@ -37,24 +37,24 @@
 
 /* ── TOKENS ── */
 :root {
-  --bg:     #F5F1EC;
-  --ink:    #1C1915;
-  --mid:    #8C8680;
-  --border: #D8D2C8;
-  --accent: #C68D4F;
+  --bg:     #ffffff;
+  --ink:    #000000;
+  --mid:    #555555;
+  --border: #bbbbbb;
+  --accent: #0000cc;
 
-  --font: 'GT America', 'Helvetica Neue', Arial, sans-serif;
+  --font: 'Times New Roman', Times, serif;
 
-  --pad-x: 72px;
-  --pad-top: 80px;
+  --pad-x:  32px;
+  --pad-top: 28px;
 }
 
 [data-theme="dark"] {
-  --bg:     #1C1915;
-  --ink:    #F5F1EC;
-  --mid:    #847B72;
-  --border: #2E2A26;
-  --accent: #C68D4F;
+  --bg:     #111111;
+  --ink:    #dddddd;
+  --mid:    #888888;
+  --border: #333333;
+  --accent: #5588ff;
 }
 
 /* ── RESET ── */
@@ -66,22 +66,16 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font);
-  font-weight: 300;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  transition: background 0.2s, color 0.2s;
 }
 
 a { text-decoration: none; color: inherit; }
 button { font-family: var(--font); }
 img { display: block; max-width: 100%; }
 
-/* ── SELECTION ── */
-[data-theme="light"] ::selection { background: var(--ink); color: var(--bg); }
-[data-theme="dark"]  ::selection { background: var(--accent); color: var(--bg); }
 
 /* ── CUSTOM CURSOR (disabled) ── */
 /*
@@ -290,6 +284,221 @@ footer {
   transition: color 0.15s;
 }
 .btn-close:hover { color: var(--ink); }
+
+/* ── AI REDESIGN HUD ── */
+
+/* FAB — bottom-right */
+.redesign-fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 200;
+  background: var(--ink);
+  color: var(--bg);
+  border: none;
+  padding: 10px 16px;
+  font-family: var(--font);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+.redesign-fab:hover { background: var(--accent); transform: translateY(-2px); }
+.redesign-fab.active { background: var(--accent); }
+
+/* Bottom-left cluster — reset + share */
+.redesign-left-cluster {
+  position: fixed;
+  bottom: 28px;
+  left: 28px;
+  z-index: 200;
+  display: flex;
+  gap: 8px;
+}
+.redesign-left-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--mid);
+  font-family: var(--font);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.redesign-left-btn:hover { color: var(--ink); border-color: var(--ink); }
+
+/* HUD panel — slides up from bottom-right */
+.redesign-hud {
+  position: fixed;
+  bottom: 72px;
+  right: 28px;
+  width: min(380px, calc(100vw - 56px));
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 0;
+  z-index: 201;
+  transform: translateY(16px);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s,
+    background 0.2s,
+    border-color 0.2s;
+}
+.redesign-hud.open {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Active vibe display — shown at top when redesign is live */
+.redesign-active-vibe {
+  display: none;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  transition: border-color 0.2s;
+}
+.redesign-vibe-label {
+  color: var(--mid);
+  text-transform: uppercase;
+  margin-right: 6px;
+}
+.redesign-vibe-text {
+  color: var(--ink);
+  font-style: italic;
+}
+
+/* Narrative + form area */
+.redesign-narrative {
+  font-size: 12px;
+  color: var(--mid);
+  line-height: 1.7;
+  padding: 20px 20px 0;
+  margin-bottom: 16px;
+}
+#redesign-form-wrap { padding: 0 20px 20px; }
+
+/* Loading state */
+.redesign-loading {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 20px 20px;
+}
+.redesign-loading.visible { display: flex; }
+
+/* Game canvas area */
+.redesign-game-wrap {
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.redesign-loading-text {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--mid);
+}
+
+.redesign-progress {
+  height: 2px;
+  background: var(--border);
+  overflow: hidden;
+}
+.redesign-progress-bar {
+  height: 100%;
+  background: var(--accent);
+  width: 0%;
+}
+
+/* Share panel — slides up from bottom-left */
+.redesign-share-panel {
+  position: fixed;
+  bottom: 72px;
+  left: 28px;
+  width: min(340px, calc(100vw - 56px));
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 0;
+  z-index: 201;
+  transform: translateY(16px);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s,
+    background 0.2s,
+    border-color 0.2s;
+}
+.redesign-share-panel.open {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+.redesign-share-header {
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mid);
+  transition: border-color 0.2s;
+}
+#redesign-share-form { padding: 0 20px 20px; }
+
+.redesign-file-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--border);
+  padding: 9px 12px;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: border-color 0.15s;
+}
+.redesign-file-label:hover { border-color: var(--ink); }
+.redesign-file-label input[type="file"] { display: none; }
+#redesign-file-name {
+  font-size: 12px;
+  color: var(--mid);
+  font-family: var(--font);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.redesign-share-success {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+}
+.redesign-share-success.visible { display: flex; }
+.redesign-share-success-msg {
+  font-size: 13px;
+  color: var(--ink);
+}
+.redesign-share-link {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+.redesign-share-link:hover { text-decoration: underline; }
+
+/* Share panel preview */
+.share-capture-area { margin-bottom: 4px; }
+#share-preview {
+  width: 100%;
+  border: 1px solid var(--border);
+  display: block;
+  margin-top: 8px;
+}
 
 /* ── RESPONSIVE ── */
 @media (max-width: 600px) {

@@ -9,6 +9,13 @@
   <script>
     const t = localStorage.getItem('theme');
     if (t) document.documentElement.setAttribute('data-theme', t);
+    const aiCss = localStorage.getItem('ai-css');
+    if (aiCss) {
+      const s = document.createElement('style');
+      s.id = 'ai-override';
+      s.textContent = aiCss;
+      document.head.appendChild(s);
+    }
   </script>
 
   <!-- <link rel="stylesheet" href="https://use.typekit.net/YOUR_KIT_ID.css"> -->
@@ -168,6 +175,7 @@
   </button>
 </footer>
 
-<script src="/assets/main.js"></script>
+<script src="../main/main.js"></script>
+<script src="../main/ai-redesign.js"></script>
 </body>
 </html>
