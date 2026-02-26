@@ -4,7 +4,17 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Waiting Magazine — Elliott Rosenberg</title>
-  <script>const t = localStorage.getItem('theme'); if (t) document.documentElement.setAttribute('data-theme', t);</script>
+  <script>
+    const t = localStorage.getItem('theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+    const aiCss = localStorage.getItem('ai-css');
+    if (aiCss) {
+      const s = document.createElement('style');
+      s.id = 'ai-override';
+      s.textContent = aiCss;
+      document.head.appendChild(s);
+    }
+  </script>
   <!-- <link rel="stylesheet" href="https://use.typekit.net/YOUR_KIT_ID.css"> -->
   <link rel="stylesheet" href="../main/style.css"/>
   <link rel="stylesheet" href="../main/case-study.css"/>
@@ -63,6 +73,7 @@
   </ul>
   <button class="theme-toggle" id="themeBtn"><span class="toggle-pip"></span><span id="themeLabel">Light</span></button>
 </footer>
-<script src="/assets/main.js"></script>
+<script src="../main/main.js"></script>
+<script src="../main/ai-redesign.js"></script>
 </body>
 </html>

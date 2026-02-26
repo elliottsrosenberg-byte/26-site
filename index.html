@@ -6,10 +6,17 @@
   <title>Elliott Rosenberg — Designer</title>
   <meta name="description" content="Elliott Rosenberg is a designer based in Brooklyn, NY. Working across physical product, editorial, and digital software."/>
 
-  <!-- FOUC prevention: apply saved theme before paint -->
+  <!-- FOUC prevention: apply saved theme + AI CSS before paint -->
   <script>
     const t = localStorage.getItem('theme');
     if (t) document.documentElement.setAttribute('data-theme', t);
+    const aiCss = localStorage.getItem('ai-css');
+    if (aiCss) {
+      const s = document.createElement('style');
+      s.id = 'ai-override';
+      s.textContent = aiCss;
+      document.head.appendChild(s);
+    }
   </script>
 
   <!-- Adobe Fonts: replace YOUR_KIT_ID once you have a GT America kit -->
@@ -17,8 +24,6 @@
 
   <link rel="stylesheet" href="main/style.css"/>
   <link rel="stylesheet" href="main/home.css"/>
-  <!-- AI redesign override — populated by ai-redesign.js -->
-  <style id="ai-override"></style>
 </head>
 <body>
 
