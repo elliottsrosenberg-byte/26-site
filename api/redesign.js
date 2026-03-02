@@ -26,9 +26,6 @@ export default async function handler(req, res) {
         system: systemPrompt,
         messages: [
           { role: 'user', content: `Redesign vibe: "${prompt}"` },
-          // Prefill forces the model to begin outputting CSS immediately —
-          // no preamble, no markdown fences, correct delimiter guaranteed.
-          { role: 'assistant', content: '===CSS===' },
         ],
       }),
     });
@@ -38,14 +35,15 @@ export default async function handler(req, res) {
   }
 
   if (!claudeResponse.ok) {
-    const err = await claudeResponse.text();
-    console.error('Claude API error:', claudeResponse.status, err);
-    return res.status(502).json({ error: `Claude API returned ${claudeResponse.status}` });
+    const errText = await claudeResponse.text();
+    let detail = '';
+    try { detail = JSON.parse(errText)?.error?.message ?? ''; } catch {}
+    console.error('Claude API error:', claudeResponse.status, errText);
+    return res.status(502).json({ error: detail || `Claude API returned ${claudeResponse.status}` });
   }
 
   const data = await claudeResponse.json();
-  // The model continues from the prefilled "===CSS===", so restore it before parsing.
-  const raw = '===CSS===\n' + (data.content?.[0]?.text ?? '');
+  const raw = data.content?.[0]?.text ?? '';
 
   console.log('Claude raw response:\n', raw.slice(0, 500));
 
@@ -56,15 +54,20 @@ export default async function handler(req, res) {
   let css = cssMatch?.[1]?.trim() ?? '';
   const js  = jsMatch?.[1]?.trim()  ?? '';
 
-  // Fallback: if ===ENDCSS=== is missing (response truncated), grab everything
-  // up to the JS section so we still get usable CSS.
+  // Fallback 1: strip any preamble Claude added before the delimiter.
   if (!css) {
-    const cssStart = raw.indexOf('===CSS===');
-    const jsStart  = raw.indexOf('===JS===');
+    const stripped = raw.replace(/^[\s\S]*?(===\s*CSS\s*===)/, '$1');
+    css = stripped.match(/===\s*CSS\s*===\s*([\s\S]*?)\s*===\s*ENDCSS\s*===/)?.[1]?.trim() ?? '';
+  }
+
+  // Fallback 2: ENDCSS missing (truncated response) — grab up to the JS block.
+  if (!css) {
+    const cssStart = raw.search(/===\s*CSS\s*===/);
+    const jsStart  = raw.search(/===\s*JS\s*===/);
     if (cssStart !== -1 && jsStart > cssStart) {
-      css = raw.slice(cssStart + '===CSS==='.length, jsStart).trim();
+      css = raw.slice(cssStart).replace(/^===\s*CSS\s*===\s*/, '').slice(0, jsStart - cssStart).trim();
     } else if (cssStart !== -1) {
-      css = raw.slice(cssStart + '===CSS==='.length).trim();
+      css = raw.slice(cssStart).replace(/^===\s*CSS\s*===\s*/, '').trim();
     }
   }
 
