@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(open:*)"
+      "Bash(open:*)",
+      "WebFetch(domain:www.elliottsrosenberg.com)",
+      "WebFetch(domain:burakonder.com)",
+      "WebFetch(domain:www.franfrancisco.com)",
+      "WebFetch(domain:www.andiazry.com)",
+      "WebFetch(domain:laurengoodman.xyz)",
+      "WebFetch(domain:perennial.design)",
+      "Bash(lsof:*)"
     ]
   }
 }

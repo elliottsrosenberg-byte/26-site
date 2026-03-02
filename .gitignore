@@ -3,3 +3,7 @@ node_modules/
 .vercel/
 .vercel
 .env*.local
+.DS_Store
+assets/images/StudioLG/SLGHero.gif
+assets/images/Waiting/ed2transparent.png
+assets/images/Waiting/ed3transparent.png

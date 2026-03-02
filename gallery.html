@@ -14,13 +14,12 @@
   <link rel="stylesheet" href="main/style.css"/>
   <style>
     .gallery-header {
-      margin-bottom: 52px;
+      margin-bottom: 40px;
     }
     .gallery-title {
-      font-size: clamp(28px, 5vw, 48px);
-      font-weight: 300;
-      letter-spacing: -0.02em;
-      margin-bottom: 12px;
+      font-size: clamp(22px, 4vw, 36px);
+      font-weight: bold;
+      margin-bottom: 10px;
     }
     .gallery-sub {
       font-size: 13px;
@@ -35,12 +34,11 @@
     }
     .gallery-card {
       border: 1px solid var(--border);
-      transition: border-color 0.15s;
       text-decoration: none;
       color: inherit;
-      display: block;
+      display: flex;
+      flex-direction: column;
     }
-    .gallery-card:hover { border-color: var(--ink); }
     .gallery-card img {
       width: 100%;
       aspect-ratio: 16/10;
@@ -48,54 +46,66 @@
       display: block;
     }
     .gallery-card-body {
-      padding: 14px 16px 16px;
+      padding: 14px 16px 12px;
       border-top: 1px solid var(--border);
-      transition: border-color 0.15s;
+      flex: 1;
     }
     .gallery-vibe {
       font-size: 13px;
-      font-weight: 300;
-      margin-bottom: 6px;
+      font-weight: bold;
+      margin-bottom: 5px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .gallery-date {
+    .gallery-meta {
       font-size: 10px;
-      letter-spacing: 0.08em;
       color: var(--mid);
-      text-transform: uppercase;
+      display: flex;
+      gap: 10px;
+      align-items: center;
     }
-    .gallery-empty {
-      font-size: 13px;
-      color: var(--mid);
-      line-height: 1.7;
-    }
-    .gallery-loading {
-      font-size: 12px;
-      color: var(--mid);
-      letter-spacing: 0.08em;
-    }
+    .gallery-author { color: var(--ink); }
     .gallery-card-footer {
-      padding: 12px 16px;
+      padding: 10px 16px;
       border-top: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
     }
+    .gallery-heart-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--mid);
+      font-family: var(--font);
+      font-size: 12px;
+      padding: 5px 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .gallery-heart-btn:hover { border-color: #e05; color: #e05; }
+    .gallery-heart-btn.liked { border-color: #e05; color: #e05; }
+    .gallery-heart-btn:disabled { opacity: 0.5; cursor: default; }
     .gallery-view-btn {
       font-family: var(--font);
       font-size: 10px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+      letter-spacing: 0.06em;
       background: var(--ink);
       color: var(--bg);
       border: none;
       padding: 7px 12px;
       cursor: pointer;
-      transition: background 0.15s;
     }
     .gallery-view-btn:hover { background: var(--accent); }
+    .gallery-empty, .gallery-loading {
+      font-size: 13px;
+      color: var(--mid);
+      line-height: 1.7;
+    }
   </style>
 </head>
 <body>
@@ -105,7 +115,7 @@
   <div class="gallery-header">
     <h1 class="gallery-title">Design Archive</h1>
     <p class="gallery-sub">
-      Visitor-generated redesigns of this site. Each one was made by describing a vibe
+      Visitor-generated redesigns of this site. Each was made by describing a vibe
       and letting Claude rewrite the CSS in real time.
       <a href="/" style="color:var(--accent)">Make your own ↗</a>
     </p>
@@ -129,16 +139,29 @@
 
 <script src="main/main.js"></script>
 <script>
-  function viewDesign(vibe, css) {
-    if (css) localStorage.setItem('ai-css', css);
-    if (vibe) localStorage.setItem('ai-vibe', vibe);
-    localStorage.removeItem('ai-js'); // don't carry over interactive scripts
-    window.location.href = '/';
-  }
-</script>
-<script>
   const grid = document.getElementById('gallery-grid');
   const hash = location.hash.slice(1);
+
+  // IDs the user has already liked — prevents double-liking
+  const likedIds = new Set(JSON.parse(localStorage.getItem('gallery-liked') || '[]'));
+
+  // Entries indexed by ID — used by view and like handlers
+  const entriesById = {};
+
+  function viewDesign(id) {
+    const entry = entriesById[id];
+    if (!entry) return;
+    if (entry.css)  localStorage.setItem('ai-css', entry.css);
+    if (entry.vibe) localStorage.setItem('ai-vibe', entry.vibe);
+    localStorage.removeItem('ai-js');
+    window.location.href = '/';
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
 
   fetch('/api/gallery')
     .then(r => r.json())
@@ -148,25 +171,37 @@
         return;
       }
 
+      // Populate lookup map
+      entries.forEach(e => { entriesById[e.id] = e; });
+
+      const highlight = id => id === hash ? 'border-color:var(--accent);' : '';
+
       grid.innerHTML = entries.map(e => {
         const date = new Date(e.timestamp).toLocaleDateString('en-US', {
           month: 'short', day: 'numeric', year: 'numeric'
         });
-        const highlight = e.id === hash ? 'border-color:var(--accent)' : '';
-        const cssJson = JSON.stringify(e.css || '').replace(/'/g, '&#39;');
-        const vibeEsc = (e.vibe || '').replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+        const liked = likedIds.has(e.id);
+        const likes = e.likes || 0;
+        const authorHtml = e.author
+          ? `<span class="gallery-author">${escHtml(e.author)}</span><span>&middot;</span>`
+          : '';
         return `
-          <div class="gallery-card" id="${e.id}" style="${highlight}">
-            <a href="${e.imageUrl}" target="_blank">
-              <img src="${e.imageUrl}" alt="${e.vibe}" loading="lazy">
+          <div class="gallery-card" id="${escHtml(e.id)}" style="${highlight(e.id)}">
+            <a href="${escHtml(e.imageUrl)}" target="_blank" rel="noopener">
+              <img src="${escHtml(e.imageUrl)}" alt="${escHtml(e.vibe)}" loading="lazy">
             </a>
             <div class="gallery-card-body">
-              <div class="gallery-vibe">"${e.vibe}"</div>
-              <div class="gallery-date">${date}</div>
+              <div class="gallery-vibe">"${escHtml(e.vibe)}"</div>
+              <div class="gallery-meta">
+                ${authorHtml}
+                <span>${escHtml(date)}</span>
+              </div>
             </div>
             <div class="gallery-card-footer">
-              <div></div>
-              <button class="gallery-view-btn" onclick="viewDesign('${vibeEsc}', ${cssJson})">
+              <button class="gallery-heart-btn${liked ? ' liked' : ''}" data-id="${escHtml(e.id)}">
+                ♥ <span class="heart-count">${likes}</span>
+              </button>
+              <button class="gallery-view-btn" data-id="${escHtml(e.id)}">
                 View this design ↗
               </button>
             </div>
@@ -174,7 +209,7 @@
         `;
       }).join('');
 
-      // Scroll to highlighted entry if linked
+      // Scroll to highlighted entry if linked via hash
       if (hash) {
         setTimeout(() => document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
       }
@@ -182,6 +217,42 @@
     .catch(() => {
       grid.innerHTML = '<p class="gallery-empty">Couldn\'t load submissions.</p>';
     });
+
+  // Event delegation for heart and view buttons
+  grid.addEventListener('click', async e => {
+    const heartBtn = e.target.closest('.gallery-heart-btn');
+    const viewBtn  = e.target.closest('.gallery-view-btn');
+
+    if (viewBtn) {
+      viewDesign(viewBtn.dataset.id);
+      return;
+    }
+
+    if (heartBtn && !heartBtn.disabled) {
+      const id = heartBtn.dataset.id;
+      if (likedIds.has(id)) return;
+
+      heartBtn.disabled = true;
+      try {
+        const res = await fetch('/api/like', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ id }),
+        });
+        if (res.ok) {
+          const { likes } = await res.json();
+          heartBtn.querySelector('.heart-count').textContent = likes;
+          heartBtn.classList.add('liked');
+          likedIds.add(id);
+          localStorage.setItem('gallery-liked', JSON.stringify([...likedIds]));
+        }
+      } catch (err) {
+        console.error('Like failed:', err);
+      } finally {
+        heartBtn.disabled = false;
+      }
+    }
+  });
 </script>
 </body>
 </html>

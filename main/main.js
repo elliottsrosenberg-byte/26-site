@@ -91,4 +91,30 @@
     if (e.key === 'Escape') closePopup();
   });
 
+  /* ── CONTACT FORM — fetch submit ── */
+  const contactForm = popup?.querySelector('form');
+  const submitBtn   = contactForm?.querySelector('.btn-submit');
+
+  contactForm?.addEventListener('submit', async e => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+
+    try {
+      const res = await fetch(contactForm.action, {
+        method: 'POST',
+        body: new FormData(contactForm),
+        headers: { Accept: 'application/json' },
+      });
+      if (!res.ok) throw new Error();
+      contactForm.reset();
+      closePopup();
+    } catch {
+      submitBtn.textContent = 'Failed — try again';
+    } finally {
+      submitBtn.disabled = false;
+      if (submitBtn.textContent === 'Sending…') submitBtn.textContent = 'Send';
+    }
+  });
+
 })();

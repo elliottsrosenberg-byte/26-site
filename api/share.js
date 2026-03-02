@@ -3,7 +3,7 @@ import { put } from '@vercel/blob';
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
-  const { screenshot, vibe, css } = req.body ?? {};
+  const { screenshot, vibe, css, author } = req.body ?? {};
   if (!screenshot || !vibe) {
     return res.status(400).json({ error: 'Missing screenshot or vibe' });
   }
@@ -19,16 +19,22 @@ export default async function handler(req, res) {
   const imagePath = `gallery/${id}.${ext}`;
   const metaPath  = `gallery/${id}.json`;
 
+  const blobToken = process.env.PUBBLOB_READ_WRITE_TOKEN || process.env.BLOB_READ_WRITE_TOKEN;
+
   try {
     const { url: imageUrl } = await put(imagePath, imageBuffer, {
       access: 'public',
       contentType: mimeType,
+      addRandomSuffix: false,
+      token: blobToken,
     });
 
-    const meta = { id, vibe, imageUrl, css, timestamp: Date.now() };
+    const meta = { id, vibe, author: author?.trim() || '', imageUrl, css, timestamp: Date.now(), likes: 0 };
     await put(metaPath, JSON.stringify(meta), {
       access: 'public',
       contentType: 'application/json',
+      addRandomSuffix: false,
+      token: blobToken,
     });
 
     res.status(200).json({ id, imageUrl });
