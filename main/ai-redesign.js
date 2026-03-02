@@ -190,6 +190,7 @@
 
     const ctx = canvas.getContext('2d');
     const keys = {};
+    const isTouchDevice = 'ontouchstart' in window;
     let W, px, items, points, timeFrame, alive, started, paused, raf;
 
     function reset() {
@@ -216,15 +217,15 @@
 
       if (!started) {
         ctx.fillStyle = '#6a9955'; ctx.font = '11px monospace'; ctx.textAlign = 'center';
-        ctx.fillText('\u2190 \u2192 to play \u2022 SPACE to pause', W / 2, H / 2 + 4);
+        ctx.fillText(isTouchDevice ? 'tap left / right to play' : '\u2190 \u2192 to play \u2022 SPACE to pause', W / 2, H / 2 + 4);
         ctx.fillStyle = '#d4d4d4';
         ctx.fillRect(px - 10, playerY, 20, 8);
         return;
       }
 
       if (!paused && alive) {
-        if (keys.ArrowLeft)  px = Math.max(10,     px - 3.5);
-        if (keys.ArrowRight) px = Math.min(W - 10, px + 3.5);
+        if (keys.ArrowLeft  || keys._touchLeft)  px = Math.max(10,     px - 3.5);
+        if (keys.ArrowRight || keys._touchRight) px = Math.min(W - 10, px + 3.5);
 
         if (timeFrame % 60 === 0) {
           const bad = Math.random() < 0.35;
@@ -264,7 +265,7 @@
 
       if (!alive) {
         ctx.fillStyle = '#9cdcfe'; ctx.font = '11px monospace'; ctx.textAlign = 'center';
-        ctx.fillText('press \u2190 \u2192 to retry', W / 2, H / 2 + 4);
+        ctx.fillText(isTouchDevice ? 'tap to retry' : 'press \u2190 \u2192 to retry', W / 2, H / 2 + 4);
         ctx.textAlign = 'left';
       }
 
@@ -293,10 +294,39 @@
     document.addEventListener('keyup', onKeyUp);
     reset(); loop();
 
+    function onTouchStart(e) {
+      e.preventDefault();
+      if (!alive) { reset(); return; }
+      started = true;
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      keys._touchLeft  = (touch.clientX - rect.left) < W / 2;
+      keys._touchRight = !keys._touchLeft;
+    }
+    function onTouchMove(e) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      keys._touchLeft  = (touch.clientX - rect.left) < W / 2;
+      keys._touchRight = !keys._touchLeft;
+    }
+    function onTouchEnd() { keys._touchLeft = false; keys._touchRight = false; }
+
+    if (isTouchDevice) {
+      canvas.addEventListener('touchstart', onTouchStart, { passive: false });
+      canvas.addEventListener('touchmove',  onTouchMove,  { passive: false });
+      canvas.addEventListener('touchend',   onTouchEnd);
+    }
+
     return () => {
       cancelAnimationFrame(raf);
       document.removeEventListener('keydown', onKeyDown);
       document.removeEventListener('keyup', onKeyUp);
+      if (isTouchDevice) {
+        canvas.removeEventListener('touchstart', onTouchStart);
+        canvas.removeEventListener('touchmove',  onTouchMove);
+        canvas.removeEventListener('touchend',   onTouchEnd);
+      }
     };
   }
 
@@ -382,6 +412,29 @@
     });
 
     document.addEventListener('mouseup', () => {
+      if (!dragging) return;
+      dragging = false;
+      document.body.style.userSelect = '';
+      localStorage.setItem('console-height', consoleEl.offsetHeight);
+    });
+
+    handle.addEventListener('touchstart', e => {
+      e.preventDefault();
+      dragging = true;
+      startY = e.touches[0].clientY;
+      startH = consoleEl.offsetHeight;
+      document.body.style.userSelect = 'none';
+    }, { passive: false });
+
+    document.addEventListener('touchmove', e => {
+      if (!dragging) return;
+      const delta = startY - e.touches[0].clientY;
+      const newH = Math.min(Math.max(startH + delta, 80), window.innerHeight * 0.5);
+      consoleEl.style.height = newH + 'px';
+      document.documentElement.style.setProperty('--console-height', newH + 'px');
+    }, { passive: false });
+
+    document.addEventListener('touchend', () => {
       if (!dragging) return;
       dragging = false;
       document.body.style.userSelect = '';
@@ -596,6 +649,11 @@
       }
       #redesign-share-panel:not(.open) { transform: translateY(100%) !important; }
       #redesign-share-panel.open { transform: translateY(0) !important; }
+      @media (max-width: 600px) {
+        #redesign-console { height: 220px !important; }
+        #redesign-console .console-bar-right { flex-wrap: wrap !important; gap: 3px !important; }
+        #redesign-console .console-action-btn { padding: 2px 4px !important; font-size: 10px !important; }
+      }
     `;
   }
 

@@ -22,9 +22,14 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
-        max_tokens: 4000,
+        max_tokens: 8000,
         system: systemPrompt,
-        messages: [{ role: 'user', content: `Redesign vibe: "${prompt}"` }],
+        messages: [
+          { role: 'user', content: `Redesign vibe: "${prompt}"` },
+          // Prefill forces the model to begin outputting CSS immediately —
+          // no preamble, no markdown fences, correct delimiter guaranteed.
+          { role: 'assistant', content: '===CSS===' },
+        ],
       }),
     });
   } catch (err) {
@@ -39,22 +44,34 @@ export default async function handler(req, res) {
   }
 
   const data = await claudeResponse.json();
-  const raw = data.content?.[0]?.text ?? '';
+  // The model continues from the prefilled "===CSS===", so restore it before parsing.
+  const raw = '===CSS===\n' + (data.content?.[0]?.text ?? '');
 
   console.log('Claude raw response:\n', raw.slice(0, 500));
 
-  // Parse delimiter format — robust against any characters inside CSS/JS
-  const cssMatch = raw.match(/===CSS===\n?([\s\S]*?)\n?===ENDCSS===/);
-  const jsMatch  = raw.match(/===JS===\n?([\s\S]*?)\n?===ENDJS===/);
+  // Flexible whitespace around delimiter words handles any spacing variation.
+  const cssMatch = raw.match(/===\s*CSS\s*===\s*([\s\S]*?)\s*===\s*ENDCSS\s*===/);
+  const jsMatch  = raw.match(/===\s*JS\s*===\s*([\s\S]*?)\s*===\s*ENDJS\s*===/);
 
-  const css = cssMatch?.[1]?.trim() ?? '';
+  let css = cssMatch?.[1]?.trim() ?? '';
   const js  = jsMatch?.[1]?.trim()  ?? '';
+
+  // Fallback: if ===ENDCSS=== is missing (response truncated), grab everything
+  // up to the JS section so we still get usable CSS.
+  if (!css) {
+    const cssStart = raw.indexOf('===CSS===');
+    const jsStart  = raw.indexOf('===JS===');
+    if (cssStart !== -1 && jsStart > cssStart) {
+      css = raw.slice(cssStart + '===CSS==='.length, jsStart).trim();
+    } else if (cssStart !== -1) {
+      css = raw.slice(cssStart + '===CSS==='.length).trim();
+    }
+  }
 
   if (!css) {
     console.error('No CSS found in Claude response. Raw:', raw);
     return res.status(500).json({ error: 'Claude did not return CSS in expected format' });
   }
-  
 
   res.status(200).json({ css, js });
 }

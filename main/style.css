@@ -302,4 +302,9 @@ footer {
   :root { --pad-x: 20px; --pad-top: 52px; }
   body { cursor: auto; }
   footer { flex-direction: column; gap: 20px; align-items: flex-start; padding-bottom: 44px; }
+
+  /* Console — shorter default height, tighter bar on small screens */
+  .redesign-console { height: 220px; }
+  .console-bar-right { flex-wrap: wrap; gap: 3px; }
+  .console-action-btn { padding: 2px 4px; font-size: 10px; }
 }
