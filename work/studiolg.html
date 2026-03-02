@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Subscription UX — Elliott Rosenberg</title>
+  <meta name="description" content="Mapping and implementing a metered access flow for a digital publication, from user state diagrams through Memberstack integration."/>
+
+  <script>
+    const t = localStorage.getItem('theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+    const aiCss = localStorage.getItem('ai-css');
+    if (aiCss) {
+      const s = document.createElement('style');
+      s.id = 'ai-override';
+      s.textContent = aiCss;
+      document.head.appendChild(s);
+    }
+  </script>
+
+  <!-- <link rel="stylesheet" href="https://use.typekit.net/YOUR_KIT_ID.css"> -->
+  <link rel="stylesheet" href="../main/style.css"/>
+  <link rel="stylesheet" href="../main/case-study.css"/>
+</head>
+<body>
+
+<div id="cursor"><div id="cursor-dot"></div></div>
+
+<div class="page">
+
+  <nav class="top-nav">
+    <a href="/" class="back-link"><span class="arrow">←</span><span>All work</span></a>
+    <a href="/" class="nav-name">Elliott Rosenberg</a>
+  </nav>
+
+  <header class="cs-header">
+    <div class="cs-title-col">
+      <div class="cs-index">03 / 04</div>
+      <h1 class="cs-title">Subscription<br>UX</h1>
+    </div>
+    <div class="cs-meta-col">
+      <div class="cs-meta-row">
+        <div class="meta-label">Year</div>
+        <div class="meta-value">2023</div>
+      </div>
+      <div class="cs-meta-row">
+        <div class="meta-label">Role</div>
+        <div class="meta-value">Product Designer, Developer</div>
+      </div>
+      <div class="cs-meta-row">
+        <div class="meta-label">Scope</div>
+        <div class="meta-tags">
+          <span class="tag">UX</span>
+          <span class="tag">Digital Product</span>
+          <span class="tag">Implementation</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="img-placeholder" style="aspect-ratio:16/7; margin-bottom: 80px;">
+    <span class="img-placeholder-label">Sign-up flow — final screens or user journey map</span>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Role</div>
+    <div class="cs-section-body">
+      <ul style="font-size: clamp(14px, 1.55vw, 16px); line-height: 1.75; font-weight: 300; color: var(--ink); padding-left: 18px; display: flex; flex-direction: column; gap: 6px;">
+        <li>Defined and mapped all user states in the metered access system</li>
+        <li>Designed the paywall UI, account creation flow, and subscriber-facing screens</li>
+        <li>Wrote all UX copy for the paywall, sign-up flow, and account pages</li>
+        <li>Configured and implemented the Memberstack integration</li>
+        <li>Handled front-end development for the gated access logic and UI components</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Accomplishments</div>
+    <div class="cs-section-body">
+      <ul style="font-size: clamp(14px, 1.55vw, 16px); line-height: 1.75; font-weight: 300; color: var(--ink); padding-left: 18px; display: flex; flex-direction: column; gap: 6px;">
+        <li>Designed and shipped a full metered access system with [N] distinct user states handled correctly</li>
+        <li>Account creation flow reduced to [N] steps from initial paywall prompt to active subscription</li>
+        <li>[Conversion rate or subscriber metric if available]</li>
+        <li>Paywall copy and design consistent with the publication's editorial voice — doesn't feel like a separate product</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Context</div>
+    <div class="cs-section-body">
+      <p class="callout">
+        This is a small project — the account creation flow for a single digital publication. The reason it's here is that it's a useful window into how I approach design problems: by mapping the problem space carefully before touching any UI.
+      </p>
+      <p>
+        Waiting Magazine launched a digital edition alongside the print publication. The model was metered access: readers could view a limited number of articles for free before being asked to subscribe. Memberstack was the chosen platform for membership and access management.
+      </p>
+      <p>
+        The scope was deliberately narrow: design the experience around that paywall moment. Not the digital edition's full site design, not the content itself — just the flow from "you've hit the limit" to "you're a subscriber." It's a short path, but the decisions in it matter.
+      </p>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Problem</div>
+    <div class="cs-section-body">
+      <p>
+        Metered access UX is deceptively complex. The reader can be in many different states depending on what they've done before: anonymous and within the free limit, anonymous and at the limit, has an account but no active subscription, has an active subscription, or has a lapsed subscription. Each state calls for different UI treatment and different copy.
+      </p>
+      <p>
+        The paywall moment itself is a high-stakes interaction. A reader who hits a paywall is by definition engaged — they've read enough to want more. That's a good moment to convert. But paywalls are also interruptions, and interruptions create friction. The design question was: how do you make the transition from "free reader" to "subscriber" feel like a natural continuation of the reading experience rather than a hard stop?
+      </p>
+      <p>
+        The technical constraint was Memberstack's platform: powerful and well-documented, but with default flows that are generic and wouldn't feel consistent with a design publication's aesthetic and voice. Everything visible to the reader needed custom design.
+      </p>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Approach</div>
+    <div class="cs-section-body">
+      <p>
+        The first step was a complete state map — every situation a reader could be in when they encountered the paywall or account system, and what should happen in each case. This sounds obvious, but it's easy to design for the happy path (anonymous reader, hits paywall, subscribes, reads on) while leaving edge cases as afterthoughts. Lapsed subscribers, in particular, often get awkward treatment: the system recognizes them as existing users but the UI treats them like strangers.
+      </p>
+      <p>
+        For each state, I worked through three questions: What does the reader know about their situation right now? What do they need in order to take the next step? What's the minimum friction path to get them there? Those questions made the copy and UI decisions much more concrete.
+      </p>
+      <p>
+        On the persuasion side: I wanted the paywall to feel like an invitation from the publication rather than a gate. That's mostly a copy problem. "Subscribe to keep reading" is a transaction; "Waiting is reader-supported — join us" is a different relationship. The copy should reflect what the publication actually is.
+      </p>
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Process</div>
+    <div class="cs-section-body">
+
+      <div class="img-2up">
+        <div>
+          <div class="img-placeholder">
+            <span class="img-placeholder-label">User state diagram</span>
+          </div>
+          <p class="img-caption">State map: all reader states and transition conditions</p>
+        </div>
+        <div>
+          <div class="img-placeholder">
+            <span class="img-placeholder-label">Paywall modal — wireframe or final</span>
+          </div>
+          <p class="img-caption">Paywall design, showing copy and CTA hierarchy</p>
+        </div>
+      </div>
+
+      <p>
+        The state map came first — a diagram showing every reader state, the conditions that trigger a state change, and the UI component that should appear in each case. Having this on paper before opening any design tool meant that decisions about the UI were always traceable back to a specific user situation rather than an abstract aesthetic preference.
+      </p>
+      <p>
+        Wireframes followed, roughly in order of traffic: the paywall modal first (most people see this), then the sign-up flow, then the sign-in flow for returning users, then the account page, then the lapsed-subscription state. Memberstack handles the authentication logic; the design work was the wrapper around it — what does the reader see, and what are they being asked to do?
+      </p>
+
+      <div class="img-2up">
+        <div>
+          <div class="img-placeholder">
+            <span class="img-placeholder-label">Sign-up flow — screen 1</span>
+          </div>
+          <p class="img-caption">Account creation, step 1 of [N]</p>
+        </div>
+        <div>
+          <div class="img-placeholder">
+            <span class="img-placeholder-label">Sign-up flow — screen 2</span>
+          </div>
+          <p class="img-caption">Subscription selection, step 2 of [N]</p>
+        </div>
+      </div>
+
+      <p>
+        Copy was written alongside the UI, not after. The copy decisions — what to say at the paywall, how to describe the subscription tiers, what confirmation language to use — are design decisions. Leaving them as Lorem Ipsum until the visual design is "done" produces designs that look right but don't work.
+      </p>
+      <p>
+        Implementation in Memberstack involved configuring the membership tiers, article gating logic, and custom UI overrides. The gating logic — counting articles read per session, per user, resetting counts correctly — required careful testing across the different state combinations, including logged-out users in incognito browsers and users who cleared their cookies.
+      </p>
+
+    </div>
+  </div>
+
+  <div class="cs-section">
+    <div class="cs-section-label">Outcome</div>
+    <div class="cs-section-body">
+
+      <div class="img-placeholder" style="aspect-ratio: 3/2;">
+        <span class="img-placeholder-label">Final implementation — live screen</span>
+      </div>
+      <p class="img-caption">Subscription flow, live on waitingmag.com</p>
+
+      <p>
+        The system shipped and handles all the user states correctly — including the edge cases. The paywall experience feels consistent with the rest of the digital edition: same typography, same tone, same aesthetic register. It doesn't feel like you've suddenly left the publication and ended up on a SaaS signup page.
+      </p>
+      <p>
+        [Subscriber or conversion metrics here if available.]
+      </p>
+      <p>
+        The thing I'd do differently: involve someone outside the project in usability testing earlier. I knew the flow too well by the time I was testing it, which made it easy to miss confusion points that were obvious to a first-time reader. For a flow with this much riding on it — someone who's ready to subscribe but could be lost to friction — that's worth investing in.
+      </p>
+      <p class="callout">
+        Good paywall design isn't really about the paywall. It's about making the reader's relationship with the publication feel continuous — before, during, and after the subscription decision.
+      </p>
+    </div>
+  </div>
+
+  <div class="next-project">
+    <div class="next-label">Next project</div>
+    <a href="/work/sedum-lamp.html" class="next-title">Sedum Table Lamp <span class="next-arrow">→</span></a>
+  </div>
+
+</div>
+
+<footer>
+  <ul class="footer-nav">
+    <li><a href="https://linkedin.com/in/YOUR_HANDLE" target="_blank">LinkedIn ↗</a></li>
+    <li><a href="https://YOUR_SUBSTACK.substack.com" target="_blank">Substack ↗</a></li>
+    <li><a href="https://are.na/YOUR_HANDLE" target="_blank">Are.na ↗</a></li>
+    <li><a href="https://instagram.com/YOUR_HANDLE" target="_blank">Instagram ↗</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">
+    <span class="toggle-pip"></span>
+    <span id="themeLabel">Light</span>
+  </button>
+</footer>
+
+<script src="../main/main.js"></script>
+<script src="../main/ai-redesign.js"></script>
+</body>
+</html>

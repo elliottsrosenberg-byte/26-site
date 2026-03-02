@@ -35,16 +35,12 @@
   align-items: end;
   padding-bottom: 56px;
   border-bottom: 1px solid var(--border);
-  transition: border-color 0.2s;
 }
 
 .cs-index {
   font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   color: var(--mid);
   margin-bottom: 14px;
-  transition: color 0.2s;
 }
 
 .cs-title {
@@ -67,11 +63,8 @@
 }
 
 .meta-label {
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 14px;
   color: var(--mid);
-  transition: color 0.2s;
 }
 
 .meta-value {
@@ -79,7 +72,6 @@
   font-weight: 300;
   color: var(--ink);
   line-height: 1.5;
-  transition: color 0.2s;
 }
 
 .meta-tags {
@@ -113,7 +105,6 @@
 .cs-drawing svg polyline,
 .cs-drawing svg ellipse {
   stroke: var(--ink);
-  transition: stroke 0.2s;
 }
 
 /* ── BODY SECTIONS ── */
@@ -123,18 +114,14 @@
   gap: 56px;
   padding: 48px 0;
   border-bottom: 1px solid var(--border);
-  transition: border-color 0.2s;
 }
 
 .cs-section:first-of-type { border-top: 1px solid var(--border); }
 
 .cs-section-label {
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 14px;
   color: var(--mid);
   padding-top: 4px;
-  transition: color 0.2s;
 }
 
 .cs-section-body {
@@ -148,7 +135,6 @@
   line-height: 1.75;
   font-weight: 300;
   color: var(--ink);
-  transition: color 0.2s;
 }
 
 [data-theme="dark"] .cs-section-body p { color: var(--mid); }
@@ -177,7 +163,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s;
 }
 
 .img-placeholder-label {
@@ -189,10 +174,9 @@
 
 .img-caption {
   font-size: 11px;
+  font-style: italic;
   color: var(--mid);
   margin-top: 10px;
-  letter-spacing: 0.02em;
-  transition: color 0.2s;
 }
 
 .img-2up {
@@ -208,11 +192,8 @@
 
 .next-label {
   font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--mid);
   margin-bottom: 10px;
-  transition: color 0.2s;
 }
 
 .next-title {

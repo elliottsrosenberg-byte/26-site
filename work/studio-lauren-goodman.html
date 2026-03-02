@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Studio Lauren Goodman — Elliott Rosenberg</title>
+  <meta name="description" content="Brand identity and website for Studio Lauren Goodman, a furniture and sculpture practice working at the intersection of art and design."/>
+
+  <script>
+    const t = localStorage.getItem('theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+    const aiCss = localStorage.getItem('ai-css');
+    if (aiCss) {
+      const s = document.createElement('style');
+      s.id = 'ai-override';
+      s.textContent = aiCss;
+      document.head.appendChild(s);
+    }
+  </script>
+
+  <link rel="stylesheet" href="../main/style.css"/>
+  <link rel="stylesheet" href="../main/case-study.css"/>
+</head>
+<body>
+
+<div id="cursor"><div id="cursor-dot"></div></div>
+
+<div class="page">
+
+  <nav class="top-nav">
+    <a href="/" class="back-link">
+      <span class="arrow">←</span>
+      <span>All work</span>
+    </a>
+    <a href="https://laurengoodman.xyz" target="_blank" class="nav-name">laurengoodman.xyz ↗</a>
+  </nav>
+
+  <header class="cs-header">
+    <div class="cs-title-col">
+      <h1 class="cs-title">Studio Lauren<br>Goodman</h1>
+      <a href="https://laurengoodman.xyz" target="_blank" style="font-size:13px; color:var(--accent); text-decoration:underline; display:inline-block; margin-top:10px;">laurengoodman.xyz ↗</a>
+    </div>
+    <div class="cs-meta-col">
+      <div class="cs-meta-row">
+        <div class="meta-label">Year</div>
+        <div class="meta-value">2025</div>
+      </div>
+      <div class="cs-meta-row">
+        <div class="meta-label">Role</div>
+        <div class="meta-value">Brand Designer, Web Designer</div>
+      </div>
+      <div class="cs-meta-row">
+        <div class="meta-label">Scope</div>
+        <div class="meta-tags">
+          <span class="tag">Brand Identity</span>
+          <span class="tag">Web Design</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <img src="../assets/images/StudioLG/SLGHero.gif" alt="Studio Lauren Goodman" style="width:100%; display:block; margin-bottom:80px;">
+
+
+  <img src="../assets/images/StudioLG/slg-brand1.png" alt="Studio Lauren Goodman — brand identity" style="width:100%; display:block;">
+  <img src="../assets/images/StudioLG/slg-brand2.png" alt="Studio Lauren Goodman — brand" style="width:100%; display:block;">
+  <img src="../assets/images/StudioLG/slg-brand3.png" alt="Studio Lauren Goodman — brand" style="width:100%; display:block;">
+  <img src="../assets/images/StudioLG/slg-brand4.png" alt="Studio Lauren Goodman — brand" style="width:100%; display:block;">
+  <img src="../assets/images/StudioLG/slg-brand5.png" alt="Studio Lauren Goodman — brand" style="width:100%; display:block;">
+
+
+</div>
+
+<footer>
+  <ul class="footer-nav">
+    <li><a href="https://www.linkedin.com/in/elliott-rosenberg/" target="_blank">LinkedIn ↗</a></li>
+    <li><a href="https://substack.com/@incoherentgibberish" target="_blank">Substack ↗</a></li>
+    <li><a href="https://www.are.na/elliott-rosenberg-vojnikivyyc/channels" target="_blank">Are.na ↗</a></li>
+    <li><a href="https://www.instagram.com/e.rows/" target="_blank">Instagram ↗</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">
+    <span class="toggle-pip"></span>
+    <span id="themeLabel">Light</span>
+  </button>
+</footer>
+
+<script src="../main/main.js"></script>
+<script src="../main/ai-redesign.js"></script>
+</body>
+</html>
