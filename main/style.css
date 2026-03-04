@@ -210,7 +210,7 @@ footer {
   transform: translateY(100%);
   transition: transform 0.2s ease;
   display: flex; flex-direction: column;
-  height: 280px; max-height: 50vh; min-height: 80px;
+  height: 280px; max-height: 90vh; min-height: 80px;
   overflow: hidden;
 }
 .redesign-console.open { transform: translateY(0); }

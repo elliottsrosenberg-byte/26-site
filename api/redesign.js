@@ -22,7 +22,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
-        max_tokens: 8000,
+        max_tokens: 4000,
         system: systemPrompt,
         messages: [
           { role: 'user', content: `Redesign vibe: "${prompt}"` },
@@ -42,39 +42,38 @@ export default async function handler(req, res) {
     return res.status(502).json({ error: detail || `Claude API returned ${claudeResponse.status}` });
   }
 
-  const data = await claudeResponse.json();
-  const raw = data.content?.[0]?.text ?? '';
+  const body = await claudeResponse.json();
+  const fullText = body.content?.[0]?.text ?? '';
 
-  console.log('Claude raw response:\n', raw.slice(0, 500));
+  console.log('Claude response (first 500):\n', fullText.slice(0, 500));
 
-  // Flexible whitespace around delimiter words handles any spacing variation.
-  const cssMatch = raw.match(/===\s*CSS\s*===\s*([\s\S]*?)\s*===\s*ENDCSS\s*===/);
-  const jsMatch  = raw.match(/===\s*JS\s*===\s*([\s\S]*?)\s*===\s*ENDJS\s*===/);
+  const cssMatch = fullText.match(/===\s*CSS\s*===\s*([\s\S]*?)\s*===\s*ENDCSS\s*===/);
+  const jsMatch  = fullText.match(/===\s*JS\s*===\s*([\s\S]*?)\s*===\s*ENDJS\s*===/);
 
   let css = cssMatch?.[1]?.trim() ?? '';
   const js  = jsMatch?.[1]?.trim()  ?? '';
 
   // Fallback 1: strip any preamble Claude added before the delimiter.
   if (!css) {
-    const stripped = raw.replace(/^[\s\S]*?(===\s*CSS\s*===)/, '$1');
+    const stripped = fullText.replace(/^[\s\S]*?(===\s*CSS\s*===)/, '$1');
     css = stripped.match(/===\s*CSS\s*===\s*([\s\S]*?)\s*===\s*ENDCSS\s*===/)?.[1]?.trim() ?? '';
   }
 
   // Fallback 2: ENDCSS missing (truncated response) — grab up to the JS block.
   if (!css) {
-    const cssStart = raw.search(/===\s*CSS\s*===/);
-    const jsStart  = raw.search(/===\s*JS\s*===/);
+    const cssStart = fullText.search(/===\s*CSS\s*===/);
+    const jsStart  = fullText.search(/===\s*JS\s*===/);
     if (cssStart !== -1 && jsStart > cssStart) {
-      css = raw.slice(cssStart).replace(/^===\s*CSS\s*===\s*/, '').slice(0, jsStart - cssStart).trim();
+      css = fullText.slice(cssStart).replace(/^===\s*CSS\s*===\s*/, '').slice(0, jsStart - cssStart).trim();
     } else if (cssStart !== -1) {
-      css = raw.slice(cssStart).replace(/^===\s*CSS\s*===\s*/, '').trim();
+      css = fullText.slice(cssStart).replace(/^===\s*CSS\s*===\s*/, '').trim();
     }
   }
 
   if (!css) {
-    console.error('No CSS found in Claude response. Raw:', raw);
-    return res.status(500).json({ error: 'Claude did not return CSS in expected format' });
+    console.error('No CSS found in Claude response. Raw:', fullText.slice(0, 500));
+    return res.status(502).json({ error: 'Claude did not return CSS in expected format' });
   }
 
-  res.status(200).json({ css, js });
+  return res.status(200).json({ css, js });
 }
