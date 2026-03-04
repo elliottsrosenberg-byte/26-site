@@ -35,6 +35,7 @@
         <div class="console-scroll" id="console-scroll">
           <div style="flex:1"></div><!-- top spacer — pushes content to bottom -->
           <div id="console-history"></div>
+          <div id="console-log-lines"></div>
           <div style="color:#c65e1a;margin-bottom:6px;">After redesigning my website five times over the past five months, each time with a new design tool or AI integration, I decided that I&rsquo;d always have a new tool or piece of technology to play with. Also, as a designer that works across multiple disciplines, I find that I&rsquo;m always adjusting my portfolio to cater to different recruiters, thought leaders, or potential investors. As a gesture to the ever-changing nature of the internet, I&rsquo;ll let you design my website for me. If you&rsquo;re looking for a tech site, a fine arts gallery page, or an animation-heavy creative splurge, click the tags below for some examples.</div>
           <div class="console-log" id="console-intro">// this site can be redesigned by AI &mdash; describe a visual vibe below to transform it</div>
           <div class="console-active-vibe" id="console-active-vibe" style="display:none"></div>
@@ -44,7 +45,7 @@
             <div class="console-loading-vibe" id="console-loading-vibe"></div>
             <div class="redesign-game-wrap" id="redesign-game-wrap"></div>
             <div class="redesign-progress"><div class="redesign-progress-bar" id="redesign-progress-bar"></div></div>
-            <div class="console-loading-text">// this usually takes about 30 seconds...</div>
+            <div class="console-loading-text" id="console-loading-text">// generating...</div>
           </div>
 
           <!-- hidden during generation -->
@@ -134,6 +135,8 @@
   const shareBtnEl      = document.getElementById('console-share-btn');
   const closeBtnEl      = document.getElementById('console-close-btn');
 
+  const logLinesEl      = document.getElementById('console-log-lines');
+
   const sharePanel      = document.getElementById('redesign-share-panel');
   const shareFormWrap   = document.getElementById('redesign-share-form');
   const captureStatus   = document.getElementById('capture-status');
@@ -150,6 +153,7 @@
 
   let capturedDataUrl = null;
   let currentAbortController = null;
+  let lastVibe = '';
 
   /* ═══════════════════════════════════════════
      VERSION HISTORY
@@ -406,7 +410,7 @@
     document.addEventListener('mousemove', e => {
       if (!dragging) return;
       const delta = startY - e.clientY;
-      const newH = Math.min(Math.max(startH + delta, 80), window.innerHeight * 0.5);
+      const newH = Math.min(Math.max(startH + delta, 80), window.innerHeight * 0.9);
       consoleEl.style.height = newH + 'px';
       document.documentElement.style.setProperty('--console-height', newH + 'px');
     });
@@ -429,7 +433,7 @@
     document.addEventListener('touchmove', e => {
       if (!dragging) return;
       const delta = startY - e.touches[0].clientY;
-      const newH = Math.min(Math.max(startH + delta, 80), window.innerHeight * 0.5);
+      const newH = Math.min(Math.max(startH + delta, 80), window.innerHeight * 0.9);
       consoleEl.style.height = newH + 'px';
       document.documentElement.style.setProperty('--console-height', newH + 'px');
     }, { passive: false });
@@ -574,7 +578,7 @@
         font-size: 12px !important; z-index: 9999 !important;
         border-top: 1px solid ${cBdr} !important;
         display: flex !important; flex-direction: column !important;
-        max-height: 50vh !important; min-height: 80px !important; overflow: hidden !important;
+        max-height: 90vh !important; min-height: 80px !important; overflow: hidden !important;
         transition: transform 0.2s ease !important;
       }
       #redesign-console:not(.open) { transform: translateY(100%) !important; }
@@ -706,38 +710,109 @@
     });
   }
 
+  /* ── LOG LINES (terminal-style persistent output) ── */
+  function logLine(type, text) {
+    const div = document.createElement('div');
+    div.style.cssText = 'margin-bottom:6px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;';
+    const msg = document.createElement('span');
+    if (type === 'error') {
+      msg.style.color = 'var(--c-string)';
+      msg.textContent = '// error: ' + text;
+      const btn = document.createElement('button');
+      btn.className = 'console-action-btn';
+      btn.textContent = '\u21BA Retry';
+      btn.onclick = () => { if (lastVibe) runVibe(lastVibe); };
+      div.appendChild(msg);
+      div.appendChild(btn);
+    } else {
+      msg.className = 'console-log';
+      msg.textContent = '// ' + text;
+      div.appendChild(msg);
+    }
+    logLinesEl.appendChild(div);
+    consoleScroll.scrollTop = consoleScroll.scrollHeight;
+  }
+
+  /* ── ERROR STATE ── */
+  function showError(message) {
+    hideLoading();
+    logLine('error', message);
+  }
+
+  function friendlyError(message, status) {
+    if (status === 504 || (message && message.includes('504'))) {
+      return 'Request timed out. Try a shorter or simpler vibe.';
+    }
+    if (status >= 500 || (message && /502|503|network|reach/i.test(message))) {
+      return "Couldn't reach Claude. Check your connection and try again.";
+    }
+    if (message && message.includes('format')) {
+      return 'Claude returned an unexpected response. Try again.';
+    }
+    return message || 'Something went wrong. Try again.';
+  }
+
   /* ── SUBMIT (custom vibe) ── */
   function submitVibe() {
     const vibeText = consoleInput.value.trim();
     if (!vibeText) return;
+    runVibe(vibeText);
+  }
+
+  async function runVibe(vibeText) {
+    lastVibe = vibeText;
     showLoading(vibeText);
 
     if (currentAbortController) currentAbortController.abort();
     currentAbortController = new AbortController();
     const { signal } = currentAbortController;
 
-    fetch('/api/redesign', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ prompt: vibeText }),
-      signal,
-    })
-      .then(res => {
-        if (!res.ok) return res.json().catch(() => ({})).then(b => { throw new Error(b.error || 'HTTP ' + res.status); });
-        return res.json();
-      })
-      .then(({ css, js, error }) => {
-        if (error) throw new Error(error);
-        applyResult(css, js, vibeText);
-      })
-      .catch(err => {
-        if (err.name === 'AbortError') { hideLoading(); return; }
-        console.error('Redesign error:', err);
-        hideLoading();
-        const origText = consoleRun.textContent;
-        consoleRun.textContent = err.message || 'Error — try again';
-        setTimeout(() => { consoleRun.textContent = origText; }, 2500);
+    let timedOut = false;
+    const timeoutId = setTimeout(() => {
+      timedOut = true;
+      currentAbortController.abort();
+    }, 120000);
+
+    let response;
+    try {
+      response = await fetch('/api/redesign', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ prompt: vibeText }),
+        signal,
       });
+    } catch (err) {
+      clearTimeout(timeoutId);
+      if (err.name === 'AbortError') {
+        if (timedOut) showError('Claude is taking too long. Try a shorter vibe, or try again.');
+        else hideLoading();
+        return;
+      }
+      showError("Couldn't reach Claude. Check your connection and try again.");
+      return;
+    }
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      let msg = 'HTTP ' + response.status;
+      try { const b = await response.json(); msg = b.error || msg; } catch {}
+      showError(friendlyError(msg, response.status));
+      return;
+    }
+
+    let data;
+    try { data = await response.json(); } catch {
+      showError('Claude returned an unexpected response. Try again.');
+      return;
+    }
+
+    if (data.error) {
+      showError(friendlyError(data.error, null));
+      return;
+    }
+
+    applyResult(data.css, data.js, vibeText);
   }
 
   /* ── PRESET QUICK-LAUNCH (uses backend cache, instant if cached) ── */
@@ -759,11 +834,7 @@
       })
       .catch(err => {
         if (err.name === 'AbortError') { hideLoading(); return; }
-        console.error('Preset error:', err);
-        hideLoading();
-        const origText = consoleRun.textContent;
-        consoleRun.textContent = err.message || 'Error — try again';
-        setTimeout(() => { consoleRun.textContent = origText; }, 2500);
+        showError(friendlyError(err.message, null));
       });
   }
 
