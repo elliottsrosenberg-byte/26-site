@@ -97,6 +97,7 @@ img { display: block; max-width: 100%; }
 footer {
   width: 100%;
   padding: 28px var(--pad-x) 52px;
+  margin-bottom: var(--console-height, 280px);
   border-top: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
@@ -301,7 +302,7 @@ footer {
 @media (max-width: 600px) {
   :root { --pad-x: 20px; --pad-top: 52px; }
   body { cursor: auto; }
-  footer { flex-direction: column; gap: 20px; align-items: flex-start; padding-bottom: 44px; }
+  footer { flex-direction: column; gap: 20px; align-items: flex-start; padding-bottom: 44px; margin-bottom: var(--console-height, 220px); }
 
   /* Console — shorter default height, tighter bar on small screens */
   .redesign-console { height: 220px; }
