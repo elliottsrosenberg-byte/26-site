@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/redesign.js": { "maxDuration": 60 },
+    "api/redesign.js": { "maxDuration": 300 },
     "api/presets.js":  { "maxDuration": 60 }
   }
 }

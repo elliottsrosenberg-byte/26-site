@@ -8,7 +8,27 @@
       "WebFetch(domain:www.andiazry.com)",
       "WebFetch(domain:laurengoodman.xyz)",
       "WebFetch(domain:perennial.design)",
-      "Bash(lsof:*)"
+      "Bash(lsof:*)",
+      "Bash(git push:*)",
+      "WebFetch(domain:elliottsrosenberg.com)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(vercel:*)",
+      "WebFetch(domain:waitingmag.com)",
+      "WebFetch(domain:www.waitingmag.com)",
+      "Bash(npm list:*)",
+      "Read(//opt/homebrew/lib/node_modules/**)",
+      "Bash(cd /tmp/wm-screenshots && node capture.js 2>&1)",
+      "Bash(cd /tmp/wm-screenshots && node capture2.js 2>&1)",
+      "Bash(cd /tmp/wm-screenshots && node inspect.js 2>&1)",
+      "Bash(cd /tmp/wm-screenshots && node capture3.js 2>&1)",
+      "Bash(cd /tmp/wm-screenshots && node inspect2.js 2>&1)",
+      "Bash(cd /tmp/wm-screenshots && node capture4.js 2>&1)",
+      "Bash(cd /tmp/wm-screenshots && node capture5.js 2>&1)",
+      "Bash(ls /private/tmp/wm-screenshots/*.png 2>/dev/null; ls /tmp/wm-screenshots/*.png 2>/dev/null)",
+      "Bash(cd /tmp/wm-screenshots && node capture6.js 2>&1)",
+      "Bash(cd /tmp/wm-screenshots && node capture7.js 2>&1)",
+      "Bash(cd /tmp/wm-screenshots && node capture8.js 2>&1)"
     ]
   }
 }
