@@ -1,0 +1,128 @@
+/* ============================================================
+   nyan-intro.css — the "loads in nyan cat, glitches to standard" intro.
+
+   Everything is scoped under html.nyan-intro-active so it only paints
+   during the intro sequence (added by the head script in index.html,
+   removed by ai-redesign.js once the glitch settles).
+
+   Palette mirrors data/presets/nyan-cat.json. High contrast by design:
+   bright pink/yellow/cyan on near-black #0d0021 (all well above WCAG AA).
+   ============================================================ */
+
+html.nyan-intro-active {
+  --bg:     #0d0021;
+  --ink:    #ff6ec7;
+  --mid:    #ffe04b;
+  --border: #7b2fff;
+  --accent: #00f0ff;
+}
+
+html.nyan-intro-active body {
+  background: #0d0021;
+  font-family: ui-monospace, 'Courier New', monospace;
+}
+
+/* ── Pixel star field + scrolling rainbow + marching donuts ── */
+html.nyan-intro-active .page {
+  background-color: #0d0021;
+  background-image:
+    radial-gradient(circle, #ffffff 1px, transparent 1px),
+    radial-gradient(circle, #ffe04b 1px, transparent 1px),
+    radial-gradient(circle, #ff6ec7 1px, transparent 1px);
+  background-size: 120px 120px, 200px 200px, 170px 170px;
+  background-position: 0 0, 60px 40px, 30px 80px;
+  animation: nyanStars 12s linear infinite;
+}
+@keyframes nyanStars {
+  from { background-position: 0 0, 60px 40px, 30px 80px; }
+  to   { background-position: 120px 0, 180px 40px, 150px 80px; }
+}
+
+html.nyan-intro-active .page::before {
+  content: '';
+  position: fixed; top: 0; left: 0; right: 0; height: 8px;
+  background: linear-gradient(90deg,#ff0000,#ff7700,#ffff00,#00ff00,#0099ff,#cc00ff,#ff0000);
+  background-size: 200% 100%;
+  animation: nyanRainbow 1.5s linear infinite;
+  z-index: 9997;
+}
+@keyframes nyanRainbow { from { background-position: 0 0; } to { background-position: 200% 0; } }
+
+html.nyan-intro-active .page::after {
+  content: '🍩🍩🍩🍩🍩🍩🍩🍩🍩🍩🍩🍩🍩🍩🍩🍩';
+  position: fixed; bottom: 8px; left: 0;
+  white-space: nowrap; font-size: 28px; opacity: 0.85;
+  pointer-events: none; z-index: 9996;
+  animation: nyanDonuts 8s linear infinite;
+}
+@keyframes nyanDonuts { from { transform: translateX(100vw); } to { transform: translateX(-120%); } }
+
+/* ── Masthead block ── */
+html.nyan-intro-active .intro-left {
+  border: 4px solid #7b2fff;
+  box-shadow: 6px 6px 0 #ff6ec7, 12px 12px 0 #ffe04b;
+  background: rgba(123, 47, 255, 0.15);
+  padding: 24px;
+}
+html.nyan-intro-active .intro-headline {
+  font-size: clamp(16px, 3.4vw, 30px);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 1px;
+  color: #ff6ec7;
+  text-shadow: 2px 2px 0 #7b2fff, 4px 4px 0 #0d0021;
+  animation: nyanPulse 2s ease-in-out infinite alternate;
+}
+@keyframes nyanPulse { from { color: #ff6ec7; } to { color: #00f0ff; } }
+
+html.nyan-intro-active .bio-text { color: #ffe04b; }
+html.nyan-intro-active .bio-text a,
+html.nyan-intro-active .contact-line,
+html.nyan-intro-active .contact-line a { color: #00f0ff; }
+
+/* ── Work list ── */
+html.nyan-intro-active .section-label { color: #ffe04b; }
+html.nyan-intro-active .work-item {
+  border: 3px solid #7b2fff;
+  box-shadow: 4px 4px 0 #ff6ec7;
+  background: rgba(13, 0, 33, 0.8);
+  padding: 12px;
+}
+html.nyan-intro-active .work-title {
+  color: #ff6ec7;
+  text-shadow: 2px 2px 0 #7b2fff;
+}
+html.nyan-intro-active .work-desc { color: #ffe04b; }
+html.nyan-intro-active .tag {
+  background: #7b2fff;
+  color: #ffe04b;
+  border: 2px solid #ff6ec7;
+}
+
+/* ── Footer ── */
+html.nyan-intro-active footer {
+  border-top: 4px solid #7b2fff;
+  background: rgba(123, 47, 255, 0.2);
+  color: #ffe04b;
+}
+html.nyan-intro-active .footer-nav a { color: #00f0ff; }
+
+/* ── Glitch shake (added only during the transition window) ── */
+html.nyan-intro-glitch .page { animation: nyanGlitch 0.16s steps(2) infinite; }
+@keyframes nyanGlitch {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(-3px, 1px); }
+  50%  { transform: translate(2px, -2px); }
+  75%  { transform: translate(-1px, 2px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Accessibility — no strobing/looping motion for reduced-motion users.
+   (ai-redesign.js also skips the rapid glitch and does a single switch.) */
+@media (prefers-reduced-motion: reduce) {
+  html.nyan-intro-active .page,
+  html.nyan-intro-active .page::before,
+  html.nyan-intro-active .page::after,
+  html.nyan-intro-active .intro-headline,
+  html.nyan-intro-glitch .page { animation: none !important; }
+}

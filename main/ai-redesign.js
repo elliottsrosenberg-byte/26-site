@@ -401,6 +401,192 @@
   // Start closed — just the floating "open console" button in the corner.
   setTimeout(() => closeConsole(), 0);
 
+  /* ── NYAN CAT CANVAS FX ──
+     Full-screen overlay: a cursor-following nyan cat with a rainbow trail,
+     floating donuts, twinkling stars, and click sparkles. Mirrors the
+     nyan-cat.json preset. Returns a stop() that tears everything down. */
+  function startNyanFx() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText =
+      'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:9990;';
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+
+    let W, H;
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const COLORS = ['#ff0000', '#ff7700', '#ffff00', '#00ee00', '#0099ff', '#cc00ff'];
+    const trail = [];
+    const TRAIL_LEN = 24;
+    function onMouseMove(e) {
+      trail.push({ x: e.clientX, y: e.clientY });
+      if (trail.length > TRAIL_LEN) trail.shift();
+    }
+    window.addEventListener('mousemove', onMouseMove);
+
+    // Donuts spawn on-screen so they're visible immediately.
+    const donuts = Array.from({ length: 12 }, () => ({
+      x: Math.random() * window.innerWidth,
+      speed: 0.8 + Math.random() * 1.4,
+      size: 22 + Math.random() * 28,
+      rot: Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 0.06,
+      amplitude: 20 + Math.random() * 40,
+      freq: 0.01 + Math.random() * 0.02,
+      phase: Math.random() * Math.PI * 2,
+      baseY: 60 + Math.random() * (window.innerHeight - 120),
+    }));
+
+    const stars = Array.from({ length: 60 }, () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      r: 1 + Math.random() * 2,
+      speed: 0.3 + Math.random() * 0.7,
+      col: COLORS[Math.floor(Math.random() * COLORS.length)],
+      twinkle: Math.random() * Math.PI * 2,
+    }));
+
+    const sparkles = [];
+    function onClick(e) {
+      for (let i = 0; i < 12; i++) {
+        sparkles.push({
+          x: e.clientX, y: e.clientY,
+          vx: (Math.random() - 0.5) * 6, vy: (Math.random() - 0.5) * 6,
+          life: 1, col: COLORS[Math.floor(Math.random() * COLORS.length)],
+          emoji: Math.random() > 0.5 ? '✦' : '🍩', size: 10 + Math.random() * 14,
+        });
+      }
+    }
+    window.addEventListener('click', onClick);
+
+    let frame = 0, rafId;
+    function loop() {
+      ctx.clearRect(0, 0, W, H);
+      frame++;
+
+      stars.forEach(s => {
+        s.x -= s.speed * 0.4;
+        if (s.x < 0) { s.x = W + 4; s.y = Math.random() * H; }
+        s.twinkle += 0.05;
+        ctx.save();
+        ctx.globalAlpha = 0.5 + 0.5 * Math.sin(s.twinkle);
+        ctx.fillStyle = s.col;
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      });
+
+      for (let i = 0; i < trail.length; i++) {
+        const p = trail[i];
+        ctx.save();
+        ctx.globalAlpha = (i / trail.length) * 0.7;
+        ctx.fillStyle = COLORS[i % COLORS.length];
+        const sz = (i / trail.length) * 12 + 2;
+        ctx.beginPath(); ctx.arc(p.x, p.y, sz * 0.5, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      }
+
+      donuts.forEach(d => {
+        d.x -= d.speed;
+        d.rot += d.rotSpeed;
+        d.y = d.baseY + Math.sin(frame * d.freq + d.phase) * d.amplitude;
+        if (d.x < -80) { d.x = W + 80; d.baseY = 60 + Math.random() * (H - 120); }
+        ctx.save();
+        ctx.translate(d.x, d.y); ctx.rotate(d.rot);
+        ctx.font = d.size + 'px serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.globalAlpha = 0.72;
+        ctx.fillText('🍩', 0, 0);
+        ctx.restore();
+      });
+
+      // Nyan cat riding the cursor trail, rainbow streaming behind it.
+      if (trail.length > 4) {
+        const ghost = trail[Math.floor(trail.length * 0.35)];
+        for (let r = 0; r < COLORS.length; r++) {
+          ctx.save();
+          ctx.globalAlpha = 0.35;
+          ctx.strokeStyle = COLORS[r];
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(ghost.x - 18, ghost.y - 7 + r * 3.5);
+          ctx.lineTo(ghost.x - 64, ghost.y - 7 + r * 3.5);
+          ctx.stroke();
+          ctx.restore();
+        }
+        ctx.save();
+        ctx.globalAlpha = 0.85;
+        ctx.font = '26px serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('🐱', ghost.x - 14, ghost.y);
+        ctx.restore();
+      }
+
+      for (let i = sparkles.length - 1; i >= 0; i--) {
+        const s = sparkles[i];
+        ctx.save();
+        ctx.globalAlpha = s.life * 0.9;
+        ctx.font = s.size + 'px serif';
+        ctx.fillStyle = s.col;
+        ctx.fillText(s.emoji, s.x, s.y);
+        ctx.restore();
+        s.x += s.vx; s.y += s.vy; s.vy += 0.15; s.life -= 0.03;
+        if (s.life <= 0) sparkles.splice(i, 1);
+      }
+
+      rafId = requestAnimationFrame(loop);
+    }
+    loop();
+
+    return function stop() {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('click', onClick);
+      window.removeEventListener('resize', resize);
+      if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
+    };
+  }
+
+  /* ── NYAN INTRO ──
+     The site loads in the nyan cat theme (canvas cat + donuts + stars),
+     holds ~3s, glitch-jumps between nyan and standard, then settles on the
+     standard theme and pulses the console FAB to advertise the redesign.
+     Gated by the head script: home page, once per session, default theme. */
+  (function nyanIntro() {
+    const html = document.documentElement;
+    if (!html.classList.contains('nyan-intro-active')) return;
+    sessionStorage.setItem('nyan-intro-done', '1');
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const stopFx = reduce ? null : startNyanFx();
+
+    function settle() {
+      html.classList.remove('nyan-intro-active', 'nyan-intro-glitch');
+      if (stopFx) stopFx();
+      fab.classList.add('fab-attention');
+      setTimeout(() => fab.classList.remove('fab-attention'), 4000);
+    }
+
+    if (reduce) {
+      // No strobe for reduced-motion users — hold, then switch once.
+      setTimeout(settle, 2800);
+      return;
+    }
+
+    setTimeout(() => {
+      html.classList.add('nyan-intro-glitch');
+      const gaps = [120, 90, 140, 100]; // ms between theme jumps (brief, one-time)
+      let i = 0, on = true;
+      (function jump() {
+        if (i >= gaps.length) { settle(); return; }
+        on = !on;
+        html.classList.toggle('nyan-intro-active', on);
+        setTimeout(jump, gaps[i++]);
+      })();
+    }, 3000);
+  })();
+
   /* ── RESIZE HANDLE ── */
   (function () {
     const handle = document.getElementById('console-resize-handle');
