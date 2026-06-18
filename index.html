@@ -18,6 +18,12 @@
       s.textContent = aiCss;
       document.head.appendChild(s);
     }
+
+    // Nyan intro: first home load of the session, default theme only.
+    // (Skipped if a custom AI redesign is already applied.)
+    if (!aiCss && !sessionStorage.getItem('nyan-intro-done')) {
+      document.documentElement.classList.add('nyan-intro-active');
+    }
   </script>
 
   <!-- Adobe Fonts: replace YOUR_KIT_ID once you have a GT America kit -->
@@ -25,6 +31,7 @@
 
   <link rel="stylesheet" href="main/style.css"/>
   <link rel="stylesheet" href="main/home.css"/>
+  <link rel="stylesheet" href="main/nyan-intro.css"/>
 </head>
 <body>
 
