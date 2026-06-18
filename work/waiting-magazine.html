@@ -50,7 +50,6 @@
     .slide-count {
       font-size: 11px;
       color: var(--mid);
-      font-style: italic;
     }
     @media (max-width: 700px) {
       .img-3up { grid-template-columns: 1fr; }
@@ -146,7 +145,11 @@
         The digital edition runs parallel to print. I designed and built waitingmag.com — a web-native adaptation of each issue, with a custom metered access and subscription system built on Memberstack. The system handles the full range of reader states: anonymous readers within a free article limit, users at the limit, active subscribers, and lapsed accounts. All UI, UX copy, and gating logic was designed and implemented in-house.
       </p>
 
-      <video src="../assets/images/Waiting/waitingsite.mov" controls playsinline style="width:100%; display:block;"></video>
+      <video class="cs-media" autoplay muted loop playsinline controls preload="metadata"
+             poster="../assets/images/Waiting/waitingsite-poster.jpg"
+             style="width:100%; display:block;">
+        <source src="../assets/images/Waiting/waitingsite.mp4" type="video/mp4">
+      </video>
       <p class="img-caption"><a href="https://www.waitingmag.com" target="_blank" class="nav-name">waitingmag.com</a> — digital edition</p>
 
     </div>
