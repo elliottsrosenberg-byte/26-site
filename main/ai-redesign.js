@@ -374,15 +374,21 @@
   ═══════════════════════════════════════════ */
   let gameCleanup = null;
 
+  // Bottom clearance reserved for the floating FAB when the console is closed,
+  // so it never overlaps the footer / theme toggle.
+  const FAB_CLEARANCE = '72px';
+
   function openConsole() {
     consoleEl.classList.add('open');
     fab.style.display = 'none';
+    document.documentElement.style.setProperty('--console-height', consoleEl.offsetHeight + 'px');
     updateThemeBtn();
   }
 
   function closeConsole() {
     consoleEl.classList.remove('open');
     fab.style.display = '';
+    document.documentElement.style.setProperty('--console-height', FAB_CLEARANCE);
   }
 
   fab.addEventListener('click', openConsole);
@@ -392,7 +398,8 @@
     if (e.key === 'Escape') { closeConsole(); closeSharePanel(); }
   });
 
-  setTimeout(() => openConsole(), 0);
+  // Start closed — just the floating "open console" button in the corner.
+  setTimeout(() => closeConsole(), 0);
 
   /* ── RESIZE HANDLE ── */
   (function () {
