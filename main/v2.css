@@ -6,7 +6,9 @@
    ============================================================ */
 
 .doc {
-  max-width: 660px;
+  max-width: 780px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ── Hero ── */
@@ -62,6 +64,18 @@
 }
 .doc-section > p + p {
   margin-top: 16px;
+}
+
+/* Hero lead — more prominent than the work below */
+.doc-lead {
+  margin-bottom: 52px;
+}
+.doc-lead p {
+  font-size: clamp(18px, 2.2vw, 21px);
+  line-height: 1.6;
+}
+.doc-lead > p + p {
+  margin-top: 18px;
 }
 
 .doc a {
