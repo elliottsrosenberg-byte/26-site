@@ -38,15 +38,14 @@
   margin-bottom: 0;
 }
 
-/* markdown-style h2: title-case heading with a hairline rule under it */
+/* section label — uppercase eyebrow */
 .doc h2 {
-  font-size: clamp(18px, 2.2vw, 22px);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  padding-bottom: 9px;
-  margin-bottom: 20px;
-  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin-bottom: 24px;
 }
 
 .doc h3 {
@@ -95,16 +94,16 @@
 }
 
 .doc-url {
-  margin-bottom: 9px;
+  margin-bottom: 6px;
 }
 .doc-url a {
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
-/* "Case study" inline link — slightly quieter than primary links */
-.doc-cs {
-  font-size: 14px;
-  white-space: nowrap;
+/* placeholder where a link isn't live yet */
+.doc-nolink {
+  color: var(--mid);
 }
 
 /* ── Contact ── */
