@@ -1,0 +1,106 @@
+/* ============================================================
+   v2.css — alt site: a single-column plain-text document with
+   markdown-style hierarchy. No images, no indent. Uses the shared
+   design tokens (--ink/--mid/--accent/--border) so the nyan intro
+   themes it for free.
+   ============================================================ */
+
+.doc {
+  max-width: 660px;
+}
+
+/* ── Hero ── */
+.doc-head {
+  margin-bottom: 44px;
+}
+
+.doc h1 {
+  font-size: clamp(30px, 5vw, 46px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.04;
+  color: var(--ink);
+}
+
+.doc-tagline {
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--mid);
+  margin-top: 8px;
+}
+
+/* ── Sections ── */
+.doc-section {
+  margin-bottom: 44px;
+}
+.doc-section:last-of-type {
+  margin-bottom: 0;
+}
+
+/* markdown-style h2: title-case heading with a hairline rule under it */
+.doc h2 {
+  font-size: clamp(18px, 2.2vw, 22px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  padding-bottom: 9px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.doc h3 {
+  font-size: clamp(17px, 1.9vw, 19px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+
+.doc p {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--ink);
+}
+.doc-section > p + p {
+  margin-top: 16px;
+}
+
+.doc a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.doc a:hover {
+  opacity: 0.7;
+}
+
+/* ── Selected work items ── */
+.doc-item {
+  margin-bottom: 30px;
+}
+.doc-item:last-child {
+  margin-bottom: 0;
+}
+
+.doc-url {
+  margin-bottom: 9px;
+}
+.doc-url a {
+  font-size: 14px;
+}
+
+/* "Case study" inline link — slightly quieter than primary links */
+.doc-cs {
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* ── Contact ── */
+.doc-contact {
+  color: var(--mid);
+}
+.doc-contact a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+.doc-contact a:hover {
+  opacity: 0.7;
+}
