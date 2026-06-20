@@ -24,14 +24,17 @@
   color: var(--ink);
 }
 
-.doc-tagline {
-  font-size: clamp(32px, 4.6vw, 44px);
-  font-style: italic;
+/* Subheader — dedicated style. Selector is intentionally specific
+   (.doc-head .doc-subhead) so it beats `.doc p { font-size:16px }`,
+   which is more specific than a single class and was overriding it. */
+.doc-head .doc-subhead {
+  font-size: clamp(24px, 3.9vw, 38px);
   font-weight: 600;
+  font-style: italic;
   letter-spacing: -0.02em;
-  line-height: 1.22;
+  line-height: 1.2;
   color: var(--ink);
-  margin-top: 14px;
+  margin-top: 16px;
 }
 
 /* ── Sections ── */
