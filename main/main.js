@@ -117,4 +117,68 @@
     }
   });
 
+  /* ── PROJECT PAGE VIEWERS ──
+     Each ".doc-pages-toggle" expands a horizontal scroll-snap slider of the
+     project's PDF pages. Prev/next buttons, a live counter, and keyboard
+     ←/→ drive it; native scroll-snap handles touch/trackpad swipe. */
+  document.querySelectorAll('.doc-pages-toggle').forEach(toggle => {
+    const panel = document.getElementById(toggle.getAttribute('aria-controls'));
+    if (!panel) return;
+    const track  = panel.querySelector('.doc-pages-track');
+    const slides = Array.from(panel.querySelectorAll('.doc-page'));
+    const label  = toggle.querySelector('.doc-pages-label');
+    const count  = panel.querySelector('.doc-pages-count');
+    const prev   = panel.querySelector('.doc-pages-prev');
+    const next   = panel.querySelector('.doc-pages-next');
+    if (!track || !slides.length) return;
+
+    // Index of the slide nearest the track's horizontal center.
+    function current() {
+      const center = track.scrollLeft + track.clientWidth / 2;
+      let idx = 0, best = Infinity;
+      slides.forEach((s, i) => {
+        const d = Math.abs((s.offsetLeft + s.offsetWidth / 2) - center);
+        if (d < best) { best = d; idx = i; }
+      });
+      return idx;
+    }
+
+    function update() {
+      const i = current();
+      if (count) count.textContent = (i + 1) + ' / ' + slides.length;
+      if (prev) prev.disabled = i <= 0;
+      if (next) next.disabled = i >= slides.length - 1;
+    }
+
+    function go(dir) {
+      const target = slides[Math.max(0, Math.min(slides.length - 1, current() + dir))];
+      track.scrollTo({ left: target.offsetLeft, behavior: 'smooth' });
+    }
+
+    toggle.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!open));
+      panel.hidden = open;
+      if (label) label.textContent = open ? 'View pages' : 'Hide pages';
+      if (!open) update();
+    });
+
+    prev?.addEventListener('click', () => go(-1));
+    next?.addEventListener('click', () => go(1));
+
+    let ticking = false;
+    track.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => { update(); ticking = false; });
+    });
+
+    track.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); go(-1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+    });
+
+    update();
+  });
+
 })();

@@ -1,0 +1,141 @@
+/* ============================================================
+   intro.css — the "boots up like a lo-fi computer, then glitches
+   into the real site" intro.
+
+   Aesthetic: early-Macintosh / Teenage Engineering. Monochrome warm
+   grey desktop with a 1-bit dither, one hot accent, and the page
+   dressed up as a hard-edged system window. Playful but grown-up.
+
+   Everything is scoped under html.intro-active so it only paints during
+   the intro (added by the head script in index.html, removed by
+   ai-redesign.js once the glitch settles). The canvas pointer FX adds
+   html.intro-fx while it runs, which is what hides the native cursor —
+   so reduced-motion users (no FX) keep their real cursor.
+
+   Palette mirrors data/presets/lo-fi.json.
+   ============================================================ */
+
+html.intro-active {
+  --bg:     #c9c5b8;
+  --ink:    #16150f;
+  --mid:    #46443a;
+  --border: #16150f;
+  --accent: #ff4d17;
+}
+
+/* The canvas draws a chunky OS pointer, so hide the real one while it runs. */
+html.intro-fx,
+html.intro-fx * { cursor: none !important; }
+
+/* ── Dithered desktop ── */
+html.intro-active body {
+  background-color: #c9c5b8;
+  background-image: radial-gradient(rgba(22, 21, 15, 0.32) 0.5px, transparent 0.7px);
+  background-size: 4px 4px;
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, 'Courier New', monospace;
+}
+
+/* Fake system menu bar across the top */
+html.intro-active body::before {
+  content: '\25C9   Elliott OS      File    Edit    View    Special';
+  position: fixed; top: 0; left: 0; right: 0; height: 24px;
+  display: flex; align-items: center; padding: 0 14px;
+  background: #eae7dd;
+  border-bottom: 2px solid #16150f;
+  font-size: 11px; letter-spacing: 1px; color: #16150f;
+  white-space: nowrap; overflow: hidden;
+  z-index: 9995;
+}
+
+/* Marching "loading" ticker pinned to the very bottom */
+html.intro-active body::after {
+  content: '';
+  position: fixed; left: 0; right: 0; bottom: 0; height: 6px;
+  background: repeating-linear-gradient(-45deg,
+    #16150f 0 8px, #ff4d17 8px 16px);
+  background-size: 22px 100%;
+  animation: introMarch 0.5s linear infinite;
+  z-index: 9995;
+}
+@keyframes introMarch { from { background-position: 0 0; } to { background-position: 22px 0; } }
+
+/* ── The page becomes a system window ── */
+html.intro-active .doc {
+  position: relative;
+  margin-top: 46px;
+  padding-top: calc(var(--pad-top) + 34px);
+  background: #eae7dd;
+  border: 2px solid #16150f;
+  box-shadow: 6px 6px 0 #16150f;
+}
+/* title bar: classic racing lines */
+html.intro-active .doc::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 26px;
+  background: repeating-linear-gradient(#16150f 0 1px, transparent 1px 3px);
+  border-bottom: 2px solid #16150f;
+}
+/* title bar: window name patch interrupting the lines */
+html.intro-active .doc::after {
+  content: '\25D7  elliott.sys';
+  position: absolute; top: 0; left: 16px; height: 26px;
+  display: flex; align-items: center; padding: 0 10px;
+  background: #eae7dd;
+  color: #16150f;
+  font-size: 11px; font-weight: 700; letter-spacing: 1px;
+}
+
+/* ── Type ── */
+html.intro-active .doc h1 {
+  display: inline-block;
+  background: #16150f;
+  color: #eae7dd;
+  padding: 2px 12px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  line-height: 1.35;
+}
+
+html.intro-active .doc-head .doc-subhead {
+  font-style: normal;
+  font-weight: 500;
+  color: #16150f;
+}
+
+html.intro-active .doc h2::before {
+  content: '\25BA  ';
+  color: #ff4d17;
+}
+
+html.intro-active .doc-item {
+  border-left: 3px solid #ff4d17;
+  padding-left: 12px;
+}
+
+/* ── Footer as its own little window ── */
+html.intro-active footer {
+  border: 2px solid #16150f;
+  background: #eae7dd;
+  box-shadow: 5px 5px 0 #16150f;
+  margin: 22px var(--pad-x) var(--console-height, 72px);
+  width: auto;
+}
+html.intro-active .footer-nav a { color: #16150f; }
+
+/* ── Glitch shake (added only during the transition window) ── */
+html.intro-glitch .doc { animation: introGlitch 0.16s steps(2) infinite; }
+@keyframes introGlitch {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(-3px, 1px); }
+  50%  { transform: translate(2px, -2px); }
+  75%  { transform: translate(-1px, 2px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Accessibility — no marching/looping motion for reduced-motion users.
+   (ai-redesign.js also skips the rapid glitch and does a single switch,
+   and skips the FX so the native cursor is kept.) */
+@media (prefers-reduced-motion: reduce) {
+  html.intro-active body::after,
+  html.intro-glitch .doc { animation: none !important; }
+}

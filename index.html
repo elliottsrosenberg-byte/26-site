@@ -19,10 +19,10 @@
       document.head.appendChild(s);
     }
 
-    // Nyan intro: first home load of the session, default theme only.
+    // Boot intro: first home load of the session, default theme only.
     // (Skipped if a custom AI redesign is already applied.)
-    if (!aiCss && !sessionStorage.getItem('nyan-intro-done')) {
-      document.documentElement.classList.add('nyan-intro-active');
+    if (!aiCss && !sessionStorage.getItem('intro-done')) {
+      document.documentElement.classList.add('intro-active');
     }
   </script>
 
@@ -31,7 +31,7 @@
 
   <link rel="stylesheet" href="main/style.css"/>
   <link rel="stylesheet" href="main/v2.css"/>
-  <link rel="stylesheet" href="main/nyan-intro.css"/>
+  <link rel="stylesheet" href="main/intro.css"/>
 </head>
 <body>
 
@@ -61,21 +61,92 @@
     <div class="doc-item">
       <p class="doc-url"><a href="https://app.perennial.design" target="_blank">app.perennial.design ↗</a></p>
       <p>I built an all-in-one tool for running an independent design studio: projects, CRM, and operations in one place.</p>
+      <button class="doc-pages-toggle" aria-expanded="false" aria-controls="pages-perennial">
+        <span class="doc-pages-label">View pages</span>
+        <span class="doc-pages-arrow" aria-hidden="true">↓</span>
+      </button>
+      <div class="doc-pages" id="pages-perennial" hidden>
+        <div class="doc-pages-track" tabindex="0" role="group" aria-label="Perennial — project pages">
+          <figure class="doc-page"><img src="assets/pdf/perennial/p01.jpg" alt="Perennial, page 1 of 3" loading="lazy" decoding="async"/></figure>
+          <figure class="doc-page"><img src="assets/pdf/perennial/p02.jpg" alt="Perennial, page 2 of 3" loading="lazy" decoding="async"/></figure>
+          <figure class="doc-page"><img src="assets/pdf/perennial/p03.jpg" alt="Perennial, page 3 of 3" loading="lazy" decoding="async"/></figure>
+        </div>
+        <div class="doc-pages-nav">
+          <button class="doc-pages-btn doc-pages-prev" aria-label="Previous page">←</button>
+          <span class="doc-pages-count" aria-live="polite">1 / 3</span>
+          <button class="doc-pages-btn doc-pages-next" aria-label="Next page">→</button>
+        </div>
+      </div>
     </div>
 
     <div class="doc-item">
       <p class="doc-url"><a href="https://www.waitingmag.com" target="_blank">waitingmag.com ↗</a></p>
       <p>I started a print and digital magazine for New York's working class creatives, particularly from the food and beverage industry.</p>
+      <button class="doc-pages-toggle" aria-expanded="false" aria-controls="pages-waiting">
+        <span class="doc-pages-label">View pages</span>
+        <span class="doc-pages-arrow" aria-hidden="true">↓</span>
+      </button>
+      <div class="doc-pages" id="pages-waiting" hidden>
+        <div class="doc-pages-track" tabindex="0" role="group" aria-label="Waiting Magazine — project pages">
+          <figure class="doc-page"><img src="assets/pdf/waiting/p01.jpg" alt="Waiting Magazine, page 1 of 4" loading="lazy" decoding="async"/></figure>
+          <figure class="doc-page"><img src="assets/pdf/waiting/p02.jpg" alt="Waiting Magazine, page 2 of 4" loading="lazy" decoding="async"/></figure>
+          <figure class="doc-page"><img src="assets/pdf/waiting/p03.jpg" alt="Waiting Magazine, page 3 of 4" loading="lazy" decoding="async"/></figure>
+          <figure class="doc-page"><img src="assets/pdf/waiting/p04.jpg" alt="Waiting Magazine, page 4 of 4" loading="lazy" decoding="async"/></figure>
+        </div>
+        <div class="doc-pages-nav">
+          <button class="doc-pages-btn doc-pages-prev" aria-label="Previous page">←</button>
+          <span class="doc-pages-count" aria-live="polite">1 / 4</span>
+          <button class="doc-pages-btn doc-pages-next" aria-label="Next page">→</button>
+        </div>
+      </div>
     </div>
 
     <div class="doc-item">
       <p class="doc-url"><a href="https://oneghome.com" target="_blank">oneghome.com ↗</a></p>
       <p>I developed a comprehensive product development strategy for a modern judaica e-commerce brand.</p>
+      <button class="doc-pages-toggle" aria-expanded="false" aria-controls="pages-oneg">
+        <span class="doc-pages-label">View pages</span>
+        <span class="doc-pages-arrow" aria-hidden="true">↓</span>
+      </button>
+      <div class="doc-pages" id="pages-oneg" hidden>
+        <div class="doc-pages-track" tabindex="0" role="group" aria-label="Oneg — project pages">
+          <figure class="doc-page"><img src="assets/pdf/oneg/p01.jpg" alt="Oneg, page 1 of 4" loading="lazy" decoding="async"/></figure>
+          <figure class="doc-page"><img src="assets/pdf/oneg/p02.jpg" alt="Oneg, page 2 of 4" loading="lazy" decoding="async"/></figure>
+          <figure class="doc-page"><img src="assets/pdf/oneg/p03.jpg" alt="Oneg, page 3 of 4" loading="lazy" decoding="async"/></figure>
+          <figure class="doc-page"><img src="assets/pdf/oneg/p04.jpg" alt="Oneg, page 4 of 4" loading="lazy" decoding="async"/></figure>
+        </div>
+        <div class="doc-pages-nav">
+          <button class="doc-pages-btn doc-pages-prev" aria-label="Previous page">←</button>
+          <span class="doc-pages-count" aria-live="polite">1 / 4</span>
+          <button class="doc-pages-btn doc-pages-next" aria-label="Next page">→</button>
+        </div>
+      </div>
     </div>
 
     <div class="doc-item">
       <p class="doc-url"><a href="https://gumdropdecor.com/products/sedum-lamp" target="_blank">Sedum Lamp Small ↗</a></p>
       <p>I designed, manufactured, and sold 100 table lamps.</p>
+      <button class="doc-pages-toggle" aria-expanded="false" aria-controls="pages-sedum">
+        <span class="doc-pages-label">View pages</span>
+        <span class="doc-pages-arrow" aria-hidden="true">↓</span>
+      </button>
+      <div class="doc-pages" id="pages-sedum" hidden>
+        <div class="doc-pages-track" tabindex="0" role="group" aria-label="Sedum Lamp — project pages">
+          <figure class="doc-page"><img src="assets/pdf/sedum/p01.jpg" alt="Sedum Lamp, page 1 of 8" loading="lazy" decoding="async"/></figure>
+          <figure class="doc-page"><img src="assets/pdf/sedum/p02.jpg" alt="Sedum Lamp, page 2 of 8" loading="lazy" decoding="async"/></figure>
+          <figure class="doc-page"><img src="assets/pdf/sedum/p03.jpg" alt="Sedum Lamp, page 3 of 8" loading="lazy" decoding="async"/></figure>
+          <figure class="doc-page"><img src="assets/pdf/sedum/p04.jpg" alt="Sedum Lamp, page 4 of 8" loading="lazy" decoding="async"/></figure>
+          <figure class="doc-page"><img src="assets/pdf/sedum/p05.jpg" alt="Sedum Lamp, page 5 of 8" loading="lazy" decoding="async"/></figure>
+          <figure class="doc-page"><img src="assets/pdf/sedum/p06.jpg" alt="Sedum Lamp, page 6 of 8" loading="lazy" decoding="async"/></figure>
+          <figure class="doc-page"><img src="assets/pdf/sedum/p07.jpg" alt="Sedum Lamp, page 7 of 8" loading="lazy" decoding="async"/></figure>
+          <figure class="doc-page"><img src="assets/pdf/sedum/p08.jpg" alt="Sedum Lamp, page 8 of 8" loading="lazy" decoding="async"/></figure>
+        </div>
+        <div class="doc-pages-nav">
+          <button class="doc-pages-btn doc-pages-prev" aria-label="Previous page">←</button>
+          <span class="doc-pages-count" aria-live="polite">1 / 8</span>
+          <button class="doc-pages-btn doc-pages-next" aria-label="Next page">→</button>
+        </div>
+      </div>
     </div>
 
     <div class="doc-item">

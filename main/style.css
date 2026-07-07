@@ -217,20 +217,20 @@ footer {
 
 /* Gentle permanent glow — invites trying the AI redesign feature */
 @keyframes fabGlow {
-  0%, 100% { box-shadow: 0 0 0 1px transparent, 0 0 6px rgba(255, 110, 199, 0); }
-  50%      { box-shadow: 0 0 0 1px #ff6ec7, 0 0 14px 2px rgba(255, 110, 199, 0.5); }
+  0%, 100% { box-shadow: 0 0 0 1px transparent, 0 0 6px rgba(29, 59, 214, 0); }
+  50%      { box-shadow: 0 0 0 1px var(--accent), 0 0 14px 2px rgba(29, 59, 214, 0.4); }
 }
 
-/* Stronger burst right after the nyan intro settles (added/removed by JS) */
+/* Stronger burst right after the boot intro settles (added/removed by JS) */
 .redesign-fab.fab-attention { animation: fabAttention 0.9s ease-in-out 4; }
 @keyframes fabAttention {
-  0%, 100% { box-shadow: 0 0 0 1px #ff6ec7, 0 0 8px rgba(0, 240, 255, 0.4); transform: none; }
-  50%      { box-shadow: 0 0 0 2px #00f0ff, 0 0 22px 4px rgba(255, 110, 199, 0.85); transform: translateY(-2px) scale(1.04); }
+  0%, 100% { box-shadow: 0 0 0 1px var(--accent), 0 0 8px rgba(29, 59, 214, 0.35); transform: none; }
+  50%      { box-shadow: 0 0 0 2px var(--accent), 0 0 22px 4px rgba(255, 77, 23, 0.7); transform: translateY(-2px) scale(1.04); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .redesign-fab,
-  .redesign-fab.fab-attention { animation: none; box-shadow: 0 0 0 1px #ff6ec7, 0 0 10px rgba(255, 110, 199, 0.4); }
+  .redesign-fab.fab-attention { animation: none; box-shadow: 0 0 0 1px var(--accent), 0 0 10px rgba(29, 59, 214, 0.35); }
 }
 
 /* Console — docked, full width, resizable */

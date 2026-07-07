@@ -5,7 +5,7 @@ import { systemPrompt } from '../lib/prompt.js';
 
 const PRESET_VIBES = {
   'b2b-saas':   'portfolio but B2B SaaS landing page',
-  'nyan-cat':   'retro ode to nyan cat with flying donuts',
+  'lo-fi':      'lo-fi vintage computer operating system, monochrome dither and one hot accent',
   'y2k':        'portfolio but y2k',
   'emo':        'emo',
 };
