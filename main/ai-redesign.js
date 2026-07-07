@@ -53,7 +53,7 @@
             <div class="console-log" style="margin-bottom:3px;">// quick start:</div>
             <div class="console-preset-row">
               <button class="console-preset-btn" data-vibe="portfolio but B2B SaaS landing page" data-key="b2b-saas">B2B SaaS</button>
-              <button class="console-preset-btn" data-vibe="retro ode to nyan cat with flying donuts" data-key="nyan-cat">nyan cat / donuts</button>
+              <button class="console-preset-btn" data-vibe="lo-fi vintage computer operating system, monochrome dither and one hot accent" data-key="lo-fi">lo-fi computer</button>
               <button class="console-preset-btn" data-vibe="portfolio but y2k" data-key="y2k">y2k</button>
               <button class="console-preset-btn" data-vibe="emo" data-key="emo">emo</button>
             </div>
@@ -401,139 +401,108 @@
   // Start closed — just the floating "open console" button in the corner.
   setTimeout(() => closeConsole(), 0);
 
-  /* ── NYAN CAT CANVAS FX ──
-     Full-screen overlay: a cursor-following nyan cat with a rainbow trail,
-     floating donuts, twinkling stars, and click sparkles. Mirrors the
-     nyan-cat.json preset. Returns a stop() that tears everything down. */
-  function startNyanFx() {
+  /* ── LO-FI BOOT CANVAS FX ──
+     Full-screen overlay for the boot intro: a chunky OS pointer that lags
+     after the cursor with a couple of faint echoes, monochrome "window"
+     bits drifting across a dithered desktop, and a click that pops an
+     expanding window outline. Adds html.intro-fx (which hides the native
+     cursor) while it runs. Returns a stop() that tears everything down. */
+  function startBootFx() {
+    const html = document.documentElement;
+    html.classList.add('intro-fx');
+
     const canvas = document.createElement('canvas');
     canvas.style.cssText =
       'position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:9990;';
     document.body.appendChild(canvas);
     const ctx = canvas.getContext('2d');
 
+    const INK = '#16150f', PANEL = '#eae7dd', ACCENT = '#ff4d17';
+
     let W, H;
     function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
     resize();
     window.addEventListener('resize', resize);
 
-    const COLORS = ['#ff0000', '#ff7700', '#ffff00', '#00ee00', '#0099ff', '#cc00ff'];
-    const trail = [];
-    const TRAIL_LEN = 24;
-    function onMouseMove(e) {
-      trail.push({ x: e.clientX, y: e.clientY });
-      if (trail.length > TRAIL_LEN) trail.shift();
-    }
+    // Pointer: eased "lagged" position plus a short history for echoes.
+    let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+    let px = mx, py = my;
+    const hist = [];
+    function onMouseMove(e) { mx = e.clientX; my = e.clientY; }
     window.addEventListener('mousemove', onMouseMove);
 
-    // Donuts spawn on-screen so they're visible immediately.
-    const donuts = Array.from({ length: 12 }, () => ({
-      x: Math.random() * window.innerWidth,
-      speed: 0.8 + Math.random() * 1.4,
-      size: 22 + Math.random() * 28,
-      rot: Math.random() * Math.PI * 2,
-      rotSpeed: (Math.random() - 0.5) * 0.06,
-      amplitude: 20 + Math.random() * 40,
-      freq: 0.01 + Math.random() * 0.02,
-      phase: Math.random() * Math.PI * 2,
-      baseY: 60 + Math.random() * (window.innerHeight - 120),
-    }));
+    // Draw a classic arrow cursor at (x,y), ink fill with a light outline.
+    function drawPointer(x, y, alpha) {
+      const pts = [[0,0],[0,17],[4,13],[7,19],[10,18],[6,11],[12,11]];
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.translate(x, y);
+      ctx.beginPath();
+      pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]));
+      ctx.closePath();
+      ctx.fillStyle = INK;
+      ctx.fill();
+      ctx.lineWidth = 1.5; ctx.strokeStyle = PANEL; ctx.stroke();
+      ctx.restore();
+    }
 
-    const stars = Array.from({ length: 60 }, () => ({
+    // Drifting monochrome "window" bits.
+    const bits = Array.from({ length: 9 }, (_, i) => ({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
-      r: 1 + Math.random() * 2,
-      speed: 0.3 + Math.random() * 0.7,
-      col: COLORS[Math.floor(Math.random() * COLORS.length)],
-      twinkle: Math.random() * Math.PI * 2,
+      vx: -0.15 - Math.random() * 0.4,
+      vy: -0.1 - Math.random() * 0.3,
+      w: 26 + Math.random() * 34,
+      accent: i % 4 === 0,
     }));
 
-    const sparkles = [];
-    function onClick(e) {
-      for (let i = 0; i < 12; i++) {
-        sparkles.push({
-          x: e.clientX, y: e.clientY,
-          vx: (Math.random() - 0.5) * 6, vy: (Math.random() - 0.5) * 6,
-          life: 1, col: COLORS[Math.floor(Math.random() * COLORS.length)],
-          emoji: Math.random() > 0.5 ? '✦' : '🍩', size: 10 + Math.random() * 14,
-        });
-      }
-    }
+    // Click pops an expanding window outline.
+    const pops = [];
+    function onClick(e) { pops.push({ x: e.clientX, y: e.clientY, r: 6, life: 1 }); }
     window.addEventListener('click', onClick);
 
-    let frame = 0, rafId;
+    let rafId;
     function loop() {
       ctx.clearRect(0, 0, W, H);
-      frame++;
 
-      stars.forEach(s => {
-        s.x -= s.speed * 0.4;
-        if (s.x < 0) { s.x = W + 4; s.y = Math.random() * H; }
-        s.twinkle += 0.05;
+      // bits
+      bits.forEach(b => {
+        b.x += b.vx; b.y += b.vy;
+        if (b.x < -b.w) { b.x = W + b.w; b.y = Math.random() * H; }
+        if (b.y < -b.w) { b.y = H + b.w; b.x = Math.random() * W; }
+        const h = b.w * 0.72;
         ctx.save();
-        ctx.globalAlpha = 0.5 + 0.5 * Math.sin(s.twinkle);
-        ctx.fillStyle = s.col;
-        ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = 0.5;
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = INK;
+        ctx.strokeRect(b.x, b.y, b.w, h);
+        // title bar
+        ctx.fillStyle = b.accent ? ACCENT : INK;
+        ctx.globalAlpha = b.accent ? 0.5 : 0.28;
+        ctx.fillRect(b.x, b.y, b.w, 5);
         ctx.restore();
       });
 
-      for (let i = 0; i < trail.length; i++) {
-        const p = trail[i];
+      // click pops
+      for (let i = pops.length - 1; i >= 0; i--) {
+        const p = pops[i];
         ctx.save();
-        ctx.globalAlpha = (i / trail.length) * 0.7;
-        ctx.fillStyle = COLORS[i % COLORS.length];
-        const sz = (i / trail.length) * 12 + 2;
-        ctx.beginPath(); ctx.arc(p.x, p.y, sz * 0.5, 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = p.life * 0.8;
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = ACCENT;
+        ctx.strokeRect(p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
         ctx.restore();
+        p.r += 5; p.life -= 0.05;
+        if (p.life <= 0) pops.splice(i, 1);
       }
 
-      donuts.forEach(d => {
-        d.x -= d.speed;
-        d.rot += d.rotSpeed;
-        d.y = d.baseY + Math.sin(frame * d.freq + d.phase) * d.amplitude;
-        if (d.x < -80) { d.x = W + 80; d.baseY = 60 + Math.random() * (H - 120); }
-        ctx.save();
-        ctx.translate(d.x, d.y); ctx.rotate(d.rot);
-        ctx.font = d.size + 'px serif';
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.globalAlpha = 0.72;
-        ctx.fillText('🍩', 0, 0);
-        ctx.restore();
-      });
-
-      // Nyan cat riding the cursor trail, rainbow streaming behind it.
-      if (trail.length > 4) {
-        const ghost = trail[Math.floor(trail.length * 0.35)];
-        for (let r = 0; r < COLORS.length; r++) {
-          ctx.save();
-          ctx.globalAlpha = 0.35;
-          ctx.strokeStyle = COLORS[r];
-          ctx.lineWidth = 3;
-          ctx.beginPath();
-          ctx.moveTo(ghost.x - 18, ghost.y - 7 + r * 3.5);
-          ctx.lineTo(ghost.x - 64, ghost.y - 7 + r * 3.5);
-          ctx.stroke();
-          ctx.restore();
-        }
-        ctx.save();
-        ctx.globalAlpha = 0.85;
-        ctx.font = '26px serif';
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText('🐱', ghost.x - 14, ghost.y);
-        ctx.restore();
-      }
-
-      for (let i = sparkles.length - 1; i >= 0; i--) {
-        const s = sparkles[i];
-        ctx.save();
-        ctx.globalAlpha = s.life * 0.9;
-        ctx.font = s.size + 'px serif';
-        ctx.fillStyle = s.col;
-        ctx.fillText(s.emoji, s.x, s.y);
-        ctx.restore();
-        s.x += s.vx; s.y += s.vy; s.vy += 0.15; s.life -= 0.03;
-        if (s.life <= 0) sparkles.splice(i, 1);
-      }
+      // pointer: lag toward the cursor, keep a short trail for echoes
+      px += (mx - px) * 0.22; py += (my - py) * 0.22;
+      hist.push({ x: px, y: py });
+      if (hist.length > 9) hist.shift();
+      if (hist.length > 5) drawPointer(hist[hist.length - 6].x, hist[hist.length - 6].y, 0.12);
+      if (hist.length > 2) drawPointer(hist[hist.length - 3].x, hist[hist.length - 3].y, 0.22);
+      drawPointer(px, py, 1);
 
       rafId = requestAnimationFrame(loop);
     }
@@ -544,25 +513,27 @@
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('click', onClick);
       window.removeEventListener('resize', resize);
+      html.classList.remove('intro-fx');
       if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
     };
   }
 
-  /* ── NYAN INTRO ──
-     The site loads in the nyan cat theme (canvas cat + donuts + stars),
-     holds ~3s, glitch-jumps between nyan and standard, then settles on the
-     standard theme and pulses the console FAB to advertise the redesign.
+  /* ── BOOT INTRO ──
+     The site loads dressed as a lo-fi computer OS (canvas pointer + drifting
+     window bits + dithered desktop), holds ~1.4s, glitch-jumps between the
+     boot look and standard, then settles on the standard theme and pulses
+     the console FAB to advertise the redesign.
      Gated by the head script: home page, once per session, default theme. */
-  (function nyanIntro() {
+  (function bootIntro() {
     const html = document.documentElement;
-    if (!html.classList.contains('nyan-intro-active')) return;
-    sessionStorage.setItem('nyan-intro-done', '1');
+    if (!html.classList.contains('intro-active')) return;
+    sessionStorage.setItem('intro-done', '1');
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const stopFx = reduce ? null : startNyanFx();
+    const stopFx = reduce ? null : startBootFx();
 
     function settle() {
-      html.classList.remove('nyan-intro-active', 'nyan-intro-glitch');
+      html.classList.remove('intro-active', 'intro-glitch', 'intro-fx');
       if (stopFx) stopFx();
       fab.classList.add('fab-attention');
       setTimeout(() => fab.classList.remove('fab-attention'), 4000);
@@ -570,21 +541,21 @@
 
     if (reduce) {
       // No strobe for reduced-motion users — hold, then switch once.
-      setTimeout(settle, 2800);
+      setTimeout(settle, 1600);
       return;
     }
 
     setTimeout(() => {
-      html.classList.add('nyan-intro-glitch');
+      html.classList.add('intro-glitch');
       const gaps = [120, 90, 140, 100]; // ms between theme jumps (brief, one-time)
       let i = 0, on = true;
       (function jump() {
         if (i >= gaps.length) { settle(); return; }
         on = !on;
-        html.classList.toggle('nyan-intro-active', on);
+        html.classList.toggle('intro-active', on);
         setTimeout(jump, gaps[i++]);
       })();
-    }, 3000);
+    }, 1400);
   })();
 
   /* ── RESIZE HANDLE ── */
