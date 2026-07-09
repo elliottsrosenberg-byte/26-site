@@ -119,11 +119,6 @@
   object-fit: cover;
   object-position: center;
 }
-/* portrait sources (e.g. a magazine cover) anchor to the top so the
-   masthead / title stays in frame after the landscape crop */
-.doc-hero--top img {
-  object-position: center top;
-}
 /* the hero is a link, so opt it out of the global .doc a hover fade */
 .doc-hero:hover {
   border-color: var(--accent);
