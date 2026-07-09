@@ -132,12 +132,19 @@
     const next   = panel.querySelector('.doc-pages-next');
     if (!track || !slides.length) return;
 
+    // Slides' offsetLeft is measured from the nearest positioned ancestor
+    // (here the page), not the scroll track — so normalize every position
+    // against the first slide to get track-content coordinates that line up
+    // with track.scrollLeft (0 at the first slide).
+    const base = () => slides[0].offsetLeft;
+
     // Index of the slide nearest the track's horizontal center.
     function current() {
       const center = track.scrollLeft + track.clientWidth / 2;
       let idx = 0, best = Infinity;
       slides.forEach((s, i) => {
-        const d = Math.abs((s.offsetLeft + s.offsetWidth / 2) - center);
+        const mid = (s.offsetLeft - base()) + s.offsetWidth / 2;
+        const d = Math.abs(mid - center);
         if (d < best) { best = d; idx = i; }
       });
       return idx;
@@ -152,7 +159,7 @@
 
     function go(dir) {
       const target = slides[Math.max(0, Math.min(slides.length - 1, current() + dir))];
-      track.scrollTo({ left: target.offsetLeft, behavior: 'smooth' });
+      track.scrollTo({ left: target.offsetLeft - base(), behavior: 'smooth' });
     }
 
     toggle.addEventListener('click', () => {
