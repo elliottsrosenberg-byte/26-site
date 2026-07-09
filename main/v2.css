@@ -94,10 +94,40 @@
 
 /* ── Selected work items ── */
 .doc-item {
-  margin-bottom: 30px;
+  margin-bottom: 56px;
 }
 .doc-item:last-child {
   margin-bottom: 0;
+}
+
+/* ── Project hero image ── */
+.doc-hero {
+  display: block;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+  line-height: 0;
+  transition: border-color 0.2s;
+}
+.doc-hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: center;
+}
+/* portrait sources (e.g. a magazine cover) anchor to the top so the
+   masthead / title stays in frame after the landscape crop */
+.doc-hero--top img {
+  object-position: center top;
+}
+/* the hero is a link, so opt it out of the global .doc a hover fade */
+.doc-hero:hover {
+  border-color: var(--accent);
+  opacity: 1;
 }
 
 .doc-url {
