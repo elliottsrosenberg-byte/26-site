@@ -85,11 +85,16 @@ const sections = headings.filter((h) => h.depth === 2);
   .side-nav a.active::before { opacity: 1; }
 
   .page {
-    max-width: calc(var(--content-offset) + var(--measure));
-    padding: 150px var(--pad-x) 120px var(--content-offset);
+    max-width: calc(var(--measure) + 2 * var(--pad-x));
+    margin-inline: auto;
+    padding: 150px var(--pad-x) 120px;
   }
 
-  .masthead { margin: 0 0 72px calc(-1 * var(--outdent)); }
+  .masthead {
+    margin: 0 0 72px calc(-1 * var(--outdent));
+    animation: rise 400ms var(--ease-out) backwards;
+  }
+  .piece { animation: rise 400ms var(--ease-out) 60ms backwards; }
   .masthead-name { margin: 0; font-size: inherit; font-weight: 600; }
   .masthead-role { margin: 0; color: var(--mid); }
 
@@ -150,5 +155,5 @@ const sections = headings.filter((h) => h.depth === 2);
     // @ts-ignore
     window.__spy = spy;
   }
-  document.addEventListener('astro:page-load', initScrollspy);
+  initScrollspy();
 </script>

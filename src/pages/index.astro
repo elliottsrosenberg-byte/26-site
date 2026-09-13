@@ -37,9 +37,9 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
     <section class="list-section" aria-labelledby="projects-label">
       <h2 class="section-label" id="projects-label">Projects</h2>
       <ul class="item-list">
-        {projects.map((p) => (
+        {projects.map((p, i) => (
           <li class="item">
-            <a class="item-link" href={`/project/${p.id}/`}>
+            <a class="item-link" href={`/project/${p.id}/`} data-hover={['a', 'b', 'c', 'd'][i]}>
               <span class="item-title">{p.data.title}</span>
               <span class="item-desc">{p.data.description}</span>
             </a>
@@ -51,9 +51,9 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
     <section class="list-section" aria-labelledby="writing-label">
       <h2 class="section-label" id="writing-label">Writing</h2>
       <ul class="item-list">
-        {writing.map((w) => (
+        {writing.map((w, i) => (
           <li class="item">
-            <a class="item-link" href={`/writing/${w.id}/`}>
+            <a class="item-link" href={`/writing/${w.id}/`} data-hover={i === 0 ? 'e' : undefined}>
               <span class="item-title">{w.data.title}</span>
               <span class="item-desc">{w.data.description}</span>
             </a>
@@ -76,8 +76,9 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
 
 <style>
   .page {
-    max-width: calc(var(--content-offset) + var(--measure));
-    padding: 150px var(--pad-x) 120px var(--content-offset);
+    max-width: calc(var(--measure) + 2 * var(--pad-x));
+    margin-inline: auto;
+    padding: 150px var(--pad-x) 120px;
   }
 
   .masthead { margin: 0 0 72px calc(-1 * var(--outdent)); }
@@ -111,19 +112,85 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
     text-decoration-color: transparent;
     transition: text-decoration-color 150ms ease;
   }
-  @media (hover: hover) and (pointer: fine) {
-    .item-link:hover .item-title { text-decoration-color: currentColor; }
-  }
   .item-desc { display: block; margin-top: 4px; color: var(--mid); }
+
+  /* ── Hover trial: one variant per item, for review. Default (no data-hover)
+        is the plain underline fade. ────────────────────────────────────── */
+
+  /* A: soft grey wash behind the block */
+  .item-link[data-hover='a'] { position: relative; }
+  .item-link[data-hover='a']::before {
+    content: '';
+    position: absolute;
+    inset: -12px -16px;
+    background: var(--surface);
+    border-radius: 10px;
+    opacity: 0;
+    transition: opacity 200ms ease;
+    z-index: -1;
+  }
+
+  /* B: underline draws in left to right under the title */
+  .item-link[data-hover='b'] .item-title {
+    text-decoration: none;
+    padding-bottom: 1px;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 1px;
+    transition: background-size 250ms var(--ease-out);
+  }
+
+  /* C: description fills to ink left to right (echoes the site link sweep) */
+  .item-link[data-hover='c'] .item-desc {
+    color: transparent;
+    background-image: linear-gradient(to right, var(--ink), var(--ink) 50%, var(--mid) 50%, var(--mid));
+    background-size: 200% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    transition: background-position 250ms var(--ease-out);
+  }
+
+  /* D: marker dot appears in the left gutter (echoes the sidebar scrollspy) */
+  .item-link[data-hover='d'] { position: relative; }
+  .item-link[data-hover='d']::before {
+    content: '';
+    position: absolute;
+    left: -16px;
+    top: 13px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--ink);
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+
+  /* E: small arrow slides in after the title */
+  .item-link[data-hover='e'] .item-title::after {
+    content: '\2192';
+    display: inline-block;
+    margin-left: 10px;
+    color: var(--mid);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .item-link:not([data-hover]):hover .item-title { text-decoration-color: currentColor; }
+    .item-link[data-hover='a']:hover::before { opacity: 1; }
+    .item-link[data-hover='b']:hover .item-title { background-size: 100% 1px; }
+    .item-link[data-hover='c']:hover .item-desc { background-position: 0 0; }
+    .item-link[data-hover='d']:hover::before { opacity: 1; }
+    .item-link[data-hover='e']:hover .item-title::after { opacity: 1; transform: translateX(0); }
+  }
 
   .contact p { max-width: var(--measure); margin: 0; }
 
   /* Home entrance: once per visit, blocks rise in with a 50ms stagger.
      html.home-enter is set by the head script only on a fresh session. */
-  @keyframes rise {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
   :global(html.home-enter) .masthead { animation: rise 400ms var(--ease-out) backwards; }
   :global(html.home-enter) .bio { animation: rise 400ms var(--ease-out) 50ms backwards; }
   :global(html.home-enter) .list-section:nth-of-type(2) { animation: rise 400ms var(--ease-out) 100ms backwards; }
