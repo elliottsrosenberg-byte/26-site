@@ -46,6 +46,7 @@ Working doc for the full redesign. Production (elliottsrosenberg.com) stays on `
 - [ ] Share page: rework (v2 gallery design does not carry over as-is)
 
 ### 5. Ship
+- [ ] Mobile pass over everything (queued after hover variant is chosen)
 - [ ] Accessibility + performance pass
 - [ ] Redirects from old URLs if any change
 - [ ] Merge v3 -> main

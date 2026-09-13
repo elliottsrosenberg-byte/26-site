@@ -21,6 +21,10 @@
   --dur-base: 220ms;
 }
 
+@media (max-width: 700px) {
+  :root { --outdent: 0px; }
+}
+
 :root[data-theme='dark'] {
   --bg: #161513;
   --ink: #f0efed;

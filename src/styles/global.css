@@ -59,7 +59,7 @@ a {
   -webkit-background-clip: text;
   background-clip: text;
   text-decoration-color: var(--mid);
-  transition: background-position 350ms var(--ease-out), text-decoration-color 350ms var(--ease-out);
+  transition: background-position 250ms var(--ease-out), text-decoration-color 250ms var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
   .bio a:hover, .contact a:hover, .piece a:hover, .crumb a:hover {
@@ -72,18 +72,10 @@ a {
   html { scroll-behavior: smooth; }
 }
 
-/* View transitions: fast crossfade for the page, morph handled per-element.
-   Reduced motion keeps the instant swap. */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 200ms;
-}
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(*),
-  ::view-transition-old(*),
-  ::view-transition-new(*) {
-    animation: none !important;
-  }
+/* Page entrance: blocks rise in on load (used by home + piece layouts). */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 :focus-visible {

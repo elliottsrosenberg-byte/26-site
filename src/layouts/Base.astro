@@ -1,5 +1,4 @@
 ---
-import { ClientRouter } from 'astro:transitions';
 import '../styles/tokens.css';
 import '../styles/global.css';
 
@@ -18,7 +17,6 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
     <meta name="description" content={description} />
     <link rel="preload" href="/fonts/GT-America-Regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/GT-America-Bold.woff2" as="font" type="font/woff2" crossorigin />
-    <ClientRouter />
     <script is:inline>
       (function () {
         var applyTheme = function () {
@@ -38,7 +36,6 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
         } catch (e) {}
         if (!window.__baseBound) {
           window.__baseBound = true;
-          document.addEventListener('astro:after-swap', applyTheme);
           document.addEventListener('click', function (e) {
             var btn = e.target && e.target.closest && e.target.closest('.theme-toggle');
             if (!btn) return;
