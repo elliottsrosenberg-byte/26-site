@@ -1,0 +1,30 @@
+/* Design tokens, sampled from Figma Sep26Website (frames 1:4, 26:127). */
+:root {
+  --bg: #fbfbfb;
+  --ink: #231e17;
+  --mid: #858280;
+  --faint: #cecac6;
+  --surface: #edecec;      /* media blocks, framed imagery grounds */
+  --hairline: #e7e5e3;
+
+  --font-sans: 'GT America', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --text-body: clamp(16px, 1.5vw, 19px);
+  --leading: 1.55;
+
+  --pad-x: clamp(24px, 5vw, 72px);
+  --content-offset: clamp(24px, 23vw, 400px); /* left axis of the main column */
+  --measure: 912px;                            /* max text width per Figma */
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 150ms;
+  --dur-base: 220ms;
+}
+
+:root[data-theme='dark'] {
+  --bg: #161513;
+  --ink: #f0efed;
+  --mid: #8a8783;
+  --faint: #47443f;
+  --surface: #201e1c;
+  --hairline: #2a2825;
+}

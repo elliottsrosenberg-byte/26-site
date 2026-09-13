@@ -1,0 +1,101 @@
+---
+import '../styles/tokens.css';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="preload" href="/fonts/GT-America-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/GT-America-Bold.woff2" as="font" type="font/woff2" crossorigin />
+    <script is:inline>
+      try {
+        const t = localStorage.getItem('theme');
+        if (t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <button class="theme-toggle" type="button" aria-label="Toggle dark mode">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+        <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5" />
+        <path d="M8 1 A7 7 0 0 1 8 15 Z" fill="currentColor" />
+      </svg>
+    </button>
+
+    <slot />
+
+    <button class="console-fab" type="button" aria-label="Open console" hidden>
+      Console
+      <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
+        <path d="M2 6.5 L5 3.5 L8 6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+
+    <script>
+      const toggle = document.querySelector('.theme-toggle');
+      toggle?.addEventListener('click', () => {
+        const root = document.documentElement;
+        const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+        if (next === 'dark') root.dataset.theme = 'dark';
+        else delete root.dataset.theme;
+        try { localStorage.setItem('theme', next); } catch {}
+      });
+    </script>
+
+    <style>
+      .theme-toggle {
+        position: fixed;
+        top: 28px;
+        right: 36px;
+        z-index: 10;
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: none;
+        color: var(--mid);
+        cursor: pointer;
+      }
+      .theme-toggle:hover { color: var(--ink); }
+
+      .console-fab {
+        position: fixed;
+        right: 36px;
+        bottom: 32px;
+        z-index: 10;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        border: 1px solid var(--hairline);
+        border-radius: 999px;
+        background: var(--bg);
+        color: var(--faint);
+        font: inherit;
+        font-size: 15px;
+        cursor: pointer;
+      }
+      .console-fab:hover { color: var(--mid); }
+
+      @media (max-width: 640px) {
+        .theme-toggle { top: 16px; right: 16px; }
+        .console-fab { right: 16px; bottom: 16px; }
+      }
+    </style>
+  </body>
+</html>

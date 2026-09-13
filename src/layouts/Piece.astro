@@ -1,0 +1,102 @@
+---
+import Base from './Base.astro';
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  title: string;
+  description: string;
+  headings: MarkdownHeading[];
+}
+const { title, description, headings } = Astro.props;
+const sections = headings.filter((h) => h.depth === 2);
+---
+<Base title={`Elliott Rosenberg / ${title}`} description={description}>
+  <nav class="crumb" aria-label="Breadcrumb">
+    <a href="/">Elliott Rosenberg</a>
+    <span class="crumb-sep" aria-hidden="true">/</span>
+    <span class="crumb-here">{title}</span>
+  </nav>
+
+  {sections.length > 0 && (
+    <nav class="side-nav" aria-label="Sections">
+      <ul>
+        {sections.map((s) => (
+          <li><a href={`#${s.slug}`}>{s.text}</a></li>
+        ))}
+      </ul>
+    </nav>
+  )}
+
+  <main class="page">
+    <header class="masthead">
+      <h1 class="masthead-name">{title}</h1>
+      <p class="masthead-role">{description}</p>
+    </header>
+
+    <article class="piece">
+      <slot />
+    </article>
+  </main>
+</Base>
+
+<style>
+  .crumb {
+    position: fixed;
+    top: 34px;
+    left: 40px;
+    z-index: 10;
+    font-size: 15px;
+  }
+  .crumb a { color: var(--mid); text-decoration: none; }
+  .crumb a:hover { color: var(--ink); }
+  .crumb-sep { color: var(--faint); margin: 0 4px; }
+  .crumb-here { color: var(--faint); }
+
+  .side-nav {
+    position: fixed;
+    top: 200px;
+    left: 40px;
+    font-size: 15px;
+  }
+  .side-nav ul { margin: 0; padding: 0; list-style: none; }
+  .side-nav li { margin-bottom: 10px; }
+  .side-nav a { color: var(--faint); text-decoration: none; }
+  .side-nav a:hover { color: var(--mid); }
+
+  .page {
+    max-width: calc(var(--content-offset) + var(--measure));
+    padding: 96px var(--pad-x) 120px var(--content-offset);
+  }
+
+  .masthead { margin: 0 0 64px; }
+  .masthead-name { margin: 0; font-size: inherit; font-weight: 600; }
+  .masthead-role { margin: 0; color: var(--mid); }
+
+  .piece :global(h2) {
+    margin: 96px 0 4px;
+    font-size: inherit;
+    font-weight: 400;
+    color: var(--faint);
+  }
+  .piece :global(h2:first-child) { margin-top: 0; }
+  .piece :global(p) { margin: 0 0 1.4em; max-width: var(--measure); }
+  .piece :global(figure) {
+    margin: 56px 0;
+    padding: clamp(24px, 4vw, 64px);
+    background: var(--surface);
+    border-radius: 16px;
+  }
+  .piece :global(figure img), .piece :global(figure video) { margin: 0 auto; }
+  .piece :global(figcaption) {
+    margin-top: 16px;
+    padding: 0;
+    text-align: center;
+    font-size: 13px;
+    color: var(--mid);
+  }
+
+  @media (max-width: 900px) {
+    .crumb { position: static; padding: 24px var(--pad-x) 0; }
+    .side-nav { display: none; }
+  }
+</style>
