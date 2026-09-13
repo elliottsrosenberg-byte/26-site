@@ -47,10 +47,25 @@ a {
   text-decoration-color: currentColor;
   text-underline-offset: 3px;
   text-decoration-thickness: 1px;
-  transition: color 150ms ease, text-decoration-color 150ms ease;
+}
+
+/* Text links (bio, contact, piece body, breadcrumb): grey at rest, and on hover
+   the ink fills the text left to right. Matches the breadcrumb pattern. */
+.bio a, .contact a, .piece a, .crumb a {
+  color: transparent;
+  background-image: linear-gradient(to right, var(--ink), var(--ink) 50%, var(--mid) 50%, var(--mid));
+  background-size: 200% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-decoration-color: var(--mid);
+  transition: background-position 350ms var(--ease-out), text-decoration-color 350ms var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
-  a:hover { color: var(--mid); }
+  .bio a:hover, .contact a:hover, .piece a:hover, .crumb a:hover {
+    background-position: 0% 0;
+    text-decoration-color: var(--ink);
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
