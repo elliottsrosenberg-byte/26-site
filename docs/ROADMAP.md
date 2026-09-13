@@ -42,6 +42,9 @@ Working doc for the full redesign. Production (elliottsrosenberg.com) stays on `
       - Two-phase: instant design-token pass (colors/type applied in ~2s), full stylesheet streams behind it
       - Structured output (tokens JSON + CSS) instead of freeform CSS+JS blob
       - Re-evaluate model choice for the speed/creativity tradeoff
+- [ ] Hero image idea (2026-09-13): home DOM could carry a hidden hero image asset that only
+      AI redesigns reveal/use, giving redesigns visual material without the default design
+      paying for it. Decide during engine design.
 - [ ] Console chrome protection pattern carried over from v2
 - [ ] Share page: rework (v2 gallery design does not carry over as-is)
 

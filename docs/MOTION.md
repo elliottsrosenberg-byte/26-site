@@ -20,8 +20,6 @@ Status: items 1-6 built 2026-09-13. Items 7-8 land with the console phase; item 
 | 6 | Console pill press | Feedback | Occasional | `:active { transform: scale(0.97) }`, `transition: transform 150ms var(--ease-out)`. |
 | 7 | Console panel open/close | Spatial consistency (grows from its pill) | Occasional | `transform: translateY(12px) scale(0.98)` + `opacity 0` -> settled, 220ms var(--ease-out); exits the same path. Transitions (not keyframes) so rapid toggling retargets. |
 | 8 | AI redesign apply: CSS streams in progressively, page repaints live | Explanation + delight (the product IS the show) | Rare | Engine-phase design. Progressive style injection; loading affordance appears only after 300ms delay, persists min 400ms. |
-| 10 | Theme toggle wipe: to dark wipes left to right, back to light wipes right to left | State indication | Occasional | View transition, clip-path inset wipe, 300ms var(--ease-out); reduced motion gets the instant swap. Supersedes the old no-animation theme rule. |
-| 11 | Hover previews: ONE shared thumbnail card glides above the cursor with soft lag over any link carrying data-preview (bio links, project + writing items) | Delight + preview affordance | Occasional | rAF lerp (factor 0.16; 1 under reduced motion), translate3d, viewport-clamped, flips below near top edge; snaps on first show, glides between adjacent links. CSS reveal: opacity 200ms + img scale 0.98 to 1, 100ms intent delay. Thumbs from `thumb` frontmatter / data-preview attrs; placeholder washes until real assets. |
 | 9 | Framed media figures: video plays only in view | Performance hygiene, not animation | n/a | IntersectionObserver play/pause; `muted playsinline loop`. |
 
 ## Rejected (on the record)
@@ -32,6 +30,8 @@ Status: items 1-6 built 2026-09-13. Items 7-8 land with the console phase; item 
 - Animated attention pulse on the console pill (v2 had one). Decoration on a persistent element the user sees every visit; fails frequency. The pill earns attention through placement.
 - Parallax, cursor-tracking, marquee anywhere. Function rule; also fights the document-like identity.
 - Animated page-load progress/skeletons. Static site loads in one paint; nothing to bridge.
+- Theme wipe (built as a trial 2026-09-13, removed same day). Original house rule stands: theme switches never animate.
+- Cursor-following hover previews (built with lagged glide, removed 2026-09-13). Elliott: the left-to-right underline is the signature; don't crowd it. Home page stays text-only; color may enter via a hero image reserved for AI redesigns (see ROADMAP phase 4).
 
 ## Elliott's ideas (to be gated + specced together)
 
