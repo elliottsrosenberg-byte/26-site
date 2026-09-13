@@ -23,8 +23,8 @@
 
 @media (max-width: 700px) {
   /* Labels keep their outdent on mobile, eating into the margin:
-     body text sits at 36px, outdented labels at 16px. */
-  :root { --pad-x: 36px; --outdent: 20px; }
+     body text sits at 24px, outdented labels at 10px. */
+  :root { --pad-x: 24px; --outdent: 14px; }
 }
 
 :root[data-theme='dark'] {
