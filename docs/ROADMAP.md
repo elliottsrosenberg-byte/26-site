@@ -14,17 +14,17 @@ Working doc for the full redesign. Production (elliottsrosenberg.com) stays on `
 - [x] Survey Figma design + planning board + animation resources
 - [x] Decide tech stack: Astro
 - [x] Decide content pipeline: markdown in repo, drafted in Cursor
-- [ ] Frame-level Figma links collected (workaround for page-size MCP bug)
-- [ ] Page inventory + URL structure agreed
+- [x] Frame-level Figma links collected (home 1:4, project 26:127)
+- [x] Page inventory + URL structure agreed (/, /writing/<slug>, /project/<slug>)
 
 ### 1. Foundation
-- [ ] Scaffold project (build tool, folder structure, deploy check on preview URL)
-- [ ] Design tokens from Figma (type scale, colors, spacing) as CSS custom properties
-- [ ] Base templates: home, project page, writing piece
+- [x] Scaffold project (Astro 5, builds clean, 9 pages)
+- [x] Design tokens from Figma (colors sampled from frame renders) in src/styles/tokens.css
+- [x] Base templates: home (index.astro), shared Piece layout for project + writing
 - [ ] Semantic HTML pass: clean, well-classified markup (this is the AI-redesign canvas)
 
 ### 2. Content
-- [ ] Markdown content pipeline working end to end (draft -> push -> live)
+- [x] Markdown content pipeline working end to end (content/{projects,writing}/*.md -> pages)
 - [ ] Port/draft project write-ups (Claude drafts, Elliott replaces text)
 - [ ] Writing pieces: Canvas First!, Onboarding Skeptics, People/Projects/Notes/Tasks/Posts/Docs, Why I Made my Lamps in China
 - [ ] Asset system: videos under PNG frames on grey backgrounds (Elliott produces raw video)
