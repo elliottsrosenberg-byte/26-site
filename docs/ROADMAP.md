@@ -12,8 +12,9 @@ Working doc for the full redesign. Production (elliottsrosenberg.com) stays on `
 ### 0. Planning (current)
 - [x] v3 branch + worktree + blank slate + Vercel preview
 - [x] Survey Figma design + planning board + animation resources
-- [ ] Decide tech stack (see Open Questions)
-- [ ] Decide content pipeline (see Open Questions)
+- [x] Decide tech stack: Astro
+- [x] Decide content pipeline: markdown in repo, drafted in Cursor
+- [ ] Frame-level Figma links collected (workaround for page-size MCP bug)
 - [ ] Page inventory + URL structure agreed
 
 ### 1. Foundation
@@ -47,10 +48,12 @@ Working doc for the full redesign. Production (elliottsrosenberg.com) stays on `
 - 2026-09-13: Same repo, `v3` branch + worktree at `../elliott-rosenberg-v3`; old `alt-site` branch/worktree removed (was fully merged).
 - 2026-09-13: Keep the AI-redesign console in v3.
 - 2026-09-13: Animation resources adopted as house rules (see DESIGN.md). emilkowalski skills installed at `.agents/skills/`.
+- 2026-09-13: Stack is Astro. Content is markdown files in the repo; Elliott drafts/edits in Cursor; publish = git push.
+- 2026-09-13: Typeface is GT America, final (licensed files in main branch assets/fonts; numeric weights only, no faux-bold).
+- 2026-09-13: No boot intro in v3. The lo-fi computer intro dies with v2.
+- 2026-09-13: Writing pieces and case studies share one layout/template.
 
 ## Open questions
-1. Tech stack: Astro (recommended) vs 11ty vs hand-rolled static like v2. Driven by the markdown pipeline.
-2. Drafting tool: Obsidian vault on the repo content folder (recommended) vs Notion-as-CMS sync.
-3. Typeface in the new design: confirm what the Figma uses (board notes say "lots of Inter"; v2 used licensed GT America).
-4. Does the boot intro (lo-fi computer) survive into v3, die, or get redesigned?
-5. Writing pieces and case studies: same template or two different layouts?
+1. Frame-level Figma links needed (page-level metadata dump crashes the MCP transport; per-frame links work).
+2. AI-redesign scope in v3: keep share gallery + presets as-is, or trim? (Console itself is confirmed kept.)
+3. URL structure: keep single-page home like v2 with writing/projects as subpages? Propose: `/` home, `/writing/<slug>`, `/work/<slug>` or unified `/p/<slug>` given shared layout.
