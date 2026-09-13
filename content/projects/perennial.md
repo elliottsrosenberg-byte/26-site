@@ -22,7 +22,9 @@ After a year of consulting for independent artists and small design studios, I r
      No frame:                  ![Caption](/media/perennial/home.png "bare")
      Video, framed:
      <figure class="media">
-       <video src="/media/perennial/flow.mp4" autoplay muted loop playsinline></video>
+       <span class="media-frame">
+         <video src="/media/perennial/flow.mp4" autoplay muted loop playsinline></video>
+       </span>
        <figcaption>Caption</figcaption>
      </figure>
 -->

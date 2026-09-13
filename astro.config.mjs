@@ -22,7 +22,7 @@ function remarkFigures() {
             type: 'html',
             value:
               `<figure class="${cls}">` +
-              `<img src="${esc(img.url)}" alt="${esc(alt)}" loading="lazy" />` +
+              `<span class="media-frame"><img src="${esc(img.url)}" alt="${esc(alt)}" loading="lazy" /></span>` +
               (alt ? `<figcaption>${esc(alt)}</figcaption>` : '') +
               `</figure>`,
           };
