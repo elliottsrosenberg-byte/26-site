@@ -6,9 +6,8 @@ interface Props {
   title: string;
   description: string;
   headings: MarkdownHeading[];
-  transitionName?: string;
 }
-const { title, description, headings, transitionName } = Astro.props;
+const { title, description, headings } = Astro.props;
 const sections = headings.filter((h) => h.depth === 2);
 ---
 <Base title={`Elliott Rosenberg / ${title}`} description={description}>
@@ -30,7 +29,7 @@ const sections = headings.filter((h) => h.depth === 2);
 
   <main class="page">
     <header class="masthead">
-      <h1 class="masthead-name" transition:name={transitionName}>{title}</h1>
+      <h1 class="masthead-name">{title}</h1>
       <p class="masthead-role">{description}</p>
     </header>
 
@@ -48,8 +47,7 @@ const sections = headings.filter((h) => h.depth === 2);
     z-index: 10;
     font-size: 15px;
   }
-  .crumb a { color: var(--mid); text-decoration: none; }
-  .crumb a:hover { color: var(--ink); }
+  .crumb a { text-decoration: none; }
   .crumb-sep { color: var(--faint); margin: 0 4px; }
   .crumb-here { color: var(--faint); }
 
