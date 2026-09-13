@@ -55,7 +55,15 @@ const sections = headings.filter((h) => h.depth === 2);
     position: fixed;
     top: 200px;
     left: 40px;
+    max-width: 160px;
     font-size: 15px;
+  }
+  .side-nav a {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .side-nav ul { margin: 0; padding: 0; list-style: none; }
   .side-nav li { margin-bottom: 10px; }
@@ -119,6 +127,12 @@ const sections = headings.filter((h) => h.depth === 2);
     text-align: center;
     font-size: 13px;
     color: var(--mid);
+  }
+
+  /* Mid widths: the fixed sidebar needs its own gutter, so the column gives
+     up perfect centering for a guaranteed left rail instead of overlapping. */
+  @media (min-width: 901px) and (max-width: 1349px) {
+    .page { margin-left: 230px; margin-right: auto; }
   }
 
   @media (max-width: 900px) {
