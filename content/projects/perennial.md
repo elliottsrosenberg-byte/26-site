@@ -12,6 +12,21 @@ Historically, artists and designers have been alienated from modern management t
 
 After a year of consulting for independent artists and small design studios, I realized the potential of a comprehensive software tool that provides education and a platform for business infrastructure.
 
+![Home Page](/media/perennial/home.svg)
+
+<!-- Placeholder image. Export the real screenshot (1600px wide is plenty) to
+     public/media/perennial/home.png and change the line above to match.
+
+     Media cheat sheet (full guide in content/README.md):
+     Framed on grey (default):  ![Caption](/media/perennial/home.png)
+     No frame:                  ![Caption](/media/perennial/home.png "bare")
+     Video, framed:
+     <figure class="media">
+       <video src="/media/perennial/flow.mp4" autoplay muted loop playsinline></video>
+       <figcaption>Caption</figcaption>
+     </figure>
+-->
+
 ## Research
 
 Draft in progress. IDIs, comp analysis, and the patterns that shaped the product.
