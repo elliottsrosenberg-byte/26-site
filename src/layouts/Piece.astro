@@ -124,13 +124,24 @@ const sections = headings.filter((h) => h.depth === 2);
   }
   .piece :global(h2:first-child) { margin-top: 0; }
   .piece :global(p) { margin: 0 0 32px; max-width: var(--measure); }
+  /* Default media setting, per the Figma project page: the image sits with
+     rounded corners and a light shadow on the grey surface block. */
   .piece :global(figure) {
     margin: 56px 0;
     padding: clamp(24px, 4vw, 64px);
     background: var(--surface);
     border-radius: 16px;
   }
-  .piece :global(figure img), .piece :global(figure video) { margin: 0 auto; }
+  .piece :global(figure img),
+  .piece :global(figure video) {
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.1);
+  }
+  /* "bare" variant: no surface block, no shadow. */
+  .piece :global(figure.bare) { padding: 0; background: none; }
+  .piece :global(figure.bare img),
+  .piece :global(figure.bare video) { box-shadow: none; }
   .piece :global(figcaption) {
     margin-top: 16px;
     padding: 0;
@@ -173,4 +184,19 @@ const sections = headings.filter((h) => h.depth === 2);
     window.__spy = spy;
   }
   initScrollspy();
+
+  // Looping media plays only while on screen.
+  const vids = document.querySelectorAll<HTMLVideoElement>('.piece video[autoplay]');
+  if (vids.length) {
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => {
+          const v = e.target as HTMLVideoElement;
+          if (e.isIntersecting) v.play().catch(() => {});
+          else v.pause();
+        }),
+      { threshold: 0.2 }
+    );
+    vids.forEach((v) => io.observe(v));
+  }
 </script>
