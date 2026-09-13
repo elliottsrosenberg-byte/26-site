@@ -65,21 +65,21 @@ const sections = headings.filter((h) => h.depth === 2);
 
   .page {
     max-width: calc(var(--content-offset) + var(--measure));
-    padding: 96px var(--pad-x) 120px var(--content-offset);
+    padding: 150px var(--pad-x) 120px var(--content-offset);
   }
 
-  .masthead { margin: 0 0 64px; }
+  .masthead { margin: 0 0 72px calc(-1 * var(--outdent)); }
   .masthead-name { margin: 0; font-size: inherit; font-weight: 600; }
   .masthead-role { margin: 0; color: var(--mid); }
 
   .piece :global(h2) {
-    margin: 96px 0 4px;
+    margin: 112px 0 14px calc(-1 * var(--outdent));
     font-size: inherit;
     font-weight: 400;
     color: var(--faint);
   }
   .piece :global(h2:first-child) { margin-top: 0; }
-  .piece :global(p) { margin: 0 0 1.4em; max-width: var(--measure); }
+  .piece :global(p) { margin: 0 0 32px; max-width: var(--measure); }
   .piece :global(figure) {
     margin: 56px 0;
     padding: clamp(24px, 4vw, 64px);

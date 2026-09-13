@@ -73,31 +73,32 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
 <style>
   .page {
     max-width: calc(var(--content-offset) + var(--measure));
-    padding: 96px var(--pad-x) 120px var(--content-offset);
+    padding: 150px var(--pad-x) 120px var(--content-offset);
   }
 
-  .masthead { margin: 0 0 72px; }
+  .masthead { margin: 0 0 72px calc(-1 * var(--outdent)); }
   .masthead-name { margin: 0; font-size: inherit; font-weight: 600; }
   .masthead-role { margin: 0; color: var(--mid); }
 
-  .bio p { margin: 0 0 1.4em; max-width: var(--measure); }
+  .bio p { margin: 0 0 32px; max-width: var(--measure); }
   .bio p:last-child { margin-bottom: 0; }
 
-  .list-section { margin-top: 128px; }
+  .list-section { margin-top: 112px; }
+  .bio + .list-section { margin-top: 88px; }
   .section-label {
-    margin: 0 0 28px;
+    margin: 0 0 14px calc(-1 * var(--outdent));
     font-size: inherit;
     font-weight: 400;
     color: var(--faint);
   }
 
   .item-list { margin: 0; padding: 0; list-style: none; }
-  .item { margin-bottom: 36px; }
+  .item { margin-bottom: 24px; }
   .item:last-child { margin-bottom: 0; }
   .item-title { display: inline-block; }
   .item-title:not(.item-title-linked) { text-decoration: none; }
   .item-title:not(.item-title-linked):hover { text-decoration: underline; }
-  .item-desc { margin: 2px 0 0; color: var(--mid); max-width: var(--measure); }
+  .item-desc { margin: 12px 0 0; color: var(--mid); max-width: var(--measure); }
 
   .contact p { max-width: var(--measure); margin: 0; }
 </style>

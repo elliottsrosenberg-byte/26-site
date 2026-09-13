@@ -13,6 +13,7 @@
 
   --pad-x: clamp(24px, 5vw, 72px);
   --content-offset: clamp(24px, 23vw, 400px); /* left axis of the main column */
+  --outdent: 28px;                             /* masthead + section labels sit left of the content axis */
   --measure: 912px;                            /* max text width per Figma */
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
