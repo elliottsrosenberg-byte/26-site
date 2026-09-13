@@ -39,16 +39,21 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
           document.addEventListener('click', function (e) {
             var btn = e.target && e.target.closest && e.target.closest('.theme-toggle');
             if (!btn) return;
+            var root = document.documentElement;
+            var next = root.dataset.theme === 'dark' ? 'light' : 'dark';
             var flip = function () {
-              var root = document.documentElement;
-              var next = root.dataset.theme === 'dark' ? 'light' : 'dark';
               if (next === 'dark') root.dataset.theme = 'dark';
               else delete root.dataset.theme;
               try { localStorage.setItem('theme', next); } catch (e2) {}
             };
             var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (document.startViewTransition && !reduce) document.startViewTransition(flip);
-            else flip();
+            if (document.startViewTransition && !reduce) {
+              root.dataset.wipe = next === 'dark' ? 'ltr' : 'rtl';
+              var vt = document.startViewTransition(flip);
+              vt.finished.finally(function () { delete root.dataset.wipe; });
+            } else {
+              flip();
+            }
           });
         }
       })();

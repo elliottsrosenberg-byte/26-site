@@ -78,14 +78,19 @@ a {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Theme toggle (TRIAL): the new theme wipes across left to right.
-   The only startViewTransition caller is the theme toggle. */
-@keyframes theme-wipe {
+/* Theme toggle: to dark wipes left to right, back to light wipes right to
+   left. The only startViewTransition caller is the theme toggle. */
+@keyframes theme-wipe-ltr {
   from { clip-path: inset(0 100% 0 0); }
   to { clip-path: inset(0 0 0 0); }
 }
+@keyframes theme-wipe-rtl {
+  from { clip-path: inset(0 0 0 100%); }
+  to { clip-path: inset(0 0 0 0); }
+}
 ::view-transition-old(root) { animation: none; }
-::view-transition-new(root) { animation: theme-wipe 500ms var(--ease-out); }
+::view-transition-new(root) { animation: theme-wipe-ltr 300ms var(--ease-out); }
+:root[data-wipe='rtl']::view-transition-new(root) { animation-name: theme-wipe-rtl; }
 
 :focus-visible {
   outline: 2px solid var(--ink);

@@ -133,19 +133,18 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
     .item-link:hover .item-title { background-size: 100% 1px; }
   }
 
-  /* Hover preview: a small thumbnail window floats at the column's right
-     edge while an item is hovered. Pure CSS; hover-capable wide screens only. */
-  .item-link { position: relative; }
+  /* Hover preview: a small thumbnail window rides just above the cursor
+     while an item is hovered. JS positions it; CSS handles the reveal. */
   .item-preview {
-    position: absolute;
-    right: -24px;
-    top: 50%;
+    position: fixed;
+    left: 0;
+    top: 0;
     width: 240px;
-    transform: translateY(-50%) scale(0.98);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out), visibility 200ms;
+    transition: opacity 200ms var(--ease-out), visibility 200ms;
     pointer-events: none;
+    will-change: transform;
     z-index: 5;
   }
   .item-preview img {
@@ -156,14 +155,17 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
     border-radius: 8px;
     background: var(--surface);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+    transform: scale(0.98);
+    transform-origin: bottom center;
+    transition: transform 200ms var(--ease-out);
   }
-  @media (hover: hover) and (pointer: fine) and (min-width: 1100px) {
+  @media (hover: hover) and (pointer: fine) {
     .item-link:hover .item-preview {
       opacity: 1;
       visibility: visible;
-      transform: translateY(-50%) scale(1);
       transition-delay: 100ms;
     }
+    .item-link:hover .item-preview img { transform: scale(1); }
   }
 
   .contact p { max-width: var(--measure); margin: 0; }
@@ -176,3 +178,24 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
   :global(html.home-enter) .list-section:nth-of-type(3) { animation: rise 400ms var(--ease-out) 150ms backwards; }
   :global(html.home-enter) .list-section:nth-of-type(4) { animation: rise 400ms var(--ease-out) 200ms backwards; }
 </style>
+
+<script>
+  // Preview cards track the cursor: centered horizontally, floating above it.
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.querySelectorAll('.item-link').forEach((link) => {
+      const card = link.querySelector('.item-preview') as HTMLElement | null;
+      if (!card) return;
+      const move = (e: MouseEvent) => {
+        const w = card.offsetWidth || 240;
+        const h = card.offsetHeight || 150;
+        let x = e.clientX - w / 2;
+        x = Math.max(12, Math.min(x, window.innerWidth - w - 12));
+        let y = e.clientY - h - 18;
+        if (y < 12) y = e.clientY + 22;
+        card.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      };
+      link.addEventListener('mouseenter', move);
+      link.addEventListener('mousemove', move);
+    });
+  }
+</script>

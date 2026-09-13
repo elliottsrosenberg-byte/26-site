@@ -20,6 +20,8 @@ Status: items 1-6 built 2026-09-13. Items 7-8 land with the console phase; item 
 | 6 | Console pill press | Feedback | Occasional | `:active { transform: scale(0.97) }`, `transition: transform 150ms var(--ease-out)`. |
 | 7 | Console panel open/close | Spatial consistency (grows from its pill) | Occasional | `transform: translateY(12px) scale(0.98)` + `opacity 0` -> settled, 220ms var(--ease-out); exits the same path. Transitions (not keyframes) so rapid toggling retargets. |
 | 8 | AI redesign apply: CSS streams in progressively, page repaints live | Explanation + delight (the product IS the show) | Rare | Engine-phase design. Progressive style injection; loading affordance appears only after 300ms delay, persists min 400ms. |
+| 10 | Theme toggle wipe: to dark wipes left to right, back to light wipes right to left | State indication | Occasional | View transition, clip-path inset wipe, 300ms var(--ease-out); reduced motion gets the instant swap. Supersedes the old no-animation theme rule. |
+| 11 | Home item hover previews: thumbnail card rides above the cursor | Delight + preview affordance | Occasional | JS positions (translate3d, clamped to viewport, flips below near top edge); CSS reveals (opacity 200ms + img scale 0.98 to 1, 100ms intent delay). Hover-capable pointers only. Thumbs from `thumb` frontmatter; placeholders until real assets. |
 | 9 | Framed media figures: video plays only in view | Performance hygiene, not animation | n/a | IntersectionObserver play/pause; `muted playsinline loop`. |
 
 ## Rejected (on the record)
