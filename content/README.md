@@ -44,7 +44,9 @@ Markdown has no video syntax, so use the figure directly:
 
 ```html
 <figure class="media">
-  <video src="/media/perennial/flow.mp4" autoplay muted loop playsinline></video>
+  <span class="media-frame">
+    <video src="/media/perennial/flow.mp4" autoplay muted loop playsinline></video>
+  </span>
   <figcaption>Task sync across views</figcaption>
 </figure>
 ```
