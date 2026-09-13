@@ -30,7 +30,7 @@ Working doc for the full redesign. Production (elliottsrosenberg.com) stays on `
 - [ ] Asset system: videos under PNG frames on grey backgrounds (Elliott produces raw video)
 
 ### 3. Motion
-- [ ] Animation inventory: list every intended animation, per DESIGN.md rules
+- [x] Animation inventory: docs/MOTION.md (9 approved with specs, 6 rejected on the record)
 - [ ] Implement one at a time, CSS-first; Lottie only where vector illustration motion is needed
 - [ ] prefers-reduced-motion pass
 
