@@ -57,12 +57,12 @@ const sections = headings.filter((h) => h.depth === 2);
   .side-nav {
     position: fixed;
     top: 200px;
-    left: 40px;
-    max-width: 160px;
+    left: 32px;
+    max-width: 150px;
     font-size: 15px;
     transition: opacity 200ms ease, visibility 200ms;
   }
-  @media (max-width: 1399px) {
+  @media (max-width: 1119px) {
     .side-nav { opacity: 0; visibility: hidden; }
   }
   .side-nav a {
@@ -100,6 +100,9 @@ const sections = headings.filter((h) => h.depth === 2);
   .side-nav a.active::before { opacity: 1; }
 
   .page {
+    /* Reading pages take a narrower measure than home, which also lets the
+       sidebar survive to much smaller windows. */
+    --measure: 680px;
     max-width: calc(var(--measure) + 2 * var(--pad-x));
     margin-inline: auto;
     padding: 150px var(--pad-x) 120px;
