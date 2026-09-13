@@ -1,0 +1,103 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const byOrder = (a: any, b: any) => a.data.order - b.data.order;
+const projects = (await getCollection('projects', ({ data }) => !(import.meta.env.PROD && data.draft))).sort(byOrder);
+const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.PROD && data.draft))).sort(byOrder);
+---
+<Base title="Elliott Rosenberg">
+  <main class="page">
+    <header class="masthead">
+      <h1 class="masthead-name">Elliott Rosenberg</h1>
+      <p class="masthead-role">Designer</p>
+    </header>
+
+    <section class="bio" aria-label="About">
+      <p>
+        I'm a builder with a deep passion for the design cycle of research, hypothesis, and
+        iteration. I excel at finding clarity in ambiguous situations, and solving complex
+        issues with an unrelenting, positive drive towards actionable solutions.
+      </p>
+      <p>
+        Most recently, I led product development, operations, and design for
+        <a href="/project/oneg-home/">Oneg Home</a>, a modern judaica e-commerce brand.
+      </p>
+      <p>
+        Previously, I built <a href="/project/perennial/">Perennial</a>, a business
+        infrastructure software platform for independent designers and makers. Before that, I
+        co-founded <a href="/project/waiting-magazine/">Waiting Magazine</a>, and rebuilt the
+        brand, web, and development systems at <a href="/project/siegel/">Siegel</a>. In
+        undergrad I studied Computer Science at
+        <a href="https://www.brown.edu" rel="noopener">Brown</a> and Furniture Design at
+        <a href="https://www.risd.edu" rel="noopener">RISD</a>.
+      </p>
+    </section>
+
+    <section class="list-section" aria-labelledby="projects-label">
+      <h2 class="section-label" id="projects-label">Projects</h2>
+      <ul class="item-list">
+        {projects.map((p) => (
+          <li class="item">
+            <a class="item-title item-title-linked" href={`/project/${p.id}/`}>{p.data.title}</a>
+            <p class="item-desc">{p.data.description}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="list-section" aria-labelledby="writing-label">
+      <h2 class="section-label" id="writing-label">Writing</h2>
+      <ul class="item-list">
+        {writing.map((w) => (
+          <li class="item">
+            <a class="item-title" href={`/writing/${w.id}/`}>{w.data.title}</a>
+            <p class="item-desc">{w.data.description}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="list-section contact" aria-labelledby="contact-label">
+      <h2 class="section-label" id="contact-label">Get In Touch</h2>
+      <p>
+        You can find me on <a href="https://github.com/elliottsrosenberg-byte" rel="noopener">GitHub</a>,
+        <a href="https://www.linkedin.com/in/elliott-rosenberg/" rel="noopener">LinkedIn</a> and
+        <a href="https://www.instagram.com/e.rows/" rel="noopener">Instagram</a>, or reach me by
+        <a href="mailto:elliottsrosenberg@gmail.com">email</a>.
+      </p>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .page {
+    max-width: calc(var(--content-offset) + var(--measure));
+    padding: 96px var(--pad-x) 120px var(--content-offset);
+  }
+
+  .masthead { margin: 0 0 72px; }
+  .masthead-name { margin: 0; font-size: inherit; font-weight: 600; }
+  .masthead-role { margin: 0; color: var(--mid); }
+
+  .bio p { margin: 0 0 1.4em; max-width: var(--measure); }
+  .bio p:last-child { margin-bottom: 0; }
+
+  .list-section { margin-top: 128px; }
+  .section-label {
+    margin: 0 0 28px;
+    font-size: inherit;
+    font-weight: 400;
+    color: var(--faint);
+  }
+
+  .item-list { margin: 0; padding: 0; list-style: none; }
+  .item { margin-bottom: 36px; }
+  .item:last-child { margin-bottom: 0; }
+  .item-title { display: inline-block; }
+  .item-title:not(.item-title-linked) { text-decoration: none; }
+  .item-title:not(.item-title-linked):hover { text-decoration: underline; }
+  .item-desc { margin: 2px 0 0; color: var(--mid); max-width: var(--measure); }
+
+  .contact p { max-width: var(--measure); margin: 0; }
+</style>
