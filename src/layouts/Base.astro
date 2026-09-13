@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from 'astro:transitions';
 import '../styles/tokens.css';
 import '../styles/global.css';
 
@@ -17,17 +18,42 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
     <meta name="description" content={description} />
     <link rel="preload" href="/fonts/GT-America-Regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/GT-America-Bold.woff2" as="font" type="font/woff2" crossorigin />
+    <ClientRouter />
     <script is:inline>
-      try {
-        const t = localStorage.getItem('theme');
-        if (t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches)) {
-          document.documentElement.dataset.theme = 'dark';
+      (function () {
+        var applyTheme = function () {
+          try {
+            var t = localStorage.getItem('theme');
+            var dark = t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches);
+            if (dark) document.documentElement.dataset.theme = 'dark';
+            else delete document.documentElement.dataset.theme;
+          } catch (e) {}
+        };
+        applyTheme();
+        try {
+          if (location.pathname === '/' && !sessionStorage.getItem('entered')) {
+            document.documentElement.classList.add('home-enter');
+            sessionStorage.setItem('entered', '1');
+          }
+        } catch (e) {}
+        if (!window.__baseBound) {
+          window.__baseBound = true;
+          document.addEventListener('astro:after-swap', applyTheme);
+          document.addEventListener('click', function (e) {
+            var btn = e.target && e.target.closest && e.target.closest('.theme-toggle');
+            if (!btn) return;
+            var root = document.documentElement;
+            var next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+            if (next === 'dark') root.dataset.theme = 'dark';
+            else delete root.dataset.theme;
+            try { localStorage.setItem('theme', next); } catch (e2) {}
+          });
         }
-      } catch {}
+      })();
     </script>
   </head>
   <body>
-    <button class="theme-toggle" type="button" aria-label="Toggle dark mode">
+    <button class="theme-toggle" type="button" aria-label="Toggle dark mode" transition:persist="theme-toggle">
       <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
         <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5" />
         <path d="M8 1 A7 7 0 0 1 8 15 Z" fill="currentColor" />
@@ -42,17 +68,6 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
         <path d="M2 6.5 L5 3.5 L8 6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     </button>
-
-    <script>
-      const toggle = document.querySelector('.theme-toggle');
-      toggle?.addEventListener('click', () => {
-        const root = document.documentElement;
-        const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-        if (next === 'dark') root.dataset.theme = 'dark';
-        else delete root.dataset.theme;
-        try { localStorage.setItem('theme', next); } catch {}
-      });
-    </script>
 
     <style>
       .theme-toggle {
@@ -70,8 +85,11 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
         background: none;
         color: var(--mid);
         cursor: pointer;
+        transition: color 150ms ease;
       }
-      .theme-toggle:hover { color: var(--ink); }
+      @media (hover: hover) and (pointer: fine) {
+        .theme-toggle:hover { color: var(--ink); }
+      }
 
       .console-fab {
         position: fixed;
@@ -89,8 +107,12 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
         font: inherit;
         font-size: 15px;
         cursor: pointer;
+        transition: color 150ms ease, transform 150ms var(--ease-out);
       }
-      .console-fab:hover { color: var(--mid); }
+      @media (hover: hover) and (pointer: fine) {
+        .console-fab:hover { color: var(--mid); }
+      }
+      .console-fab:active { transform: scale(0.97); }
 
       @media (max-width: 640px) {
         .theme-toggle { top: 16px; right: 16px; }

@@ -10,6 +10,6 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
 ---
-<Piece title={entry.data.title} description={entry.data.description} headings={headings}>
+<Piece title={entry.data.title} description={entry.data.description} headings={headings} transitionName={`title-projects-${entry.id}`}>
   <Content />
 </Piece>

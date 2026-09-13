@@ -6,8 +6,9 @@ interface Props {
   title: string;
   description: string;
   headings: MarkdownHeading[];
+  transitionName?: string;
 }
-const { title, description, headings } = Astro.props;
+const { title, description, headings, transitionName } = Astro.props;
 const sections = headings.filter((h) => h.depth === 2);
 ---
 <Base title={`Elliott Rosenberg / ${title}`} description={description}>
@@ -29,7 +30,7 @@ const sections = headings.filter((h) => h.depth === 2);
 
   <main class="page">
     <header class="masthead">
-      <h1 class="masthead-name">{title}</h1>
+      <h1 class="masthead-name" transition:name={transitionName}>{title}</h1>
       <p class="masthead-role">{description}</p>
     </header>
 
@@ -60,8 +61,30 @@ const sections = headings.filter((h) => h.depth === 2);
   }
   .side-nav ul { margin: 0; padding: 0; list-style: none; }
   .side-nav li { margin-bottom: 10px; }
-  .side-nav a { color: var(--faint); text-decoration: none; }
-  .side-nav a:hover { color: var(--mid); }
+  .side-nav a {
+    position: relative;
+    color: var(--faint);
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+  .side-nav a::before {
+    content: '';
+    position: absolute;
+    left: -12px;
+    top: 50%;
+    width: 4px;
+    height: 4px;
+    margin-top: -2px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .side-nav a:hover { color: var(--mid); }
+  }
+  .side-nav a.active { color: var(--ink); }
+  .side-nav a.active::before { opacity: 1; }
 
   .page {
     max-width: calc(var(--content-offset) + var(--measure));
@@ -100,3 +123,34 @@ const sections = headings.filter((h) => h.depth === 2);
     .side-nav { display: none; }
   }
 </style>
+
+<script>
+  function initScrollspy() {
+    // @ts-ignore
+    if (window.__spy) { window.__spy.disconnect(); window.__spy = null; }
+    const nav = document.querySelector('.side-nav');
+    if (!nav) return;
+    const links = [...nav.querySelectorAll('a')] as HTMLAnchorElement[];
+    const byId = new Map(
+      links
+        .map((a) => [decodeURIComponent(a.hash.slice(1)), a] as const)
+        .filter(([id]) => document.getElementById(id))
+    );
+    if (byId.size === 0) return;
+    const setActive = (id: string) => {
+      links.forEach((a) => a.classList.toggle('active', a === byId.get(id)));
+    };
+    const spy = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting);
+        if (visible.length > 0) setActive(visible[0].target.id);
+      },
+      { rootMargin: '-15% 0px -75% 0px' }
+    );
+    byId.forEach((_, id) => spy.observe(document.getElementById(id)!));
+    setActive([...byId.keys()][0]);
+    // @ts-ignore
+    window.__spy = spy;
+  }
+  document.addEventListener('astro:page-load', initScrollspy);
+</script>

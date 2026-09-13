@@ -6,7 +6,7 @@ Every intended animation on the site, gated per the rules in [DESIGN.md](DESIGN.
 and carries exact values. Tokens live in `src/styles/tokens.css`
 (`--ease-out: cubic-bezier(0.16, 1, 0.3, 1)`, `--dur-fast: 150ms`, `--dur-base: 220ms`).
 
-Status: [ ] proposed, [x] built.
+Status: items 1-6 built 2026-09-13. Items 7-8 land with the console phase; item 9 lands with real media.
 
 ## Approved inventory
 
