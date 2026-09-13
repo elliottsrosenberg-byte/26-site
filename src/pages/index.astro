@@ -37,9 +37,9 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
     <section class="list-section" aria-labelledby="projects-label">
       <h2 class="section-label" id="projects-label">Projects</h2>
       <ul class="item-list">
-        {projects.map((p, i) => (
+        {projects.map((p) => (
           <li class="item">
-            <a class="item-link" href={`/project/${p.id}/`} data-hover={['a', 'b', 'c', 'd'][i]}>
+            <a class="item-link" href={`/project/${p.id}/`}>
               <span class="item-title">{p.data.title}</span>
               <span class="item-desc">{p.data.description}</span>
             </a>
@@ -51,9 +51,9 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
     <section class="list-section" aria-labelledby="writing-label">
       <h2 class="section-label" id="writing-label">Writing</h2>
       <ul class="item-list">
-        {writing.map((w, i) => (
+        {writing.map((w) => (
           <li class="item">
-            <a class="item-link" href={`/writing/${w.id}/`} data-hover={i === 0 ? 'e' : undefined}>
+            <a class="item-link" href={`/writing/${w.id}/`}>
               <span class="item-title">{w.data.title}</span>
               <span class="item-desc">{w.data.description}</span>
             </a>
@@ -105,86 +105,22 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
     max-width: var(--measure);
     text-decoration: none;
   }
+  /* Title underline draws in left to right on block hover, matching the
+     site-wide link sweep timing. */
   .item-title {
     display: inline-block;
     color: var(--ink);
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    transition: text-decoration-color 150ms ease;
-  }
-  .item-desc { display: block; margin-top: 4px; color: var(--mid); }
-
-  /* ── Hover trial: one variant per item, for review. Default (no data-hover)
-        is the plain underline fade. ────────────────────────────────────── */
-
-  /* A: soft grey wash behind the block */
-  .item-link[data-hover='a'] { position: relative; }
-  .item-link[data-hover='a']::before {
-    content: '';
-    position: absolute;
-    inset: -12px -16px;
-    background: var(--surface);
-    border-radius: 10px;
-    opacity: 0;
-    transition: opacity 200ms ease;
-    z-index: -1;
-  }
-
-  /* B: underline draws in left to right under the title */
-  .item-link[data-hover='b'] .item-title {
-    text-decoration: none;
     padding-bottom: 1px;
     background-image: linear-gradient(currentColor, currentColor);
     background-repeat: no-repeat;
     background-position: 0 100%;
     background-size: 0% 1px;
-    transition: background-size 250ms var(--ease-out);
+    transition: background-size 300ms var(--ease-out);
   }
-
-  /* C: description fills to ink left to right (echoes the site link sweep) */
-  .item-link[data-hover='c'] .item-desc {
-    color: transparent;
-    background-image: linear-gradient(to right, var(--ink), var(--ink) 50%, var(--mid) 50%, var(--mid));
-    background-size: 200% 100%;
-    background-position: 100% 0;
-    -webkit-background-clip: text;
-    background-clip: text;
-    transition: background-position 250ms var(--ease-out);
-  }
-
-  /* D: marker dot appears in the left gutter (echoes the sidebar scrollspy) */
-  .item-link[data-hover='d'] { position: relative; }
-  .item-link[data-hover='d']::before {
-    content: '';
-    position: absolute;
-    left: -16px;
-    top: 13px;
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--ink);
-    opacity: 0;
-    transition: opacity 150ms ease;
-  }
-
-  /* E: small arrow slides in after the title */
-  .item-link[data-hover='e'] .item-title::after {
-    content: '\2192';
-    display: inline-block;
-    margin-left: 10px;
-    color: var(--mid);
-    opacity: 0;
-    transform: translateX(-4px);
-    transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out);
-  }
+  .item-desc { display: block; margin-top: 2px; color: var(--mid); }
 
   @media (hover: hover) and (pointer: fine) {
-    .item-link:not([data-hover]):hover .item-title { text-decoration-color: currentColor; }
-    .item-link[data-hover='a']:hover::before { opacity: 1; }
-    .item-link[data-hover='b']:hover .item-title { background-size: 100% 1px; }
-    .item-link[data-hover='c']:hover .item-desc { background-position: 0 0; }
-    .item-link[data-hover='d']:hover::before { opacity: 1; }
-    .item-link[data-hover='e']:hover .item-title::after { opacity: 1; transform: translateX(0); }
+    .item-link:hover .item-title { background-size: 100% 1px; }
   }
 
   .contact p { max-width: var(--measure); margin: 0; }
