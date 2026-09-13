@@ -39,7 +39,7 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
       <ul class="item-list">
         {projects.map((p) => (
           <li class="item">
-            <a class="item-title item-title-linked" href={`/project/${p.id}/`}>{p.data.title}</a>
+            <a class="item-title item-title-linked" href={`/project/${p.id}/`} transition:name={`title-projects-${p.id}`}>{p.data.title}</a>
             <p class="item-desc">{p.data.description}</p>
           </li>
         ))}
@@ -51,7 +51,7 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
       <ul class="item-list">
         {writing.map((w) => (
           <li class="item">
-            <a class="item-title" href={`/writing/${w.id}/`}>{w.data.title}</a>
+            <a class="item-title" href={`/writing/${w.id}/`} transition:name={`title-writing-${w.id}`}>{w.data.title}</a>
             <p class="item-desc">{w.data.description}</p>
           </li>
         ))}
@@ -96,9 +96,26 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
   .item { margin-bottom: 24px; }
   .item:last-child { margin-bottom: 0; }
   .item-title { display: inline-block; }
-  .item-title:not(.item-title-linked) { text-decoration: none; }
-  .item-title:not(.item-title-linked):hover { text-decoration: underline; }
+  .item-title:not(.item-title-linked) {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .item-title:not(.item-title-linked):hover { text-decoration-color: currentColor; }
+  }
   .item-desc { margin: 12px 0 0; color: var(--mid); max-width: var(--measure); }
 
   .contact p { max-width: var(--measure); margin: 0; }
+
+  /* Home entrance: once per visit, blocks rise in with a 50ms stagger.
+     html.home-enter is set by the head script only on a fresh session. */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  :global(html.home-enter) .masthead { animation: rise 400ms var(--ease-out) backwards; }
+  :global(html.home-enter) .bio { animation: rise 400ms var(--ease-out) 50ms backwards; }
+  :global(html.home-enter) .list-section:nth-of-type(2) { animation: rise 400ms var(--ease-out) 100ms backwards; }
+  :global(html.home-enter) .list-section:nth-of-type(3) { animation: rise 400ms var(--ease-out) 150ms backwards; }
+  :global(html.home-enter) .list-section:nth-of-type(4) { animation: rise 400ms var(--ease-out) 200ms backwards; }
 </style>
