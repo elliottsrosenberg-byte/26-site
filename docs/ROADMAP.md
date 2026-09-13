@@ -35,9 +35,15 @@ Working doc for the full redesign. Production (elliottsrosenberg.com) stays on `
 - [ ] prefers-reduced-motion pass
 
 ### 4. AI redesign console
-- [ ] Port console from v2, restyled to new design
-- [ ] Rewrite lib/prompt.js for the v3 DOM (document the semantic structure as the AI's API)
-- [ ] Carry over: console chrome protection, presets, share gallery, boot intro decision TBD
+- [ ] Build console to the Figma design (the "Console ^" pill + panel UI is approved as designed)
+- [ ] Rework the redesign engine (v2 was too slow and too inaccurate). Directions to explore:
+      - Semantic DOM contract: small, stable, documented styling surface in the prompt (accuracy)
+      - Streaming apply: inject CSS progressively as it streams so the design builds up live (perceived speed)
+      - Two-phase: instant design-token pass (colors/type applied in ~2s), full stylesheet streams behind it
+      - Structured output (tokens JSON + CSS) instead of freeform CSS+JS blob
+      - Re-evaluate model choice for the speed/creativity tradeoff
+- [ ] Console chrome protection pattern carried over from v2
+- [ ] Share page: rework (v2 gallery design does not carry over as-is)
 
 ### 5. Ship
 - [ ] Accessibility + performance pass
@@ -52,8 +58,14 @@ Working doc for the full redesign. Production (elliottsrosenberg.com) stays on `
 - 2026-09-13: Typeface is GT America, final (licensed files in main branch assets/fonts; numeric weights only, no faux-bold).
 - 2026-09-13: No boot intro in v3. The lo-fi computer intro dies with v2.
 - 2026-09-13: Writing pieces and case studies share one layout/template.
+- 2026-09-13: URLs: `/` home, `/writing/<slug>`, `/project/<slug>`.
+- 2026-09-13: Console UI ships as designed in Figma. Share page gets reworked. Redesign backend gets rebuilt for speed + accuracy (v2 engine retired).
+
+## Frame index (Figma)
+- Home page: node `1:4`
+- Project page (Perennial): node `26:127`
+- Note: get_metadata/get_design_context on large nodes crashes the MCP transport; get_screenshot works. Request per-frame or per-element links from Elliott as needed.
 
 ## Open questions
-1. Frame-level Figma links needed (page-level metadata dump crashes the MCP transport; per-frame links work).
-2. AI-redesign scope in v3: keep share gallery + presets as-is, or trim? (Console itself is confirmed kept.)
-3. URL structure: keep single-page home like v2 with writing/projects as subpages? Propose: `/` home, `/writing/<slug>`, `/work/<slug>` or unified `/p/<slug>` given shared layout.
+1. Redesign engine architecture: pick from the directions listed in phase 4 (decide when we get there).
+2. Share page: new design needed (rework, not a port).
