@@ -6,6 +6,7 @@ const piece = z.object({
   description: z.string(),
   order: z.number().default(0),
   draft: z.boolean().default(false),
+  thumb: z.string().optional(),
 });
 
 export const collections = {

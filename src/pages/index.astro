@@ -42,6 +42,11 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
             <a class="item-link" href={`/project/${p.id}/`}>
               <span class="item-title">{p.data.title}</span>
               <span class="item-desc">{p.data.description}</span>
+              {p.data.thumb && (
+                <span class="item-preview" aria-hidden="true">
+                  <img src={p.data.thumb} alt="" loading="lazy" width="480" height="300" />
+                </span>
+              )}
             </a>
           </li>
         ))}
@@ -56,6 +61,11 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
             <a class="item-link" href={`/writing/${w.id}/`}>
               <span class="item-title">{w.data.title}</span>
               <span class="item-desc">{w.data.description}</span>
+              {w.data.thumb && (
+                <span class="item-preview" aria-hidden="true">
+                  <img src={w.data.thumb} alt="" loading="lazy" width="480" height="300" />
+                </span>
+              )}
             </a>
           </li>
         ))}
@@ -121,6 +131,39 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
 
   @media (hover: hover) and (pointer: fine) {
     .item-link:hover .item-title { background-size: 100% 1px; }
+  }
+
+  /* Hover preview: a small thumbnail window floats at the column's right
+     edge while an item is hovered. Pure CSS; hover-capable wide screens only. */
+  .item-link { position: relative; }
+  .item-preview {
+    position: absolute;
+    right: -24px;
+    top: 50%;
+    width: 240px;
+    transform: translateY(-50%) scale(0.98);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out), visibility 200ms;
+    pointer-events: none;
+    z-index: 5;
+  }
+  .item-preview img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--hairline);
+    border-radius: 8px;
+    background: var(--surface);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+  }
+  @media (hover: hover) and (pointer: fine) and (min-width: 1100px) {
+    .item-link:hover .item-preview {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(-50%) scale(1);
+      transition-delay: 100ms;
+    }
   }
 
   .contact p { max-width: var(--measure); margin: 0; }

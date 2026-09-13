@@ -2,6 +2,7 @@
 title: Oneg Home
 description: Web, product, marketing, and operations for a Jewish home goods brand.
 order: 2
+thumb: /thumbs/oneg-home.svg
 ---
 
 ## Overview
