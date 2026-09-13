@@ -21,16 +21,20 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
       </p>
       <p>
         Most recently, I led product development, operations, and design for
-        <a href="/project/oneg-home/">Oneg Home</a>, a modern judaica e-commerce brand.
+        <a href="/project/oneg-home/" data-preview="/thumbs/oneg-home.svg">Oneg Home</a>, a
+        modern judaica e-commerce brand.
       </p>
       <p>
-        Previously, I built <a href="/project/perennial/">Perennial</a>, a business
-        infrastructure software platform for independent designers and makers. Before that, I
-        co-founded <a href="/project/waiting-magazine/">Waiting Magazine</a>, and rebuilt the
-        brand, web, and development systems at <a href="/project/siegel/">Siegel</a>. In
-        undergrad I studied Computer Science at
-        <a href="https://www.brown.edu" rel="noopener">Brown</a> and Furniture Design at
-        <a href="https://www.risd.edu" rel="noopener">RISD</a>.
+        Previously, I built <a href="/project/perennial/" data-preview="/thumbs/perennial.svg">Perennial</a>,
+        a business infrastructure software platform for independent designers and makers.
+        Before that, I co-founded
+        <a href="/project/waiting-magazine/" data-preview="/thumbs/waiting-magazine.svg">Waiting Magazine</a>,
+        and rebuilt the brand, web, and development systems at
+        <a href="/project/siegel/" data-preview="/thumbs/siegel.svg">Siegel</a>. In undergrad
+        I studied Computer Science at
+        <a href="https://www.brown.edu" rel="noopener" data-preview="/thumbs/brown.svg">Brown</a>
+        and Furniture Design at
+        <a href="https://www.risd.edu" rel="noopener" data-preview="/thumbs/risd.svg">RISD</a>.
       </p>
     </section>
 
@@ -39,14 +43,9 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
       <ul class="item-list">
         {projects.map((p) => (
           <li class="item">
-            <a class="item-link" href={`/project/${p.id}/`}>
+            <a class="item-link" href={`/project/${p.id}/`} data-preview={p.data.thumb}>
               <span class="item-title">{p.data.title}</span>
               <span class="item-desc">{p.data.description}</span>
-              {p.data.thumb && (
-                <span class="item-preview" aria-hidden="true">
-                  <img src={p.data.thumb} alt="" loading="lazy" width="480" height="300" />
-                </span>
-              )}
             </a>
           </li>
         ))}
@@ -58,19 +57,16 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
       <ul class="item-list">
         {writing.map((w) => (
           <li class="item">
-            <a class="item-link" href={`/writing/${w.id}/`}>
+            <a class="item-link" href={`/writing/${w.id}/`} data-preview={w.data.thumb}>
               <span class="item-title">{w.data.title}</span>
               <span class="item-desc">{w.data.description}</span>
-              {w.data.thumb && (
-                <span class="item-preview" aria-hidden="true">
-                  <img src={w.data.thumb} alt="" loading="lazy" width="480" height="300" />
-                </span>
-              )}
             </a>
           </li>
         ))}
       </ul>
     </section>
+
+    <div class="cursor-preview" aria-hidden="true"><img alt="" width="480" height="300" /></div>
 
     <section class="list-section contact" aria-labelledby="contact-label">
       <h2 class="section-label" id="contact-label">Get In Touch</h2>
@@ -133,9 +129,9 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
     .item-link:hover .item-title { background-size: 100% 1px; }
   }
 
-  /* Hover preview: a small thumbnail window rides just above the cursor
-     while an item is hovered. JS positions it; CSS handles the reveal. */
-  .item-preview {
+  /* Hover preview: one shared thumbnail window glides just above the cursor
+     over any link carrying data-preview. JS positions it; CSS reveals it. */
+  .cursor-preview {
     position: fixed;
     left: 0;
     top: 0;
@@ -147,7 +143,7 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
     will-change: transform;
     z-index: 5;
   }
-  .item-preview img {
+  .cursor-preview img {
     display: block;
     width: 100%;
     height: auto;
@@ -159,14 +155,12 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
     transform-origin: bottom center;
     transition: transform 200ms var(--ease-out);
   }
-  @media (hover: hover) and (pointer: fine) {
-    .item-link:hover .item-preview {
-      opacity: 1;
-      visibility: visible;
-      transition-delay: 100ms;
-    }
-    .item-link:hover .item-preview img { transform: scale(1); }
+  .cursor-preview.on {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 100ms;
   }
+  .cursor-preview.on img { transform: scale(1); }
 
   .contact p { max-width: var(--measure); margin: 0; }
 
@@ -180,22 +174,51 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
 </style>
 
 <script>
-  // Preview cards track the cursor: centered horizontally, floating above it.
+  // One shared preview card glides above the cursor with a soft lag,
+  // over any link carrying data-preview.
   if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    document.querySelectorAll('.item-link').forEach((link) => {
-      const card = link.querySelector('.item-preview') as HTMLElement | null;
-      if (!card) return;
-      const move = (e: MouseEvent) => {
+    const card = document.querySelector('.cursor-preview') as HTMLElement;
+    const img = card?.querySelector('img') as HTMLImageElement;
+    if (card && img) {
+      const ease = matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 0.16;
+      let tx = 0, ty = 0, cx = 0, cy = 0;
+      let raf: number | null = null;
+      let shown = false;
+
+      const tick = () => {
+        cx += (tx - cx) * ease;
+        cy += (ty - cy) * ease;
+        card.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
+        if (shown || Math.hypot(tx - cx, ty - cy) > 0.5) raf = requestAnimationFrame(tick);
+        else raf = null;
+      };
+
+      const aim = (e: MouseEvent) => {
         const w = card.offsetWidth || 240;
         const h = card.offsetHeight || 150;
         let x = e.clientX - w / 2;
         x = Math.max(12, Math.min(x, window.innerWidth - w - 12));
         let y = e.clientY - h - 18;
         if (y < 12) y = e.clientY + 22;
-        card.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        tx = x;
+        ty = y;
+        if (raf === null) raf = requestAnimationFrame(tick);
       };
-      link.addEventListener('mouseenter', move);
-      link.addEventListener('mousemove', move);
-    });
+
+      document.querySelectorAll<HTMLElement>('[data-preview]').forEach((link) => {
+        link.addEventListener('mouseenter', (e) => {
+          img.src = link.dataset.preview!;
+          aim(e as MouseEvent);
+          if (!shown) { cx = tx; cy = ty; }
+          shown = true;
+          card.classList.add('on');
+        });
+        link.addEventListener('mousemove', aim as EventListener);
+        link.addEventListener('mouseleave', () => {
+          shown = false;
+          card.classList.remove('on');
+        });
+      });
+    }
   }
 </script>
