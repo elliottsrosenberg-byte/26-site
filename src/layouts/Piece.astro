@@ -51,12 +51,19 @@ const sections = headings.filter((h) => h.depth === 2);
   .crumb-sep { color: var(--faint); margin: 0 4px; }
   .crumb-here { color: var(--faint); }
 
+  /* The sidebar never displaces the column: the column centers identically at
+     every width, and the sidebar exists only where it truly fits, fading out
+     below that instead of forcing margin jumps. */
   .side-nav {
     position: fixed;
     top: 200px;
     left: 40px;
     max-width: 160px;
     font-size: 15px;
+    transition: opacity 200ms ease, visibility 200ms;
+  }
+  @media (max-width: 1399px) {
+    .side-nav { opacity: 0; visibility: hidden; }
   }
   .side-nav a {
     display: inline-block;
@@ -129,15 +136,8 @@ const sections = headings.filter((h) => h.depth === 2);
     color: var(--mid);
   }
 
-  /* Mid widths: the fixed sidebar needs its own gutter, so the column gives
-     up perfect centering for a guaranteed left rail instead of overlapping. */
-  @media (min-width: 901px) and (max-width: 1349px) {
-    .page { margin-left: 230px; margin-right: auto; }
-  }
-
   @media (max-width: 900px) {
     .crumb { position: static; padding: 24px var(--pad-x) 0; }
-    .side-nav { display: none; }
   }
 </style>
 
