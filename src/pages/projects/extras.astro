@@ -3,34 +3,24 @@ import Base from '../../layouts/Base.astro';
 
 // ── Adding images ──────────────────────────────────────────────────────
 // Drop the file in public/extras/ (1600px wide is plenty), then add a line
-// to STATIC_TILES or PHYSICAL_TILES below: { src: '/extras/claude-grabbed/your-file.jpg',
+// to STATIC_TILES or PHYSICAL_TILES below: { src: '/extras/your-file.jpg',
 // title: 'Name, detail' }. Order here is display order.
 
 const STATIC_TILES = [
-  { src: '/media/perennial/00-claude-grabbed/home.png', title: 'Perennial, home canvas' },
-  { src: '/extras/claude-grabbed/waiting-p01.jpg', title: 'Waiting Magazine, spread 01' },
   { src: '/extras/laurenBrand1.png', title: 'Lauren Goodman, brand color system' },
-  { src: '/extras/claude-grabbed/prnl-login-light.png', title: 'Perennial, login' },
   { src: '/extras/ed2-small.jpg', title: 'Waiting Magazine, edition two in print' },
-  { src: '/extras/claude-grabbed/oneg-p01.jpg', title: 'Oneg Home, brand pages' },
   { src: '/extras/PerennialType.png', title: 'Perennial, feature typeface' },
-  { src: '/extras/claude-grabbed/waiting-p02.jpg', title: 'Waiting Magazine, spread 02' },
-  { src: '/extras/claude-grabbed/prnl-calendar.png', title: 'Perennial, calendar' },
+  { src: '/extras/waiting-devices.jpg', title: 'Waiting Magazine, across devices' },
   { src: '/extras/wb3.png', title: 'Waiting Magazine, brand palette' },
-  { src: '/extras/claude-grabbed/waiting-p03.jpg', title: 'Waiting Magazine, spread 03' },
   { src: '/extras/claude-billboard.jpg', title: 'Claude billboard concept, take-home brief' },
-  { src: '/extras/claude-grabbed/prnl-home-dark.png', title: 'Perennial, dark mode' },
-  { src: '/extras/claude-grabbed/oneg-p02.jpg', title: 'Oneg Home, product pages' },
   { src: '/media/perennial/outreach.png', title: 'Perennial, outreach' },
-  { src: '/extras/claude-grabbed/waiting-p04.jpg', title: 'Waiting Magazine, spread 04' },
 ];
 
 const WEB_TILES = [
-  { src: '/extras/waitingSite.mp4', title: 'waitingmag.com' },
-  { src: '/extras/siegelsite.mp4', title: 'siegel.design' },
-  { src: '/extras/waiting-devices.jpg', title: 'Waiting Magazine, across devices' },
-  { src: '/extras/lgSite.mp4', title: 'laurenegoodman.co' },
-  { src: '/extras/paxSite.mp4', title: 'Pax Bird Pokes' },
+  { src: '/extras/waitingSite.mp4', title: 'Waiting Magazine', href: 'https://www.waitingmag.com' },
+  { src: '/extras/lgSite.mp4', title: 'Studio Lauren Goodman', href: 'https://laurengoodman.xyz' },
+  { src: '/extras/siegelsite.mp4', title: 'Siegel', href: 'https://siegel.design' },
+  { src: '/extras/paxSite.mp4', title: 'Pax Hand Pokes', href: 'https://paxhandpokes.com' },
 ];
 
 const PHYSICAL_TILES = [
@@ -176,11 +166,9 @@ const sections = [
       <div class="tile-grid">
         {WEB_TILES.map((t) => (
           <figure class="tile">
-            {t.src.endsWith('.mp4') ? (
+            <a href={t.href} target="_blank" rel="noopener" aria-label={`${t.title}, opens the live site`}>
               <video src={t.src} autoplay muted loop playsinline preload="metadata"></video>
-            ) : (
-              <img src={t.src} alt={t.title} loading="lazy" />
-            )}
+            </a>
             <figcaption><span class="tile-title">{t.title}</span></figcaption>
           </figure>
         ))}
