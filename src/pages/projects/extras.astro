@@ -20,6 +20,13 @@ const STATIC_TILES = [
   { src: '/extras/claude-grabbed/waiting-p04.jpg', title: 'Waiting Magazine, spread 04' },
 ];
 
+const WEB_TILES = [
+  { src: '/extras/waitingSite.mp4', title: 'waitingmag.com' },
+  { src: '/extras/siegelsite.mp4', title: 'siegel.design' },
+  { src: '/extras/lgSite.mp4', title: 'laurenegoodman.co' },
+  { src: '/extras/paxSite.mp4', title: 'Pax Bird Pokes' },
+];
+
 const PHYSICAL_TILES = [
   { src: '/extras/claude-grabbed/sedum-p01.jpg', title: 'Sedum lamp' },
   { src: '/extras/claude-grabbed/sedum-p02.jpg', title: 'Sedum lamp, detail' },
@@ -42,6 +49,7 @@ const INTERACTIVE: { id: string; title: string }[] = [
 
 const sections = [
   { id: 'interactive', label: 'Interactive' },
+  { id: 'web', label: 'Web' },
   { id: 'static', label: 'Static' },
   { id: 'physical', label: 'Physical' },
 ];
@@ -154,6 +162,18 @@ const sections = [
       </div>
     </section>
 
+    <section id="web" class="gallery-section">
+      <h2 class="section-label">Web</h2>
+      <div class="tile-grid">
+        {WEB_TILES.map((t) => (
+          <figure class="tile">
+            <video src={t.src} autoplay muted loop playsinline preload="metadata"></video>
+            <figcaption><span class="tile-title">{t.title}</span></figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+
     <section id="static" class="gallery-section">
       <h2 class="section-label">Static</h2>
       <div class="tile-grid">
@@ -243,7 +263,8 @@ const sections = [
 
   .tile-grid { columns: 2; column-gap: 24px; }
   .tile { break-inside: avoid; margin: 0 0 40px; }
-  .tile img {
+  .tile img,
+  .tile video {
     width: 100%;
     height: auto;
     border-radius: 10px;
@@ -498,6 +519,22 @@ const sections = [
   }
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Looping site videos play only while on screen.
+  {
+    const vids = document.querySelectorAll<HTMLVideoElement>('.tile video[autoplay]');
+    if (vids.length) {
+      const vio = new IntersectionObserver(
+        (es) => es.forEach((e) => {
+          const v = e.target as HTMLVideoElement;
+          if (e.isIntersecting) v.play().catch(() => {});
+          else v.pause();
+        }),
+        { threshold: 0.2 }
+      );
+      vids.forEach((v) => vio.observe(v));
+    }
+  }
 
   // ── Canvas helper: sized, dpr-aware, running only while on screen.
   function canvasFx(el: HTMLCanvasElement, draw: (ctx: CanvasRenderingContext2D, w: number, h: number, t: number) => void, animated: boolean) {
