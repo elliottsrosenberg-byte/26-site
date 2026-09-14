@@ -12,7 +12,10 @@ Historically, artists and designers have been alienated from modern management t
 
 After a year of consulting for independent artists and small design studios, I realized the potential of a comprehensive software tool that provides education and a platform for business infrastructure.
 
-> Perennial is live in beta at [app.perennial.design](https://app.perennial.design). Log in and check out the app for yourself: email `demo@perennial.design` with password `PerennialDemo1` gets you in, with seed data standing in for a working studio.
+> Perennial is live in beta at [app.perennial.design](https://app.perennial.design). Log in and check out the app for yourself, or use:
+>
+>`email: demo@perennial.design` 
+>`password: PerennialDemo1` 
 
 ## Research
 
