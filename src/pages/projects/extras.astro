@@ -52,6 +52,24 @@ const PHYSICAL_TILES = [
   { src: '/extras/LightingProcess9.jpg', title: 'Sedum lamp, prototyping' },
   { src: '/extras/oneg-candleholders.jpg', title: 'Oneg Home, turned candleholders' },
   { src: '/extras/UzuChairFrontProfile.jpg', title: 'Uzu chair, profile' },
+  { src: '/extras/obj-barcart.JPG', title: 'Bar cart' },
+  { src: '/extras/obj-woventable.jpg', title: 'Woven table' },
+  { src: '/extras/obj-chair.JPG', title: 'Chair' },
+  { src: '/extras/obj-nightstand.JPG', title: 'Nightstand' },
+  { src: '/extras/obj-bench.jpg', title: 'Bench' },
+  { src: '/extras/obj-jewelrybox.JPG', title: 'Jewelry box' },
+  { src: '/extras/obj-stool.JPG', title: 'Stool' },
+  { src: '/extras/obj-flowerbox.JPG', title: 'Flower box' },
+  { src: '/extras/obj-table.JPG', title: 'Table' },
+  { src: '/extras/obj-storage.JPG', title: 'Storage' },
+];
+
+const ART_TILES = [
+  '/extras/art/mockstill_1.jpg', '/extras/art/IMG_0098.JPG', '/extras/art/mockstill_2.jpg',
+  '/extras/art/IMG_7360.jpeg', '/extras/art/mockstill_3.jpg', '/extras/art/TheBirthOfVenusMadeInApplePages.JPG',
+  '/extras/art/mockstill_5.jpg', '/extras/art/IMG_1107.JPG', '/extras/art/mockstill_6.jpg',
+  '/extras/art/mockplant_1.jpg', '/extras/art/mockstill_7.jpg', '/extras/art/IMG_7852.jpeg',
+  '/extras/art/mockstill_8.jpg',
 ];
 
 const INTERACTIVE: { id: string; title: string }[] = [
@@ -73,6 +91,7 @@ const sections = [
   { id: 'brand', label: 'Brand' },
   { id: 'video', label: 'Video' },
   { id: 'physical', label: 'Physical' },
+  { id: 'art', label: 'Art' },
 ];
 ---
 <Base title="Elliott Rosenberg / Extras" description="Selected works and experiments.">
@@ -239,6 +258,17 @@ const sections = [
           <figure class="tile">
             <img src={t.src} alt={t.title} loading="lazy" />
             <figcaption><span class="tile-title">{t.title}</span></figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <section id="art" class="gallery-section">
+      <h2 class="section-label">Art</h2>
+      <div class="tile-grid">
+        {ART_TILES.map((src) => (
+          <figure class="tile">
+            <img src={src} alt="" loading="lazy" />
           </figure>
         ))}
       </div>
