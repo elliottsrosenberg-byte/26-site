@@ -6,14 +6,21 @@ import Base from '../../layouts/Base.astro';
 // to STATIC_TILES or PHYSICAL_TILES below: { src: '/extras/your-file.jpg',
 // title: 'Name, detail' }. Order here is display order.
 
-const STATIC_TILES = [
-  { src: '/extras/laurenBrand1.png', title: 'Lauren Goodman, brand color system' },
-  { src: '/extras/ed2-small.jpg', title: 'Waiting Magazine, edition two in print' },
-  { src: '/extras/PerennialType.png', title: 'Perennial, feature typeface' },
-  { src: '/extras/waiting-devices.jpg', title: 'Waiting Magazine, across devices' },
-  { src: '/extras/wb3.png', title: 'Waiting Magazine, brand palette' },
-  { src: '/extras/claude-billboard.jpg', title: 'Claude billboard concept, take-home brief' },
-  { src: '/media/perennial/outreach.png', title: 'Perennial, outreach' },
+// Brand slideshows: click the right side for the next slide, left for the
+// previous. Add slides by appending paths to an array.
+const BRAND_TILES = [
+  { title: 'Studio Lauren Goodman', slides: ['/extras/laurenBrand1.png'] },
+  { title: 'Waiting Magazine', slides: [
+    '/extras/wb2.jpeg', '/extras/wb3.png', '/extras/wb4.jpeg', '/extras/wb5.jpeg',
+    '/extras/wb6.jpeg', '/extras/wb7.png', '/extras/wb8.jpeg',
+    '/extras/waiting-devices.jpg', '/extras/ed2-small.jpg',
+  ] },
+  { title: 'Perennial', slides: ['/extras/PerennialType.png'] },
+  { title: 'Oneg Home', slides: [
+    '/extras/oneg-rebrand-1.png', '/extras/oneg-rebrand-2.png', '/extras/oneg-rebrand-3.png',
+    '/extras/oneg-rebrand-4.jpg', '/extras/oneg-rebrand-5.jpg', '/extras/oneg-rebrand-6.jpg',
+    '/extras/oneg-rebrand-7.jpg', '/extras/oneg-rebrand-8.jpg', '/extras/oneg-rebrand-9.jpg',
+  ] },
 ];
 
 const WEB_TILES = [
@@ -21,6 +28,7 @@ const WEB_TILES = [
   { src: '/extras/lgSite.mp4', title: 'Studio Lauren Goodman', href: 'https://laurengoodman.xyz' },
   { src: '/extras/siegelsite.mp4', title: 'Siegel', href: 'https://siegel.design' },
   { src: '/extras/paxSite.mp4', title: 'Pax Hand Pokes', href: 'https://paxhandpokes.com' },
+  { src: '/extras/oneg-redesign.mp4', title: 'Oneg Home, realign' },
 ];
 
 const VIDEO_TILES = [
@@ -62,8 +70,8 @@ const INTERACTIVE: { id: string; title: string }[] = [
 const sections = [
   { id: 'interactive', label: 'Interactive' },
   { id: 'web', label: 'Web' },
+  { id: 'brand', label: 'Brand' },
   { id: 'video', label: 'Video' },
-  { id: 'static', label: 'Static' },
   { id: 'physical', label: 'Physical' },
 ];
 ---
@@ -177,12 +185,16 @@ const sections = [
 
     <section id="web" class="gallery-section">
       <h2 class="section-label">Web</h2>
-      <div class="tile-grid">
+      <div class="tile-grid tile-grid-single">
         {WEB_TILES.map((t) => (
           <figure class="tile">
-            <a href={t.href} target="_blank" rel="noopener" aria-label={`${t.title}, opens the live site`}>
+            {t.href ? (
+              <a href={t.href} target="_blank" rel="noopener" aria-label={`${t.title}, opens the live site`}>
+                <video src={t.src} autoplay muted loop playsinline preload="metadata"></video>
+              </a>
+            ) : (
               <video src={t.src} autoplay muted loop playsinline preload="metadata"></video>
-            </a>
+            )}
             <figcaption><span class="tile-title">{t.title}</span></figcaption>
           </figure>
         ))}
@@ -203,13 +215,18 @@ const sections = [
       </div>
     </section>
 
-    <section id="static" class="gallery-section">
-      <h2 class="section-label">Static</h2>
-      <div class="tile-grid">
-        {STATIC_TILES.map((t, i) => (
+    <section id="brand" class="gallery-section">
+      <h2 class="section-label">Brand</h2>
+      <div class="tile-grid tile-grid-single">
+        {BRAND_TILES.map((b) => (
           <figure class="tile">
-            <img src={t.src} alt={t.title} loading={i < 3 ? 'eager' : 'lazy'} />
-            <figcaption><span class="tile-title">{t.title}</span></figcaption>
+            <div class="slides" tabindex="0" role="group" aria-label={`${b.title}, ${b.slides.length} ${b.slides.length === 1 ? 'slide' : 'slides'}`} data-count={b.slides.length}>
+              {b.slides.map((src, i) => (
+                <img src={src} alt={`${b.title}, slide ${i + 1} of ${b.slides.length}`} loading="lazy" class={i === 0 ? 'on' : undefined} />
+              ))}
+              {b.slides.length > 1 && <span class="slide-count">1 / {b.slides.length}</span>}
+            </div>
+            <figcaption><span class="tile-title">{b.title}</span></figcaption>
           </figure>
         ))}
       </div>
@@ -291,6 +308,7 @@ const sections = [
   }
 
   .tile-grid { columns: 2; column-gap: 24px; }
+  .tile-grid-single { columns: 1; }
   .tile { break-inside: avoid; margin: 0 0 40px; }
   .tile img,
   .tile video {
@@ -302,6 +320,43 @@ const sections = [
     display: block;
   }
   .tile figcaption { margin-top: 10px; font-size: 13px; color: var(--mid); }
+
+  /* Brand slideshows */
+  .slides {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: 10px;
+    border: 1px solid var(--hairline);
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .slides[data-count]:not([data-count='1']) { cursor: pointer; }
+  .slides img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    opacity: 0;
+    transition: opacity 200ms var(--ease-out);
+  }
+  .slides img.on { opacity: 1; }
+  .slide-count {
+    position: absolute;
+    right: 12px;
+    bottom: 10px;
+    font-size: 12px;
+    color: var(--mid);
+    background: var(--bg);
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-variant-numeric: tabular-nums;
+    z-index: 2;
+  }
 
   .tile-live {
     border-radius: 10px;
@@ -548,6 +603,27 @@ const sections = [
   }
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Brand slideshows: click right for next, left for previous; arrows too.
+  document.querySelectorAll<HTMLElement>('.slides').forEach((box) => {
+    const imgs = [...box.querySelectorAll('img')];
+    const count = box.querySelector<HTMLElement>('.slide-count');
+    if (imgs.length < 2) return;
+    let i = 0;
+    const show = (n: number) => {
+      i = (n + imgs.length) % imgs.length;
+      imgs.forEach((im, j) => im.classList.toggle('on', j === i));
+      if (count) count.textContent = `${i + 1} / ${imgs.length}`;
+    };
+    box.addEventListener('click', (e) => {
+      const r = box.getBoundingClientRect();
+      show((e.clientX - r.left) / r.width < 1 / 3 ? i - 1 : i + 1);
+    });
+    box.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { e.preventDefault(); show(i + 1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); show(i - 1); }
+    });
+  });
 
   // Looping site videos play only while on screen.
   {
