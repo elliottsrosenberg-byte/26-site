@@ -152,6 +152,44 @@ const sections = headings.filter((h) => h.depth === 2);
     color: var(--mid);
   }
 
+  /* Callout: markdown blockquote renders as a quiet surface block. */
+  .piece :global(blockquote) {
+    margin: 40px 0;
+    padding: 24px 28px;
+    background: var(--surface);
+    border-radius: 12px;
+    max-width: var(--measure);
+  }
+  .piece :global(blockquote p) { margin: 0 0 1em; }
+  .piece :global(blockquote p:last-child) { margin-bottom: 0; }
+
+  /* Code: chips inline, surface blocks for fenced code. */
+  .piece :global(code) {
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+    font-size: 0.85em;
+    background: var(--bg);
+    border: 1px solid var(--hairline);
+    border-radius: 6px;
+    padding: 2px 7px;
+  }
+  .piece :global(pre) {
+    margin: 40px 0;
+    padding: 24px 28px;
+    background: var(--surface);
+    border-radius: 12px;
+    overflow-x: auto;
+    max-width: var(--measure);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .piece :global(pre code) {
+    background: none;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    font-size: inherit;
+  }
+
   @media (max-width: 900px) {
     .crumb { position: static; padding: 24px var(--pad-x) 0; }
   }

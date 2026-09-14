@@ -38,6 +38,16 @@ Variant, no frame (plain image, no grey block, no shadow):
 ![Caption](/media/perennial/home.png "bare")
 ```
 
+## Callouts and code
+
+A markdown blockquote renders as a callout: a quiet grey block for asides, demo links, and notes that sit outside the main flow.
+
+```markdown
+> Perennial is live in beta at [app.perennial.design](https://app.perennial.design).
+```
+
+Inline `code` renders as a small chip, good for credentials, filenames, and terms. Fenced code blocks (triple backticks) render as a grey surface block that scrolls horizontally when long.
+
 ## Videos
 
 Markdown has no video syntax, so use the figure directly:
