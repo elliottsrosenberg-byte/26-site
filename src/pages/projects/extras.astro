@@ -9,18 +9,18 @@ import Base from '../../layouts/Base.astro';
 // Brand slideshows: click the right side for the next slide, left for the
 // previous. Add slides by appending paths to an array.
 const BRAND_TILES = [
-  { title: 'Studio Lauren Goodman', slides: ['/extras/lg1.png', '/extras/lg2.jpg', '/extras/lg3.jpg', '/extras/laurenBrand1.png'] },
-  { title: 'Waiting Magazine', slides: [
-    '/extras/wb2.jpeg', '/extras/wb3.png', '/extras/wb4.jpeg', '/extras/wb5.jpeg',
-    '/extras/wb6.jpeg', '/extras/wb7.png', '/extras/wb8.jpeg',
-    '/extras/waiting-devices.jpg', '/extras/ed2-small.jpg',
-  ] },
-  { title: 'Perennial', slides: ['/extras/PerennialType.png'] },
   { title: 'Oneg Home', slides: [
     '/extras/oneg-rebrand-1.png', '/extras/oneg-rebrand-2.png', '/extras/oneg-rebrand-3.png',
     '/extras/oneg-rebrand-4.jpg', '/extras/oneg-rebrand-5.jpg', '/extras/oneg-rebrand-6.jpg',
     '/extras/oneg-rebrand-7.jpg', '/extras/oneg-rebrand-8.jpg', '/extras/oneg-rebrand-9.jpg',
   ] },
+  { title: 'Waiting Magazine', slides: [
+    '/extras/wb2.jpeg', '/extras/wb3.png', '/extras/wb4.jpeg', '/extras/wb5.jpeg',
+    '/extras/wb6.jpeg', '/extras/wb7.png', '/extras/wb8.jpeg',
+    '/extras/waiting-devices.jpg', '/extras/ed2-small.jpg',
+  ] },
+  { title: 'Studio Lauren Goodman', slides: ['/extras/lg1.png', '/extras/lg2.jpg', '/extras/lg3.jpg', '/extras/laurenBrand1.png'] },
+  { title: 'Perennial', slides: ['/extras/PerennialType.png'] },
 ];
 
 const WEB_TILES = [
@@ -201,20 +201,6 @@ const sections = [
       </div>
     </section>
 
-    <section id="video" class="gallery-section">
-      <h2 class="section-label">Video</h2>
-      <div class="tile-grid">
-        {VIDEO_TILES.map((t) => (
-          <figure class="tile">
-            <a href={t.href} target="_blank" rel="noopener" aria-label={`${t.title}, opens the full video`}>
-              <video src={t.src} autoplay muted loop playsinline preload="metadata"></video>
-            </a>
-            <figcaption><span class="tile-title">{t.title}</span></figcaption>
-          </figure>
-        ))}
-      </div>
-    </section>
-
     <section id="brand" class="gallery-section">
       <h2 class="section-label">Brand</h2>
       <div class="tile-grid tile-grid-single">
@@ -227,6 +213,20 @@ const sections = [
               {b.slides.length > 1 && <span class="slide-count">1 / {b.slides.length}</span>}
             </div>
             <figcaption><span class="tile-title">{b.title}</span></figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <section id="video" class="gallery-section">
+      <h2 class="section-label">Video</h2>
+      <div class="tile-grid">
+        {VIDEO_TILES.map((t) => (
+          <figure class="tile">
+            <a href={t.href} target="_blank" rel="noopener" aria-label={`${t.title}, opens the full video`}>
+              <video src={t.src} autoplay muted loop playsinline preload="metadata"></video>
+            </a>
+            <figcaption><span class="tile-title">{t.title}</span></figcaption>
           </figure>
         ))}
       </div>
@@ -321,29 +321,11 @@ const sections = [
   }
   .tile figcaption { margin-top: 10px; font-size: 13px; color: var(--mid); }
 
-  /* Brand slideshows */
-  .slides {
-    position: relative;
-    aspect-ratio: 16 / 10;
-    border-radius: 10px;
-    border: 1px solid var(--hairline);
-    background: var(--surface);
-    overflow: hidden;
-  }
+  /* Brand slideshows: each slide at its natural size, rounded corners. */
+  .slides { position: relative; }
   .slides[data-count]:not([data-count='1']) { cursor: pointer; }
-  .slides img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border: 0;
-    border-radius: 0;
-    background: none;
-    opacity: 0;
-    transition: opacity 200ms var(--ease-out);
-  }
-  .slides img.on { opacity: 1; }
+  .slides img { display: none; }
+  .slides img.on { display: block; }
   .slide-count {
     position: absolute;
     right: 12px;
@@ -583,22 +565,25 @@ const sections = [
 </style>
 
 <script>
-  // ── Scrollspy (same behavior as piece pages).
+  // ── Scrollspy: the active section is the last one whose top has passed
+  //    a line 30% down the viewport. Robust for sections taller than the
+  //    screen.
   {
     const nav = document.querySelector('.side-nav');
     if (nav) {
       const links = [...nav.querySelectorAll('a')] as HTMLAnchorElement[];
       const byId = new Map(links.map((a) => [a.hash.slice(1), a] as const));
+      const secs = [...byId.keys()].map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
       const setActive = (id: string) => links.forEach((a) => a.classList.toggle('active', a === byId.get(id)));
-      const spy = new IntersectionObserver(
-        (es) => {
-          const vis = es.filter((e) => e.isIntersecting);
-          if (vis.length > 0) setActive(vis[0].target.id);
-        },
-        { rootMargin: '-10% 0px -80% 0px' }
-      );
-      byId.forEach((_, id) => { const el = document.getElementById(id); if (el) spy.observe(el); });
-      setActive('interactive');
+      const update = () => {
+        const line = innerHeight * 0.3;
+        let cur = secs[0]?.id;
+        for (const el of secs) if (el.getBoundingClientRect().top <= line) cur = el.id;
+        if (cur) setActive(cur);
+      };
+      addEventListener('scroll', update, { passive: true });
+      addEventListener('resize', update);
+      update();
     }
   }
 
