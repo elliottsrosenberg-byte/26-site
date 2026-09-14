@@ -1,0 +1,191 @@
+---
+// Sticky section timeline for narrow screens. The fixed side-nav disappears
+// well before phone widths, so long pages get this bar instead: every section
+// runs horizontally on one line, the one you are reading sits at the left in
+// ink, and the row slides over as you scroll. The chevron opens a jump list.
+interface Props {
+  sections: { slug: string; text: string }[];
+}
+const { sections } = Astro.props;
+---
+<nav class="m-nav" aria-label="Sections">
+  <button class="m-nav-btn" type="button" aria-expanded="false">
+    <span class="m-nav-track">
+      {sections.map((s) => (
+        <span class="m-nav-item" data-slug={s.slug}>{s.text}</span>
+      ))}
+    </span>
+    <span class="m-nav-fade" aria-hidden="true"></span>
+    <svg class="m-nav-chev" width="12" height="12" viewBox="0 0 10 10" aria-hidden="true">
+      <path d="M2 3.5 L5 6.5 L8 3.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </button>
+  <div class="m-nav-list" hidden>
+    {sections.map((s) => (
+      <a href={`#${s.slug}`}>{s.text}</a>
+    ))}
+  </div>
+</nav>
+
+<style>
+  .m-nav {
+    display: none;
+    position: sticky;
+    top: 0;
+    z-index: 15;
+    background: var(--bg);
+    border-bottom: 1px solid var(--hairline);
+  }
+  @media (max-width: 900px) {
+    .m-nav { display: block; }
+  }
+  .m-nav-btn {
+    position: relative;
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: 14px;
+    padding: 13px calc(var(--pad-x) + 28px) 13px var(--pad-x);
+    cursor: pointer;
+    text-align: left;
+  }
+  .m-nav-track {
+    display: inline-flex;
+    gap: 22px;
+    white-space: nowrap;
+    transition: transform 300ms var(--ease-out);
+    will-change: transform;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .m-nav-track { transition: none; }
+  }
+  .m-nav-item {
+    position: relative;
+    color: var(--faint);
+    padding-left: 12px;
+    transition: color 200ms ease;
+  }
+  .m-nav-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 4px;
+    height: 4px;
+    margin-top: -2px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .m-nav-item.active { color: var(--ink); }
+  .m-nav-fade {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: calc(var(--pad-x) + 76px);
+    background: linear-gradient(to right, transparent, var(--bg) 70%);
+  }
+  .m-nav-chev {
+    position: absolute;
+    right: var(--pad-x);
+    top: 50%;
+    margin-top: -6px;
+    color: var(--mid);
+    transition: transform 200ms var(--ease-out);
+  }
+  .m-nav-btn[aria-expanded='true'] .m-nav-chev { transform: rotate(180deg); }
+  .m-nav-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--hairline);
+    padding: 4px var(--pad-x) 14px;
+    box-shadow: 0 12px 24px rgba(35, 30, 23, 0.06);
+  }
+  .m-nav-list a {
+    position: relative;
+    display: block;
+    padding: 9px 0 9px 14px;
+    margin-left: -14px;
+    font-size: 14px;
+    color: var(--mid);
+    text-decoration: none;
+  }
+  .m-nav-list a::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 4px;
+    height: 4px;
+    margin-top: -2px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+  .m-nav-list a.active { color: var(--ink); }
+  .m-nav-list a.active::before { opacity: 1; }
+</style>
+
+<script>
+  // Self-contained: the bar tracks scroll position itself, so it works the
+  // same on piece pages and the extras gallery.
+  {
+    const nav = document.querySelector<HTMLElement>('.m-nav');
+    const btn = nav?.querySelector<HTMLButtonElement>('.m-nav-btn');
+    const track = nav?.querySelector<HTMLElement>('.m-nav-track');
+    const list = nav?.querySelector<HTMLElement>('.m-nav-list');
+    if (nav && btn && track && list) {
+      const items = [...track.querySelectorAll<HTMLElement>('.m-nav-item')];
+      const links = [...list.querySelectorAll<HTMLAnchorElement>('a')];
+      const targets = items
+        .map((item, i) => ({ item, a: links[i], el: document.getElementById(item.dataset.slug || '') }))
+        .filter((t): t is { item: HTMLElement; a: HTMLAnchorElement; el: HTMLElement } => t.el !== null && t.a !== undefined);
+
+      const close = () => { list.hidden = true; btn.setAttribute('aria-expanded', 'false'); };
+      btn.addEventListener('click', (e) => {
+        const hit = (e.target as HTMLElement).closest?.('.m-nav-item') as HTMLElement | null;
+        if (hit) {
+          close();
+          document.getElementById(hit.dataset.slug || '')?.scrollIntoView();
+          return;
+        }
+        const open = list.hidden;
+        list.hidden = !open;
+        btn.setAttribute('aria-expanded', String(open));
+      });
+      links.forEach((a) => a.addEventListener('click', close));
+      document.addEventListener('click', (e) => {
+        if (!list.hidden && !nav.contains(e.target as Node)) close();
+      });
+
+      // Active section: the last one whose top has passed 30% of the viewport.
+      // The timeline slides so the active name sits at the left edge.
+      let raf = 0;
+      const update = () => {
+        raf = 0;
+        const line = innerHeight * 0.3;
+        let active = targets[0];
+        for (const t of targets) {
+          if (t.el.getBoundingClientRect().top <= line) active = t;
+        }
+        if (active) {
+          targets.forEach((t) => {
+            t.item.classList.toggle('active', t === active);
+            t.a.classList.toggle('active', t === active);
+          });
+          track.style.transform = `translateX(${-active.item.offsetLeft}px)`;
+        }
+      };
+      addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+      addEventListener('resize', () => { if (!raf) raf = requestAnimationFrame(update); });
+      update();
+    }
+  }
+</script>

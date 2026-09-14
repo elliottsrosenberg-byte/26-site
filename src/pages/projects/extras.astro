@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import MobileNav from '../../components/MobileNav.astro';
 
 // ── Adding images ──────────────────────────────────────────────────────
 // Drop the file in public/extras/ (1600px wide is plenty), then add a line
@@ -117,6 +118,8 @@ const sections = [
       ))}
     </ul>
   </nav>
+
+  <MobileNav sections={sections.map((s) => ({ slug: s.id, text: s.label }))} />
 
   <main class="gallery-page">
     <section id="interactive" class="gallery-section">
@@ -407,6 +410,7 @@ const sections = [
   }
 
   .tile-live {
+    touch-action: manipulation;
     border-radius: 10px;
     border: 1px solid var(--hairline);
     background: var(--surface);
@@ -433,6 +437,8 @@ const sections = [
     cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
     transition: transform 150ms var(--ease-out), border-color 200ms ease, color 200ms ease;
   }
   .hold-btn.holding { transform: scale(0.96); }
@@ -553,7 +559,7 @@ const sections = [
     border-bottom: 1px solid var(--faint);
     background: none;
     font: inherit;
-    font-size: 15px;
+    font-size: 16px;
     color: var(--ink);
     padding: 4px 0 8px;
     margin-bottom: 10px;
@@ -624,9 +630,14 @@ const sections = [
   .slider-thumb { fill: var(--ink); cursor: grab; }
   .slider-value { position: absolute; right: 20px; bottom: 16px; font-size: 12px; color: var(--faint); font-variant-numeric: tabular-nums; }
 
+  @media (max-width: 900px) {
+    .crumb { position: static; padding: 20px var(--pad-x) 16px; }
+    .gallery-page { padding-top: 40px; }
+    .gallery-section { scroll-margin-top: 64px; }
+  }
   @media (max-width: 640px) {
-    .gallery-page { padding-top: 110px; }
     .tile-grid { columns: 1; }
+    .gallery-section { margin-bottom: 56px; }
   }
 </style>
 
@@ -749,9 +760,11 @@ const sections = [
         }
         ctx.globalAlpha = 1;
       }, false);
-      el.addEventListener('pointermove', (e) => {
+      const point = (e: PointerEvent) => {
         const r = el.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; fx.redraw();
-      });
+      };
+      el.addEventListener('pointermove', point);
+      el.addEventListener('pointerdown', point);
       el.addEventListener('pointerleave', () => { mx = -9999; my = -9999; fx.redraw(); });
     }
   }
@@ -797,8 +810,9 @@ const sections = [
       });
       el.addEventListener('pointerdown', (e) => {
         const r = el.getBoundingClientRect();
+        tx = e.clientX - r.left; ty = e.clientY - r.top;
         pulse = 1;
-        ring = { x: e.clientX - r.left, y: e.clientY - r.top, r: 6, a: 0.5 };
+        ring = { x: tx, y: ty, r: 6, a: 0.5 };
       });
     }
   }
@@ -870,6 +884,8 @@ const sections = [
       btn.addEventListener('pointerdown', arm);
       btn.addEventListener('pointerup', disarm);
       btn.addEventListener('pointerleave', disarm);
+      btn.addEventListener('pointercancel', disarm);
+      btn.addEventListener('contextmenu', (e) => e.preventDefault());
     }
   }
 
