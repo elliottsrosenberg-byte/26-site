@@ -85,6 +85,10 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
     margin-inline: auto;
     padding: 150px var(--pad-x) 120px;
   }
+  @media (max-width: 900px) {
+    .page { padding-top: 72px; }
+    .masthead { margin-bottom: 48px; }
+  }
 
   .masthead { margin: 0 0 72px calc(-1 * var(--outdent)); }
   .masthead-name { margin: 0; font-size: inherit; font-weight: 600; }
