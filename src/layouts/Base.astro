@@ -39,6 +39,13 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
         // protection layer above it so the console always survives.
         try {
           var aiCss = localStorage.getItem('ai-css');
+          if (aiCss) {
+            var fonts = document.createElement('link');
+            fonts.id = 'ai-fonts';
+            fonts.rel = 'stylesheet';
+            fonts.href = 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Space+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,900;1,400&family=Instrument+Serif:ital@0;1&family=DM+Serif+Display&family=Cormorant+Garamond:wght@400;700&family=IBM+Plex+Mono:wght@400;600&family=VT323&family=Silkscreen:wght@400;700&family=Bungee&family=Archivo+Black&family=Bebas+Neue&family=Caveat:wght@400;700&family=Press+Start+2P&display=swap';
+            document.head.appendChild(fonts);
+          }
           var aiStyle = document.createElement('style');
           aiStyle.id = 'ai-style';
           if (aiCss) aiStyle.textContent = aiCss;
@@ -47,8 +54,8 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
           protect.id = 'ai-protect';
           protect.textContent =
             '[data-ai-protect] *{animation:none!important;filter:none!important;text-shadow:none!important;letter-spacing:normal!important;text-transform:none!important;}' +
-            '#ai-console{position:fixed!important;right:36px!important;bottom:32px!important;background:#fbfbfb!important;color:#231e17!important;border:1px solid #e7e5e3!important;}' +
-            '.console-fab{position:fixed!important;right:36px!important;bottom:32px!important;background:#fbfbfb!important;color:#857f78!important;border:1px solid #e7e5e3!important;}';
+            '#ai-console{position:fixed!important;left:0!important;right:0!important;bottom:0!important;top:auto!important;background:#ffffff!important;color:#1f1c19!important;border-top:1px solid #e2e0dd!important;}' +
+            '.console-fab{position:fixed!important;right:36px!important;bottom:32px!important;background:#fbfbfb!important;color:#857f78!important;border:1px solid #e7e5e3!important;border-radius:10px!important;}';
           document.head.appendChild(protect);
         } catch (e) {}
         if (!window.__baseBound) {
@@ -86,30 +93,25 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
     <section class="console" id="ai-console" data-ai-protect aria-label="AI redesign console">
       <header class="console-head">
         <span class="console-title">Console</span>
-        <span class="console-status" aria-live="polite"></span>
-        <button class="console-close" type="button" aria-label="Close console">
-          <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
-            <path d="M2 2 L8 8 M8 2 L2 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-          </svg>
-        </button>
+        <button class="console-reset" type="button" hidden>reset design</button>
+        <button class="console-close" type="button" aria-label="Close console">×</button>
       </header>
-      <form class="console-form">
-        <input class="console-input" type="text" placeholder="Describe a vibe" maxlength="300" autocomplete="off" spellcheck="false" aria-label="Describe a vibe" />
-        <button class="console-go" type="submit" aria-label="Redesign">
-          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
-            <path d="M6 10 V2 M2.5 5.5 L6 2 L9.5 5.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </button>
-      </form>
+      <p class="console-intro">After redesigning my website five times over the past five months, each time with a new design tool or AI integration, I decided that I'd always have a new tool or piece of technology to play with. Also, as a designer that works across multiple disciplines, I find that I'm always adjusting my portfolio to cater to different recruiters, thought leaders, or potential investors. As a gesture to the ever-changing nature of the internet, I'll let you design my website for me. If you're looking for a tech site, a fine arts gallery page, or an animation-heavy creative splurge, click the tags below for some examples.</p>
+      <p class="console-line">// this site can be redesigned by AI. describe a visual vibe below to transform it</p>
+      <p class="console-line">// quick start:</p>
       <div class="console-chips">
-        <button type="button" class="console-chip">underwater</button>
+        <button type="button" class="console-chip">B2B SaaS</button>
         <button type="button" class="console-chip">lo-fi computer</button>
         <button type="button" class="console-chip">y2k</button>
-        <button type="button" class="console-chip">brutalist print</button>
+        <button type="button" class="console-chip">emo</button>
       </div>
-      <footer class="console-foot">
-        <button class="console-reset" type="button" hidden>Reset design</button>
-      </footer>
+      <p class="console-line console-status" aria-live="polite"></p>
+      <form class="console-form">
+        <span class="console-caret" aria-hidden="true">&gt;</span>
+        <input class="console-input" type="text" placeholder="describe what you want the site to look like..." maxlength="300" autocomplete="off" spellcheck="false" aria-label="Describe a vibe" />
+        <button class="console-go" type="submit">Run</button>
+      </form>
+      <p class="console-count">// 0 / 300</p>
     </section>
 
     <style>
@@ -144,7 +146,7 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
         gap: 8px;
         padding: 10px 18px;
         border: 1px solid var(--hairline);
-        border-radius: 999px;
+        border-radius: 10px;
         background: var(--bg);
         color: var(--faint);
         font: inherit;
@@ -157,105 +159,110 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
       }
       .console-fab:active { transform: scale(0.97); }
 
-      /* ── AI redesign console. Hardcoded colors on purpose: this panel keeps
-            its identity no matter what a redesign does to the page. ── */
+      /* ── AI redesign console: the original terminal drawer. Hardcoded
+            colors on purpose: it keeps its identity under any redesign. ── */
       .console {
         position: fixed;
-        right: 36px;
-        bottom: 32px;
+        left: 0;
+        right: 0;
+        bottom: 0;
         z-index: 20;
-        width: 320px;
-        background: #fbfbfb;
-        color: #231e17;
-        border: 1px solid #e7e5e3;
-        border-radius: 14px;
-        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
-        padding: 16px;
-        font-size: 14px;
-        opacity: 0;
-        transform: translateY(12px) scale(0.98);
-        transition: opacity 220ms var(--ease-out), transform 220ms var(--ease-out), visibility 220ms;
+        max-height: 60vh;
+        overflow-y: auto;
+        background: #ffffff;
+        color: #1f1c19;
+        border-top: 1px solid #e2e0dd;
+        font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+        font-size: 13.5px;
+        line-height: 1.65;
+        padding: 14px 24px 14px;
+        transform: translateY(102%);
+        transition: transform 260ms var(--ease-out), visibility 260ms;
         visibility: hidden;
       }
-      .console.open { opacity: 1; transform: none; visibility: visible; }
+      .console.open { transform: none; visibility: visible; }
 
-      .console-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-      .console-title { font-weight: 600; }
-      .console-status { flex: 1; color: #857f78; font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .console-head { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+      .console-title { font-weight: 700; margin-right: auto; }
       .console-close {
-        border: 0;
+        border: 1px solid #d5d2ce;
+        border-radius: 4px;
         background: none;
-        color: #a5a09a;
+        color: #1f1c19;
+        font: inherit;
+        line-height: 1;
+        padding: 3px 9px;
         cursor: pointer;
-        padding: 4px;
-        display: grid;
-        place-items: center;
-        border-radius: 6px;
       }
-      .console-close:hover { color: #231e17; }
+      .console-close:hover { background: #f2f0ee; }
+      .console-reset {
+        border: 1px solid #d5d2ce;
+        border-radius: 4px;
+        background: none;
+        color: #6f6a64;
+        font: inherit;
+        font-size: 12.5px;
+        padding: 3px 10px;
+        cursor: pointer;
+      }
+      .console-reset:hover { color: #1f1c19; background: #f2f0ee; }
 
-      .console-form { display: flex; gap: 8px; }
+      .console-intro { margin: 0 0 14px; color: #d9480f; max-width: 1200px; }
+      .console-line { margin: 0 0 8px; color: #6f6a64; }
+      .console-status:empty { display: none; }
+      .console.running .console-status::after {
+        content: '▍';
+        margin-left: 2px;
+        animation: console-blink 1s steps(1) infinite;
+      }
+      @keyframes console-blink { 50% { opacity: 0; } }
+
+      .console-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 14px; }
+      .console-chip {
+        border: 1px solid #c9c5c1;
+        border-radius: 4px;
+        background: none;
+        color: #1d4ed8;
+        font: inherit;
+        font-size: 12.5px;
+        padding: 2px 10px;
+        cursor: pointer;
+      }
+      .console-chip:hover { background: #eef2fd; }
+
+      .console-form { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+      .console-caret { color: #6f6a64; }
       .console-input {
         flex: 1;
         min-width: 0;
-        border: 1px solid #e7e5e3;
-        border-radius: 8px;
+        border: 1px solid #c9c5c1;
+        border-radius: 4px;
         background: #ffffff;
-        color: #231e17;
+        color: #1f1c19;
         font: inherit;
         font-size: 16px;
-        padding: 8px 12px;
+        padding: 7px 12px;
         outline: none;
       }
-      .console-input:focus { border-color: #231e17; }
+      .console-input:focus { border-color: #1f1c19; }
       .console-input:disabled { color: #a5a09a; }
       .console-go {
-        flex: 0 0 38px;
         border: 0;
-        border-radius: 8px;
-        background: #231e17;
-        color: #fbfbfb;
-        cursor: pointer;
-        display: grid;
-        place-items: center;
-        transition: transform 150ms var(--ease-out);
-      }
-      .console-go:active { transform: scale(0.95); }
-      .console-go:disabled { background: #c9c5c1; cursor: default; }
-
-      .console-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-      .console-chip {
-        border: 1px solid #e7e5e3;
-        border-radius: 999px;
-        background: none;
-        color: #857f78;
+        border-radius: 4px;
+        background: #1d4ed8;
+        color: #ffffff;
         font: inherit;
-        font-size: 12.5px;
-        padding: 4px 11px;
+        font-size: 13.5px;
+        padding: 8px 16px;
         cursor: pointer;
-        transition: color 150ms ease, border-color 150ms ease;
       }
-      .console-chip:hover { color: #231e17; border-color: #c9c5c1; }
-
-      .console-foot { margin-top: 12px; display: flex; justify-content: flex-end; }
-      .console-foot:has(.console-reset[hidden]) { display: none; }
-      .console-reset {
-        border: 0;
-        background: none;
-        color: #857f78;
-        font: inherit;
-        font-size: 12.5px;
-        cursor: pointer;
-        padding: 0;
-        text-decoration: underline;
-        text-underline-offset: 3px;
-      }
-      .console-reset:hover { color: #231e17; }
+      .console-go:disabled { background: #a9b6d9; cursor: default; }
+      .console-count { margin: 8px 0 0; color: #a5a09a; font-size: 12.5px; }
 
       @media (max-width: 640px) {
         .theme-toggle { top: 16px; right: 16px; }
         .console-fab { right: 16px; bottom: 16px; }
-        .console { right: 16px; bottom: 16px; left: 16px; width: auto; }
+        .console { padding: 12px 16px; }
       }
     </style>
 
@@ -269,9 +276,24 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
         const go = panel?.querySelector<HTMLButtonElement>('.console-go');
         const status = panel?.querySelector<HTMLElement>('.console-status');
         const resetBtn = panel?.querySelector<HTMLButtonElement>('.console-reset');
+        const counter = panel?.querySelector<HTMLElement>('.console-count');
         const styleEl = document.getElementById('ai-style') as HTMLStyleElement | null;
 
-        if (fab && panel && form && input && go && status && resetBtn && styleEl) {
+        const FONTS_URL = 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Space+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,900;1,400&family=Instrument+Serif:ital@0;1&family=DM+Serif+Display&family=Cormorant+Garamond:wght@400;700&family=IBM+Plex+Mono:wght@400;600&family=VT323&family=Silkscreen:wght@400;700&family=Bungee&family=Archivo+Black&family=Bebas+Neue&family=Caveat:wght@400;700&family=Press+Start+2P&display=swap';
+        const ensureFonts = () => {
+          if (!document.getElementById('ai-fonts')) {
+            const link = document.createElement('link');
+            link.id = 'ai-fonts';
+            link.rel = 'stylesheet';
+            link.href = FONTS_URL;
+            document.head.appendChild(link);
+          }
+        };
+
+        if (fab && panel && form && input && go && status && resetBtn && counter && styleEl) {
+          input.addEventListener('input', () => {
+            counter.textContent = `// ${input.value.length} / 300`;
+          });
           let running = false;
 
           const setStatus = (t: string) => { status.textContent = t; };
@@ -308,10 +330,12 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
           const run = async (vibe: string) => {
             if (running) return;
             running = true;
+            ensureFonts();
+            panel.classList.add('running');
             input.disabled = true;
             go.disabled = true;
             resetBtn.hidden = true;
-            setStatus('Designing…');
+            setStatus('// designing…');
             let css = '';
             try {
               const res = await fetch('/api/redesign', {
@@ -327,6 +351,7 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
                 if (done) break;
                 css += decoder.decode(value, { stream: true });
                 styleEl.textContent = css.replace(/^```(?:css)?/i, '');
+                setStatus(`// designing… ${(css.length / 1024).toFixed(1)}kb`);
               }
               css = css.replace(/^```(?:css)?/i, '').replace(/```\s*$/, '');
               styleEl.textContent = css;
@@ -334,10 +359,11 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
               localStorage.setItem('ai-vibe', vibe);
               setStatus(`// ${vibe}`);
             } catch (err) {
-              setStatus('Something broke. Try again.');
+              setStatus('// something broke. try again.');
               console.error('redesign failed:', err);
             } finally {
               running = false;
+              panel.classList.remove('running');
               input.disabled = false;
               go.disabled = false;
               syncState();
