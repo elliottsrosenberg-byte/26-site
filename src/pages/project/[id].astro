@@ -3,7 +3,10 @@ import { getCollection, render } from 'astro:content';
 import Piece from '../../layouts/Piece.astro';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('projects', ({ data }) => !(import.meta.env.PROD && data.draft));
+  const entries = await getCollection(
+    'projects',
+    ({ data }) => !(import.meta.env.PROD && data.draft) && !data.link
+  );
   return entries.map((entry) => ({ params: { id: entry.id }, props: { entry } }));
 }
 

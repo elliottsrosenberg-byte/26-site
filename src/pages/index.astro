@@ -39,7 +39,12 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
       <ul class="item-list">
         {projects.map((p) => (
           <li class="item">
-            <a class="item-link" href={`/project/${p.id}/`}>
+            <a
+              class="item-link"
+              href={p.data.link ?? `/project/${p.id}/`}
+              target={p.data.link?.startsWith('http') ? '_blank' : undefined}
+              rel={p.data.link?.startsWith('http') ? 'noopener' : undefined}
+            >
               <span class="item-title">{p.data.title}</span>
               <span class="item-desc">{p.data.description}</span>
             </a>
