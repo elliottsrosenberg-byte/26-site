@@ -10,17 +10,26 @@ import Base from '../../layouts/Base.astro';
 // previous. Add slides by appending paths to an array.
 const BRAND_TILES = [
   { title: 'Oneg Home', slides: [
-    '/extras/oneg-rebrand-1.png', '/extras/oneg-rebrand-2.png', '/extras/oneg-rebrand-3.png',
-    '/extras/oneg-rebrand-4.jpg', '/extras/oneg-rebrand-5.jpg', '/extras/oneg-rebrand-6.jpg',
-    '/extras/oneg-rebrand-7.jpg', '/extras/oneg-rebrand-8.jpg', '/extras/oneg-rebrand-9.jpg',
+    { src: '/extras/oneg-rebrand-1.png', w: 2000, h: 1126 }, { src: '/extras/oneg-rebrand-2.png', w: 2000, h: 1126 },
+    { src: '/extras/oneg-rebrand-3.png', w: 2000, h: 1126 }, { src: '/extras/oneg-rebrand-4.jpg', w: 2000, h: 1126 },
+    { src: '/extras/oneg-rebrand-5.jpg', w: 2000, h: 1126 }, { src: '/extras/oneg-rebrand-6.jpg', w: 2000, h: 1126 },
+    { src: '/extras/oneg-rebrand-7.jpg', w: 2000, h: 1126 }, { src: '/extras/oneg-rebrand-8.jpg', w: 2000, h: 1126 },
+    { src: '/extras/oneg-rebrand-9.jpg', w: 2000, h: 1126 },
   ] },
   { title: 'Waiting Magazine', slides: [
-    '/extras/wb2.jpeg', '/extras/wb3.png', '/extras/wb4.jpeg', '/extras/wb5.jpeg',
-    '/extras/wb6.jpeg', '/extras/wb7.png', '/extras/wb8.jpeg',
-    '/extras/waiting-devices.jpg', '/extras/ed2-small.jpg',
+    { src: '/extras/wb2.jpeg', w: 3333, h: 1875 }, { src: '/extras/wb3.png', w: 3333, h: 1875 },
+    { src: '/extras/wb4.jpeg', w: 3333, h: 1875 }, { src: '/extras/wb5.jpeg', w: 3333, h: 1875 },
+    { src: '/extras/wb6.jpeg', w: 3333, h: 1875 }, { src: '/extras/wb7.png', w: 3333, h: 1875 },
+    { src: '/extras/wb8.jpeg', w: 3333, h: 1875 },
+    { src: '/extras/waiting-devices.jpg', w: 2000, h: 1125 }, { src: '/extras/ed2-small.jpg', w: 2400, h: 1768 },
   ] },
-  { title: 'Studio Lauren Goodman', slides: ['/extras/lg1.png', '/extras/lg2.jpg', '/extras/lg3.jpg', '/extras/laurenBrand1.png'] },
-  { title: 'Perennial', slides: ['/extras/PerennialType.png'] },
+  { title: 'Studio Lauren Goodman', slides: [
+    { src: '/extras/lg1.png', w: 2000, h: 1131 }, { src: '/extras/lg2.jpg', w: 2000, h: 1132 },
+    { src: '/extras/lg3.jpg', w: 2000, h: 1132 },
+  ] },
+  { title: 'Perennial', slides: [
+    { src: '/extras/PerennialType.png', w: 3068, h: 1726 },
+  ] },
 ];
 
 const WEB_TILES = [
@@ -226,10 +235,16 @@ const sections = [
         {BRAND_TILES.map((b) => (
           <figure class="tile">
             <div class="slides" tabindex="0" role="group" aria-label={`${b.title}, ${b.slides.length} ${b.slides.length === 1 ? 'slide' : 'slides'}`} data-count={b.slides.length}>
-              {b.slides.map((src, i) => (
-                <img src={src} alt={`${b.title}, slide ${i + 1} of ${b.slides.length}`} loading="lazy" class={i === 0 ? 'on' : undefined} />
+              {b.slides.map((sl, i) => (
+                <img src={sl.src} width={sl.w} height={sl.h} alt={`${b.title}, slide ${i + 1} of ${b.slides.length}`} loading="lazy" class={i === 0 ? 'on' : undefined} />
               ))}
-              {b.slides.length > 1 && <span class="slide-count">1 / {b.slides.length}</span>}
+              {b.slides.length > 1 && (
+                <>
+                  <span class="slide-zone slide-zone-prev" aria-hidden="true"></span>
+                  <span class="slide-zone slide-zone-next" aria-hidden="true"></span>
+                  <span class="slide-count">1 / {b.slides.length}</span>
+                </>
+              )}
             </div>
             <figcaption><span class="tile-title">{b.title}</span></figcaption>
           </figure>
@@ -351,11 +366,32 @@ const sections = [
   }
   .tile figcaption { margin-top: 10px; font-size: 13px; color: var(--mid); }
 
-  /* Brand slideshows: each slide at its natural size, rounded corners. */
-  .slides { position: relative; }
-  .slides[data-count]:not([data-count='1']) { cursor: pointer; }
-  .slides img { display: none; }
-  .slides img.on { display: block; }
+  /* Brand slideshows: each slide at its natural size, the container
+     animating between slide heights; arrow cursors mark the two zones. */
+  .slides { position: relative; overflow: hidden; transition: height 300ms var(--ease-out); }
+  .slides img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    opacity: 0;
+    transition: opacity 200ms var(--ease-out);
+    pointer-events: none;
+  }
+  .slides img.on { opacity: 1; }
+  .slides[data-count='1'] { transition: none; }
+  .slide-zone { position: absolute; top: 0; bottom: 0; z-index: 1; }
+  .slide-zone-prev {
+    left: 0;
+    width: 33.4%;
+    cursor: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26'%3E%3Ccircle cx='13' cy='13' r='12' fill='%23fbfbfb' stroke='%23c9c5c1'/%3E%3Cpath d='M15 8l-5 5 5 5' stroke='%23231e17' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") 13 13, w-resize;
+  }
+  .slide-zone-next {
+    right: 0;
+    width: 66.6%;
+    cursor: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26'%3E%3Ccircle cx='13' cy='13' r='12' fill='%23fbfbfb' stroke='%23c9c5c1'/%3E%3Cpath d='M11 8l5 5-5 5' stroke='%23231e17' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") 13 13, e-resize;
+  }
   .slide-count {
     position: absolute;
     right: 12px;
@@ -619,21 +655,33 @@ const sections = [
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Brand slideshows: click right for next, left for previous; arrows too.
+  // Brand slideshows: zoned prev/next with animated height, slides
+  //   preloaded as the show approaches the viewport.
   document.querySelectorAll<HTMLElement>('.slides').forEach((box) => {
     const imgs = [...box.querySelectorAll('img')];
     const count = box.querySelector<HTMLElement>('.slide-count');
-    if (imgs.length < 2) return;
     let i = 0;
+    const fit = () => {
+      const im = imgs[i];
+      const w = Number(im.getAttribute('width')), h = Number(im.getAttribute('height'));
+      if (w && h) box.style.height = `${(box.clientWidth * h) / w}px`;
+    };
     const show = (n: number) => {
       i = (n + imgs.length) % imgs.length;
       imgs.forEach((im, j) => im.classList.toggle('on', j === i));
       if (count) count.textContent = `${i + 1} / ${imgs.length}`;
+      fit();
     };
-    box.addEventListener('click', (e) => {
-      const r = box.getBoundingClientRect();
-      show((e.clientX - r.left) / r.width < 1 / 3 ? i - 1 : i + 1);
-    });
+    new IntersectionObserver((es, io) => {
+      if (!es[0].isIntersecting) return;
+      io.disconnect();
+      imgs.forEach((im) => { im.loading = 'eager'; });
+      fit();
+    }, { rootMargin: '600px 0px' }).observe(box);
+    new ResizeObserver(fit).observe(box);
+    if (imgs.length < 2) return;
+    box.querySelector('.slide-zone-prev')?.addEventListener('click', () => show(i - 1));
+    box.querySelector('.slide-zone-next')?.addEventListener('click', () => show(i + 1));
     box.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowRight') { e.preventDefault(); show(i + 1); }
       if (e.key === 'ArrowLeft') { e.preventDefault(); show(i - 1); }
