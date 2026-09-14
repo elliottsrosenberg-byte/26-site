@@ -1,10 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1640 760" font-family="'Albert Sans', -apple-system, Helvetica, Arial, sans-serif">
 <rect width="1640" height="760" rx="12" fill="#fbfbfb"/>
-<defs><pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.1" fill="#e2e0dd"/></pattern>
-<marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0.6 L7,4 L0,7.4" fill="none" stroke="#9a9690" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-<rect width="1640" height="760" rx="12" fill="url(#dots)"/>
-<rect x="0.5" y="0.5" width="1639" height="759" rx="12" fill="none" stroke="#e7e5e3"/>
-<text x="36" y="46" font-size="15" fill="#9a9690">Perennial &#183; information architecture &#183; wip</text>
+<defs><marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0.6 L7,4 L0,7.4" fill="none" stroke="#9a9690" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
 <rect x="670.0" y="60" width="300" height="40" rx="20" fill="#231e17"/>
 <text x="820.0" y="85" font-size="15" fill="#fbfbfb" text-anchor="middle" font-weight="600">One studio graph, scoped to its owner</text>
 <path d="M 820.0 100 L 820.0 122" fill="none" stroke="#9a9690" stroke-width="1.4"/>

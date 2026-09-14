@@ -33,7 +33,7 @@ The research continues inside the product. Onboarding is a nine step structured 
 
 ## System
 
-![The studio graph as it stands: seven families of records under one owner, with the money chain running underneath.](/media/perennial/data-model.svg "bare")
+![Perennial information architecture](/media/perennial/data-model.svg)
 
 The core decision was to model the studio as one connected graph. A client connects to their projects. Projects roll up time and expenses. Time and expenses become invoice line items. Invoices get paid through Stripe and reconcile against the real bank feed. Because everything lives in one model, every surface shows one true picture of the studio.
 
