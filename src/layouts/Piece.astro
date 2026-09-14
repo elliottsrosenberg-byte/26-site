@@ -79,11 +79,15 @@ const sections = headings.filter((h) => h.depth === 2);
     color: var(--faint);
     text-decoration: none;
     transition: color 150ms ease;
+    /* The active dot lives inside the box so the ellipsis clipping below
+       can never cut it off; the negative margin keeps text on the axis. */
+    padding-left: 12px;
+    margin-left: -12px;
   }
   .side-nav a::before {
     content: '';
     position: absolute;
-    left: -12px;
+    left: 0;
     top: 50%;
     width: 4px;
     height: 4px;

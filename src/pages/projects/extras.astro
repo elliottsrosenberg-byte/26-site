@@ -200,9 +200,30 @@ const sections = [
   @media (max-width: 1359px) { .side-nav { opacity: 0; visibility: hidden; } }
   .side-nav ul { margin: 0; padding: 0; list-style: none; }
   .side-nav li { margin-bottom: 10px; }
-  .side-nav a { color: var(--faint); text-decoration: none; transition: color 150ms ease; }
+  .side-nav a {
+    position: relative;
+    color: var(--faint);
+    text-decoration: none;
+    transition: color 150ms ease;
+    padding-left: 12px;
+    margin-left: -12px;
+  }
+  .side-nav a::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 4px;
+    height: 4px;
+    margin-top: -2px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
   @media (hover: hover) and (pointer: fine) { .side-nav a:hover { color: var(--mid); } }
   .side-nav a.active { color: var(--ink); }
+  .side-nav a.active::before { opacity: 1; }
 
   /* Same centered geometry as home: the 912px measure, two tile columns. */
   .gallery-page {
