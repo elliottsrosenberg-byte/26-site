@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 898" font-family="Helvetica, Arial, sans-serif">
+<rect width="1600" height="898" rx="16" fill="#fbfbfb" stroke="#e7e5e3"/>
+<text x="48" y="64" font-size="26" fill="#231e17" font-weight="bold"># all-perennial</text>
+<text x="48" y="98" font-size="20" fill="#858280">Beta cohort of working designers and artists</text>
+<line x1="48" y1="118" x2="1552" y2="118" stroke="#e7e5e3"/>
+<rect x="48" y="150" width="52" height="52" rx="12" fill="#c98f6b"/>
+<text x="74" y="185" font-size="26" fill="#fbfbfb" text-anchor="middle" font-weight="bold">N</text>
+<text x="122" y="174" font-size="24" fill="#231e17" font-weight="bold">Naya</text>
+<text x="202" y="174" font-size="19" fill="#cecac6">Jul 21st at 5:54 PM</text>
+<text x="122" y="212" font-size="24" fill="#3d3934">Can you delete tasks or only mark them complete?</text>
+<rect x="48" y="282" width="52" height="52" rx="12" fill="#8b955f"/>
+<text x="74" y="317" font-size="26" fill="#fbfbfb" text-anchor="middle" font-weight="bold">E</text>
+<text x="122" y="306" font-size="24" fill="#231e17" font-weight="bold">Elliott</text>
+<text x="247" y="306" font-size="19" fill="#cecac6">Jul 22nd at 5:25 PM</text>
+<text x="122" y="344" font-size="24" fill="#3d3934">As of now only mark them as complete. You'd like to delete tasks?</text>
+<text x="122" y="384" font-size="24" fill="#3d3934">Tell me more about the difference for you?</text>
+<rect x="48" y="454" width="52" height="52" rx="12" fill="#7b8ba3"/>
+<text x="74" y="489" font-size="26" fill="#fbfbfb" text-anchor="middle" font-weight="bold">I</text>
+<text x="122" y="478" font-size="24" fill="#231e17" font-weight="bold">Isaac</text>
+<text x="217" y="478" font-size="19" fill="#cecac6">Jul 23rd at 3:30 PM</text>
+<text x="122" y="516" font-size="24" fill="#3d3934">maybe an archival feature? like a few weeks later I don't really care</text>
+<text x="122" y="556" font-size="24" fill="#3d3934">about a task but maybe I do want to see if/when it was completed</text>
+<text x="122" y="596" font-size="24" fill="#3d3934">later on?</text>
+<rect x="48" y="666" width="52" height="52" rx="12" fill="#c98f6b"/>
+<text x="74" y="701" font-size="26" fill="#fbfbfb" text-anchor="middle" font-weight="bold">N</text>
+<text x="122" y="690" font-size="24" fill="#231e17" font-weight="bold">Naya</text>
+<text x="202" y="690" font-size="19" fill="#cecac6">Jul 24th at 9:56 PM</text>
+<text x="122" y="728" font-size="24" fill="#3d3934">Just for if I make a task by mistake and want to get rid of it lol; I know</text>
+<text x="122" y="768" font-size="24" fill="#3d3934">I could just change the name and make it a real task but having a</text>
+<text x="122" y="808" font-size="24" fill="#3d3934">delete would feel right to me</text>
+</svg>

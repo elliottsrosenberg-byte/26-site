@@ -25,7 +25,7 @@ Working doc for the full redesign. Production (elliottsrosenberg.com) stays on `
 
 ### 2. Content
 - [x] Markdown content pipeline working end to end (content/{projects,writing}/*.md -> pages)
-- [ ] Port/draft project write-ups (Claude drafts, Elliott replaces text)
+- [ ] Port/draft project write-ups (Claude drafts, Elliott replaces text). Perennial hero case study drafted 2026-09-13 from codebase research
 - [ ] Writing pieces: Canvas First!, Onboarding Skeptics, People/Projects/Notes/Tasks/Posts/Docs, Why I Made my Lamps in China
 - [ ] Asset system: videos under PNG frames on grey backgrounds (Elliott produces raw video)
 
