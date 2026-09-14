@@ -397,20 +397,33 @@ const sections = [
     outline: none;
   }
   .cmd-input:focus { border-bottom-color: var(--ink); }
-  .cmd-list { margin: 0; padding: 0; list-style: none; }
-  .cmd-row { font-size: 14px; color: var(--ink); padding: 7px 10px; border-radius: 6px; cursor: pointer; }
+  /* The list reserves its full height so filtering never reflows the grid. */
+  .cmd-list { margin: 0; padding: 0; list-style: none; min-height: 216px; }
+  .cmd-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: var(--ink);
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 200ms ease, color 200ms ease;
+  }
   .cmd-row.active { background: var(--bg); }
   .cmd-row[hidden] { display: none; }
-  .cmd-row.run { animation: cmd-run 350ms ease; }
-  @keyframes cmd-run {
-    0% { background: var(--ink); color: var(--bg); }
-    100% { background: var(--bg); color: var(--ink); }
+  .cmd-row.run { background: var(--ink); color: var(--bg); }
+  .cmd-row::after {
+    content: '\2713';
+    opacity: 0;
+    transition: opacity 200ms ease;
   }
+  .cmd-row.run::after { opacity: 1; }
   .cmd-empty { font-size: 14px; color: var(--faint); padding: 7px 10px; }
 
   /* Clock */
   .tile-clock { height: 300px; display: grid; place-items: center; padding: 0; overflow: hidden; }
-  .clock-svg { transition: transform 300ms var(--ease-out); will-change: transform; }
+  .clock-svg { transition: transform 500ms var(--ease-out); will-change: transform; }
   .ring { fill: none; stroke-linecap: round; transform: rotate(-90deg); transform-origin: center; }
   .ring-h { stroke: var(--ink); stroke-width: 3; }
   .ring-m { stroke: var(--mid); stroke-width: 2.5; }
@@ -706,10 +719,13 @@ const sections = [
         empty.hidden = v.length > 0;
         if (v.length) { idx = Math.min(idx, v.length - 1); v[idx].classList.add('active'); }
       };
+      let runTimer: ReturnType<typeof setTimeout> | null = null;
       const run = (row: HTMLElement) => {
-        row.classList.remove('run');
+        rows.forEach((r) => r.classList.remove('run'));
         void row.offsetWidth;
         row.classList.add('run');
+        if (runTimer) clearTimeout(runTimer);
+        runTimer = setTimeout(() => row.classList.remove('run'), 900);
       };
       input.addEventListener('input', () => {
         const q = input.value.trim().toLowerCase();
@@ -765,7 +781,7 @@ const sections = [
       });
       tile.addEventListener('wheel', (e) => {
         e.preventDefault();
-        zoom = clamp(zoom * (e.deltaY < 0 ? 1.08 : 0.92));
+        zoom = clamp(zoom * Math.exp(-e.deltaY * 0.0012));
         apply();
       }, { passive: false });
     }
