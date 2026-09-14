@@ -53,9 +53,9 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
           var protect = document.createElement('style');
           protect.id = 'ai-protect';
           protect.textContent =
-            '[data-ai-protect] *{animation:none!important;filter:none!important;text-shadow:none!important;letter-spacing:normal!important;text-transform:none!important;}' +
-            '#ai-console{position:fixed!important;left:0!important;right:0!important;bottom:0!important;top:auto!important;background:#ffffff!important;color:#1f1c19!important;border-top:1px solid #e2e0dd!important;}' +
-            '.console-fab{position:fixed!important;right:36px!important;bottom:32px!important;background:#fbfbfb!important;color:#857f78!important;border:1px solid #e7e5e3!important;border-radius:10px!important;}';
+            '#ai-console,#console-fab-host{display:block!important;visibility:visible!important;position:fixed!important;margin:0!important;padding:0!important;border:0!important;background:none!important;transform:none!important;animation:none!important;transition:none!important;filter:none!important;opacity:1!important;width:auto!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;pointer-events:none!important;inset:auto!important;box-shadow:none!important;}' +
+            '#ai-console{left:0!important;right:0!important;bottom:0!important;top:auto!important;z-index:2147483000!important;}' +
+            '#console-fab-host{right:36px!important;bottom:32px!important;left:auto!important;top:auto!important;z-index:2147482999!important;}';
           document.head.appendChild(protect);
         } catch (e) {}
         if (!window.__baseBound) {
@@ -83,35 +83,183 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
 
     <slot />
 
-    <button class="console-fab" type="button" aria-label="Open console" data-ai-protect>
-      Console
-      <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
-        <path d="M2 6.5 L5 3.5 L8 6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
-    </button>
+    <div id="console-fab-host">
+      <template shadowrootmode="open">
+        <style>
+          :host { position: fixed; right: 36px; bottom: 32px; z-index: 10; display: block; pointer-events: none; }
+          button {
+            pointer-events: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border: 1px solid #e7e5e3;
+            border-radius: 10px;
+            background: #fbfbfb;
+            color: #857f78;
+            font-family: 'GT America', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+            font-size: 15px;
+            cursor: pointer;
+            transition: color 150ms ease, transform 150ms ease;
+          }
+          button:hover { color: #57534e; }
+          button:active { transform: scale(0.97); }
+          :host(.console-open) button { display: none; }
+          @media (max-width: 640px) { :host { right: 16px; bottom: 16px; } }
+        </style>
+        <button type="button" aria-label="Open console">
+          Console
+          <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
+            <path d="M2 6.5 L5 3.5 L8 6.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </template>
+    </div>
 
-    <section class="console" id="ai-console" data-ai-protect aria-label="AI redesign console">
-      <header class="console-head">
-        <span class="console-title">Console</span>
-        <button class="console-reset" type="button" hidden>reset design</button>
-        <button class="console-close" type="button" aria-label="Close console">×</button>
-      </header>
-      <p class="console-intro">After redesigning my website five times over the past five months, each time with a new design tool or AI integration, I decided that I'd always have a new tool or piece of technology to play with. Also, as a designer that works across multiple disciplines, I find that I'm always adjusting my portfolio to cater to different recruiters, thought leaders, or potential investors. As a gesture to the ever-changing nature of the internet, I'll let you design my website for me. If you're looking for a tech site, a fine arts gallery page, or an animation-heavy creative splurge, click the tags below for some examples.</p>
-      <p class="console-line">// this site can be redesigned by AI. describe a visual vibe below to transform it</p>
-      <p class="console-line">// quick start:</p>
-      <div class="console-chips">
-        <button type="button" class="console-chip">B2B SaaS</button>
-        <button type="button" class="console-chip">lo-fi computer</button>
-        <button type="button" class="console-chip">y2k</button>
-        <button type="button" class="console-chip">emo</button>
-      </div>
-      <p class="console-line console-status" aria-live="polite"></p>
-      <form class="console-form">
-        <span class="console-caret" aria-hidden="true">&gt;</span>
-        <input class="console-input" type="text" placeholder="describe what you want the site to look like..." maxlength="300" autocomplete="off" spellcheck="false" aria-label="Describe a vibe" />
-        <button class="console-go" type="submit">Run</button>
-      </form>
-      <p class="console-count">// 0 / 300</p>
+    <section id="ai-console" data-ai-protect aria-label="AI redesign console">
+      <template shadowrootmode="open">
+        <style>
+          :host { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: block; pointer-events: none; }
+          .drawer {
+            pointer-events: auto;
+            position: relative;
+            max-height: 60vh;
+            overflow-y: auto;
+            background: #ffffff;
+            color: #1f1c19;
+            border-top: 1px solid #e2e0dd;
+            font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+            font-size: 13.5px;
+            line-height: 1.65;
+            padding: 14px 24px 16px;
+            transform: translateY(102%);
+            transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1), visibility 260ms;
+            visibility: hidden;
+          }
+          :host(.open) .drawer { transform: none; visibility: visible; }
+          @media (prefers-reduced-motion: reduce) { .drawer { transition: none; } }
+
+          .progress {
+            position: sticky;
+            top: -14px;
+            display: none;
+            height: 2px;
+            margin: -14px -24px 12px;
+            background: #eeecea;
+          }
+          .progress b {
+            display: block;
+            height: 100%;
+            width: 0%;
+            background: #1d4ed8;
+            transition: width 500ms cubic-bezier(0.16, 1, 0.3, 1);
+          }
+          :host(.running) .progress, :host(.settling) .progress { display: block; }
+
+          .head { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+          .title { font-weight: 700; margin-right: auto; }
+          .reset, .close {
+            border: 1px solid #d5d2ce;
+            border-radius: 4px;
+            background: none;
+            color: #6f6a64;
+            font: inherit;
+            font-size: 12.5px;
+            line-height: 1.3;
+            padding: 3px 10px;
+            cursor: pointer;
+          }
+          .close { color: #1f1c19; padding: 3px 9px; }
+          .reset:hover, .close:hover { background: #f2f0ee; color: #1f1c19; }
+          .reset[hidden] { display: none; }
+
+          .intro { margin: 0 0 14px; color: #d9480f; max-width: 88ch; }
+          .line { margin: 0 0 8px; color: #6f6a64; }
+          .theme-line { color: #1f1c19; font-weight: 700; }
+          .plan-line, .theme-line { margin: 0 0 4px; }
+          .plan-line { color: #6f6a64; }
+          .status { margin: 0 0 8px; }
+          .status:empty, .theme-line:empty, .plan-line:empty { display: none; }
+          :host(.running) .status::after {
+            content: '▍';
+            margin-left: 2px;
+            animation: blink 1s steps(1) infinite;
+          }
+          @keyframes blink { 50% { opacity: 0; } }
+
+          .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 14px; }
+          .chip {
+            border: 1px solid #c9c5c1;
+            border-radius: 4px;
+            background: none;
+            color: #1d4ed8;
+            font: inherit;
+            font-size: 12.5px;
+            padding: 2px 10px;
+            cursor: pointer;
+          }
+          .chip:hover { background: #eef2fd; }
+
+          form { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+          .caret { color: #6f6a64; }
+          input {
+            flex: 1;
+            min-width: 0;
+            border: 1px solid #c9c5c1;
+            border-radius: 4px;
+            background: #ffffff;
+            color: #1f1c19;
+            font: inherit;
+            font-size: 16px;
+            padding: 7px 12px;
+            outline: none;
+          }
+          input:focus { border-color: #1f1c19; }
+          input:disabled { color: #a5a09a; }
+          .go {
+            border: 0;
+            border-radius: 4px;
+            background: #1d4ed8;
+            color: #ffffff;
+            font: inherit;
+            font-size: 13.5px;
+            padding: 8px 16px;
+            cursor: pointer;
+          }
+          .go:disabled { background: #a9b6d9; cursor: default; }
+          .count { margin: 8px 0 0; color: #a5a09a; font-size: 12.5px; }
+          @media (max-width: 640px) {
+            .drawer { padding: 12px 16px 14px; }
+            .progress { margin: -12px -16px 12px; top: -12px; }
+          }
+        </style>
+        <div class="drawer">
+          <div class="progress"><b></b></div>
+          <header class="head">
+            <span class="title">Console</span>
+            <button class="reset" type="button" hidden>reset design</button>
+            <button class="close" type="button" aria-label="Close console">×</button>
+          </header>
+          <p class="intro">After redesigning my website five times over the past five months, each time with a new design tool or AI integration, I decided that I'd always have a new tool or piece of technology to play with. Also, as a designer that works across multiple disciplines, I find that I'm always adjusting my portfolio to cater to different recruiters, thought leaders, or potential investors. As a gesture to the ever-changing nature of the internet, I'll let you design my website for me. If you're looking for a tech site, a fine arts gallery page, or an animation-heavy creative splurge, click the tags below for some examples.</p>
+          <p class="line">// this site can be redesigned by AI. describe a visual vibe below to transform it</p>
+          <p class="line">// quick start:</p>
+          <div class="chips">
+            <button type="button" class="chip">B2B SaaS</button>
+            <button type="button" class="chip">lo-fi computer</button>
+            <button type="button" class="chip">y2k</button>
+            <button type="button" class="chip">emo</button>
+          </div>
+          <p class="theme-line" aria-live="polite"></p>
+          <p class="plan-line"></p>
+          <p class="status" aria-live="polite"></p>
+          <form>
+            <span class="caret">&gt;</span>
+            <input type="text" placeholder="describe what you want the site to look like..." maxlength="300" autocomplete="off" spellcheck="false" aria-label="Describe a vibe" />
+            <button class="go" type="submit">Run</button>
+          </form>
+          <p class="count">// 0 / 300</p>
+        </div>
+      </template>
     </section>
 
     <style>
@@ -136,147 +284,29 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
         .theme-toggle:hover { color: var(--ink); }
       }
 
-      .console-fab {
-        position: fixed;
-        right: 36px;
-        bottom: 32px;
-        z-index: 10;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 18px;
-        border: 1px solid var(--hairline);
-        border-radius: 10px;
-        background: var(--bg);
-        color: var(--faint);
-        font: inherit;
-        font-size: 15px;
-        cursor: pointer;
-        transition: color 150ms ease, transform 150ms var(--ease-out);
-      }
-      @media (hover: hover) and (pointer: fine) {
-        .console-fab:hover { color: var(--mid); }
-      }
-      .console-fab:active { transform: scale(0.97); }
-
-      /* ── AI redesign console: the original terminal drawer. Hardcoded
-            colors on purpose: it keeps its identity under any redesign. ── */
-      .console {
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 20;
-        max-height: 60vh;
-        overflow-y: auto;
-        background: #ffffff;
-        color: #1f1c19;
-        border-top: 1px solid #e2e0dd;
-        font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-        font-size: 13.5px;
-        line-height: 1.65;
-        padding: 14px 24px 14px;
-        transform: translateY(102%);
-        transition: transform 260ms var(--ease-out), visibility 260ms;
-        visibility: hidden;
-      }
-      .console.open { transform: none; visibility: visible; }
-
-      .console-head { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
-      .console-title { font-weight: 700; margin-right: auto; }
-      .console-close {
-        border: 1px solid #d5d2ce;
-        border-radius: 4px;
-        background: none;
-        color: #1f1c19;
-        font: inherit;
-        line-height: 1;
-        padding: 3px 9px;
-        cursor: pointer;
-      }
-      .console-close:hover { background: #f2f0ee; }
-      .console-reset {
-        border: 1px solid #d5d2ce;
-        border-radius: 4px;
-        background: none;
-        color: #6f6a64;
-        font: inherit;
-        font-size: 12.5px;
-        padding: 3px 10px;
-        cursor: pointer;
-      }
-      .console-reset:hover { color: #1f1c19; background: #f2f0ee; }
-
-      .console-intro { margin: 0 0 14px; color: #d9480f; max-width: 1200px; }
-      .console-line { margin: 0 0 8px; color: #6f6a64; }
-      .console-status:empty { display: none; }
-      .console.running .console-status::after {
-        content: '▍';
-        margin-left: 2px;
-        animation: console-blink 1s steps(1) infinite;
-      }
-      @keyframes console-blink { 50% { opacity: 0; } }
-
-      .console-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 14px; }
-      .console-chip {
-        border: 1px solid #c9c5c1;
-        border-radius: 4px;
-        background: none;
-        color: #1d4ed8;
-        font: inherit;
-        font-size: 12.5px;
-        padding: 2px 10px;
-        cursor: pointer;
-      }
-      .console-chip:hover { background: #eef2fd; }
-
-      .console-form { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
-      .console-caret { color: #6f6a64; }
-      .console-input {
-        flex: 1;
-        min-width: 0;
-        border: 1px solid #c9c5c1;
-        border-radius: 4px;
-        background: #ffffff;
-        color: #1f1c19;
-        font: inherit;
-        font-size: 16px;
-        padding: 7px 12px;
-        outline: none;
-      }
-      .console-input:focus { border-color: #1f1c19; }
-      .console-input:disabled { color: #a5a09a; }
-      .console-go {
-        border: 0;
-        border-radius: 4px;
-        background: #1d4ed8;
-        color: #ffffff;
-        font: inherit;
-        font-size: 13.5px;
-        padding: 8px 16px;
-        cursor: pointer;
-      }
-      .console-go:disabled { background: #a9b6d9; cursor: default; }
-      .console-count { margin: 8px 0 0; color: #a5a09a; font-size: 12.5px; }
-
       @media (max-width: 640px) {
         .theme-toggle { top: 16px; right: 16px; }
-        .console-fab { right: 16px; bottom: 16px; }
-        .console { padding: 12px 16px; }
       }
     </style>
 
     <script>
       // ── AI redesign engine ─────────────────────────────────────────────
+      // The console and its FAB live in shadow roots, so a redesign's CSS
+      // can't reach their internals; the protect layer pins host geometry.
       {
-        const fab = document.querySelector<HTMLButtonElement>('.console-fab');
+        const fabHost = document.getElementById('console-fab-host');
+        const fab = fabHost?.shadowRoot?.querySelector('button');
         const panel = document.getElementById('ai-console');
-        const form = panel?.querySelector<HTMLFormElement>('.console-form');
-        const input = panel?.querySelector<HTMLInputElement>('.console-input');
-        const go = panel?.querySelector<HTMLButtonElement>('.console-go');
-        const status = panel?.querySelector<HTMLElement>('.console-status');
-        const resetBtn = panel?.querySelector<HTMLButtonElement>('.console-reset');
-        const counter = panel?.querySelector<HTMLElement>('.console-count');
+        const root = panel?.shadowRoot;
+        const form = root?.querySelector('form');
+        const input = root?.querySelector('input');
+        const go = root?.querySelector<HTMLButtonElement>('.go');
+        const status = root?.querySelector<HTMLElement>('.status');
+        const themeLine = root?.querySelector<HTMLElement>('.theme-line');
+        const planLine = root?.querySelector<HTMLElement>('.plan-line');
+        const bar = root?.querySelector<HTMLElement>('.progress b');
+        const resetBtn = root?.querySelector<HTMLButtonElement>('.reset');
+        const counter = root?.querySelector<HTMLElement>('.count');
         const styleEl = document.getElementById('ai-style') as HTMLStyleElement | null;
 
         const FONTS_URL = 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Space+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,900;1,400&family=Instrument+Serif:ital@0;1&family=DM+Serif+Display&family=Cormorant+Garamond:wght@400;700&family=IBM+Plex+Mono:wght@400;600&family=VT323&family=Silkscreen:wght@400;700&family=Bungee&family=Archivo+Black&family=Bebas+Neue&family=Caveat:wght@400;700&family=Press+Start+2P&display=swap';
@@ -290,7 +320,7 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
           }
         };
 
-        if (fab && panel && form && input && go && status && resetBtn && counter && styleEl) {
+        if (fabHost && fab && panel && root && form && input && go && status && themeLine && planLine && bar && resetBtn && counter && styleEl) {
           input.addEventListener('input', () => {
             counter.textContent = `// ${input.value.length} / 300`;
           });
@@ -305,37 +335,47 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
 
           const openPanel = () => {
             panel.classList.add('open');
-            fab.hidden = true;
+            fabHost.classList.add('console-open');
             syncState();
             setTimeout(() => input.focus(), 220);
           };
           const closePanel = () => {
             panel.classList.remove('open');
-            fab.hidden = false;
+            fabHost.classList.remove('console-open');
           };
 
           fab.addEventListener('click', openPanel);
-          panel.querySelector('.console-close')?.addEventListener('click', closePanel);
+          root.querySelector('.close')?.addEventListener('click', closePanel);
           document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && panel.classList.contains('open')) closePanel();
           });
 
-          panel.querySelectorAll<HTMLButtonElement>('.console-chip').forEach((chip) => {
+          root.querySelectorAll<HTMLButtonElement>('.chip').forEach((chip) => {
             chip.addEventListener('click', () => {
               input.value = chip.textContent ?? '';
               form.requestSubmit();
             });
           });
 
+          // Streams open with THEME / PLAN comments, then CSS. Typical full
+          // output lands near 12kb; the bar eases toward that and holds at
+          // 96% until the stream actually closes.
+          const TARGET_BYTES = 12 * 1024;
+          const HEAD_RE = /\/\*\s*(THEME|PLAN):\s*([\s\S]*?)\*\//g;
+
           const run = async (vibe: string) => {
             if (running) return;
             running = true;
             ensureFonts();
             panel.classList.add('running');
+            panel.classList.remove('settling');
             input.disabled = true;
             go.disabled = true;
             resetBtn.hidden = true;
-            setStatus('// designing…');
+            themeLine.textContent = '';
+            planLine.textContent = '';
+            bar.style.width = '4%';
+            setStatus('// planning…');
             let css = '';
             try {
               const res = await fetch('/api/redesign', {
@@ -351,13 +391,25 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
                 if (done) break;
                 css += decoder.decode(value, { stream: true });
                 styleEl.textContent = css.replace(/^```(?:css)?/i, '');
+                HEAD_RE.lastIndex = 0;
+                let m;
+                while ((m = HEAD_RE.exec(css))) {
+                  const text = m[2].trim().replace(/\s+/g, ' ');
+                  if (m[1] === 'THEME') themeLine.textContent = `// theme: ${text}`;
+                  else planLine.textContent = `// plan: ${text}`;
+                }
+                const pct = Math.min(96, 4 + (css.length / TARGET_BYTES) * 92);
+                bar.style.width = `${pct}%`;
                 setStatus(`// designing… ${(css.length / 1024).toFixed(1)}kb`);
               }
               css = css.replace(/^```(?:css)?/i, '').replace(/```\s*$/, '');
               styleEl.textContent = css;
               localStorage.setItem('ai-css', css);
               localStorage.setItem('ai-vibe', vibe);
-              setStatus(`// ${vibe}`);
+              bar.style.width = '100%';
+              setStatus(`// done · ${(css.length / 1024).toFixed(1)}kb · ${vibe}`);
+              panel.classList.add('settling');
+              setTimeout(() => panel.classList.remove('settling'), 1200);
             } catch (err) {
               setStatus('// something broke. try again.');
               console.error('redesign failed:', err);
@@ -366,7 +418,7 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
               panel.classList.remove('running');
               input.disabled = false;
               go.disabled = false;
-              syncState();
+              resetBtn.hidden = !localStorage.getItem('ai-vibe');
             }
           };
 
@@ -381,6 +433,9 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
             localStorage.removeItem('ai-css');
             localStorage.removeItem('ai-vibe');
             input.value = '';
+            counter.textContent = '// 0 / 300';
+            themeLine.textContent = '';
+            planLine.textContent = '';
             setStatus('');
             syncState();
           });
