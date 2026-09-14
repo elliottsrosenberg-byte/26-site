@@ -38,6 +38,15 @@ function remarkFigures() {
 export default defineConfig({
   site: 'https://www.elliottsrosenberg.com',
   devToolbar: { enabled: false },
+  vite: {
+    server: {
+      proxy: {
+        // In dev, /api is served by scripts/api-dev.mjs (the same handler
+        // Vercel runs in production).
+        '/api': 'http://localhost:8787',
+      },
+    },
+  },
   markdown: {
     remarkPlugins: [remarkFigures],
     syntaxHighlight: false,
