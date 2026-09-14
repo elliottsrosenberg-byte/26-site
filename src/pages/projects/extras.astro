@@ -1,0 +1,411 @@
+---
+import Base from '../../layouts/Base.astro';
+
+interface Tile {
+  cat: 'software' | 'editorial' | 'objects' | 'experiments';
+  src?: string;
+  title: string;
+  special?: 'palette' | 'specimen' | 'field';
+}
+
+const tiles: Tile[] = [
+  { cat: 'software', src: '/media/perennial/home.png', title: 'Perennial, home canvas' },
+  { cat: 'editorial', src: '/extras/waiting-p01.jpg', title: 'Waiting Magazine, spread 01' },
+  { cat: 'objects', src: '/extras/sedum-p01.jpg', title: 'Sedum lamp' },
+  { cat: 'experiments', special: 'palette', title: 'Every word has a color' },
+  { cat: 'software', src: '/extras/prnl-login-light.png', title: 'Perennial, login' },
+  { cat: 'editorial', src: '/extras/waiting-p02.jpg', title: 'Waiting Magazine, spread 02' },
+  { cat: 'objects', src: '/extras/sedum-p02.jpg', title: 'Sedum lamp, detail' },
+  { cat: 'experiments', special: 'specimen', title: 'GT America, live specimen' },
+  { cat: 'software', src: '/extras/prnl-calendar.png', title: 'Perennial, calendar' },
+  { cat: 'editorial', src: '/extras/oneg-p01.jpg', title: 'Oneg Home, brand pages' },
+  { cat: 'objects', src: '/extras/sedum-p03.jpg', title: 'Sedum lamp, process' },
+  { cat: 'software', src: '/extras/prnl-home-dark.png', title: 'Perennial, dark mode' },
+  { cat: 'experiments', special: 'field', title: 'Field' },
+  { cat: 'editorial', src: '/extras/waiting-p03.jpg', title: 'Waiting Magazine, spread 03' },
+  { cat: 'objects', src: '/extras/sedum-p04.jpg', title: 'Sedum lamp, in situ' },
+  { cat: 'software', src: '/media/perennial/outreach.png', title: 'Perennial, outreach' },
+  { cat: 'editorial', src: '/extras/oneg-p02.jpg', title: 'Oneg Home, product pages' },
+  { cat: 'editorial', src: '/extras/waiting-p04.jpg', title: 'Waiting Magazine, spread 04' },
+];
+
+const cats = [
+  { key: 'software', label: 'Software' },
+  { key: 'editorial', label: 'Editorial' },
+  { key: 'objects', label: 'Objects' },
+  { key: 'experiments', label: 'Experiments' },
+];
+
+const catLabel = (k: string) => cats.find((c) => c.key === k)?.label ?? k;
+---
+<Base title="Elliott Rosenberg / Extras" description="Selected works and experiments.">
+  <nav class="crumb" aria-label="Breadcrumb">
+    <a href="/">Elliott Rosenberg</a>
+    <span class="crumb-sep" aria-hidden="true">/</span>
+    <span class="crumb-here">Extras</span>
+  </nav>
+
+  <main class="gallery-page">
+    <header class="masthead">
+      <h1 class="masthead-name">Extras</h1>
+      <p class="masthead-role">Selected works and experiments across software, editorial, and objects.</p>
+    </header>
+
+    <nav class="cat-tabs" aria-label="Filter works">
+      {cats.map((c) => (
+        <button class="cat-tab" type="button" data-cat={c.key} aria-pressed="false">{c.label}</button>
+      ))}
+    </nav>
+
+    <div class="tile-grid">
+      {tiles.map((t, i) => (
+        <figure class="tile" data-cat={t.cat} style={`--i:${i}`}>
+          {t.src ? (
+            <img src={t.src} alt={t.title} loading={i < 6 ? 'eager' : 'lazy'} />
+          ) : t.special === 'palette' ? (
+            <div class="tile-live tile-palette">
+              <label class="palette-label" for="palette-input">Type a word. The hash picks its color, the same way Perennial colors every tag.</label>
+              <input id="palette-input" class="palette-input" type="text" value="perennial" maxlength="24" autocomplete="off" spellcheck="false" />
+              <div class="palette-chip" aria-live="polite">
+                <span class="palette-swatch"></span>
+                <span class="palette-name"></span>
+              </div>
+            </div>
+          ) : t.special === 'specimen' ? (
+            <div class="tile-live tile-specimen" tabindex="0" aria-label="Interactive type specimen. Move the pointer to change weight and spacing.">
+              <span class="specimen-word">extras</span>
+              <span class="specimen-meta"><span class="specimen-weight">400</span> · GT America</span>
+            </div>
+          ) : (
+            <div class="tile-live tile-field">
+              <canvas class="field-canvas" aria-label="A field of dots that leans toward the cursor"></canvas>
+            </div>
+          )}
+          <figcaption>
+            <span class="tile-title">{t.title}</span>
+            <span class="tile-cat">{catLabel(t.cat)}</span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </main>
+</Base>
+
+<style>
+  .crumb {
+    position: fixed;
+    top: 34px;
+    left: 40px;
+    z-index: 10;
+    font-size: 15px;
+  }
+  .crumb a { text-decoration: none; color: var(--mid); transition: color 150ms ease; }
+  @media (hover: hover) and (pointer: fine) { .crumb a:hover { color: var(--ink); } }
+  .crumb-sep { color: var(--faint); margin: 0 4px; }
+  .crumb-here { color: var(--faint); }
+
+  .gallery-page {
+    max-width: 1360px;
+    margin-inline: auto;
+    padding: 150px var(--pad-x) 120px;
+  }
+
+  .masthead {
+    margin: 0 0 48px calc(-1 * var(--outdent));
+    animation: rise 400ms var(--ease-out) backwards;
+  }
+  .masthead-name { margin: 0; font-size: inherit; font-weight: 600; }
+  .masthead-role { margin: 0; color: var(--mid); }
+
+  .cat-tabs {
+    display: flex;
+    gap: 24px;
+    margin: 0 0 40px calc(-1 * var(--outdent));
+    animation: rise 400ms var(--ease-out) 60ms backwards;
+  }
+  .cat-tab {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: 15px;
+    color: var(--faint);
+    cursor: pointer;
+    padding-bottom: 2px;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 1px;
+    transition: color 150ms ease, background-size 300ms var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .cat-tab:hover { color: var(--mid); }
+  }
+  .cat-tab[aria-pressed='true'] {
+    color: var(--ink);
+    background-size: 100% 1px;
+  }
+
+  .tile-grid {
+    columns: 3 340px;
+    column-gap: 24px;
+    animation: rise 400ms var(--ease-out) 120ms backwards;
+  }
+
+  .tile {
+    break-inside: avoid;
+    margin: 0 0 40px;
+  }
+  .tile.is-entering { animation: rise 260ms var(--ease-out) backwards; }
+  .tile img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    border: 1px solid var(--hairline);
+    background: var(--surface);
+    display: block;
+  }
+  .tile figcaption {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--mid);
+  }
+  .tile-cat { color: var(--faint); }
+
+  .tile-live {
+    border-radius: 10px;
+    border: 1px solid var(--hairline);
+    background: var(--surface);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Every word has a color */
+  .tile-palette { padding: 28px; }
+  .palette-label {
+    display: block;
+    font-size: 13px;
+    color: var(--mid);
+    max-width: 30ch;
+    margin-bottom: 18px;
+  }
+  .palette-input {
+    width: 100%;
+    border: 0;
+    border-bottom: 1px solid var(--faint);
+    background: none;
+    font: inherit;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ink);
+    padding: 4px 0 8px;
+    outline: none;
+  }
+  .palette-input:focus { border-bottom-color: var(--ink); }
+  .palette-chip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 22px;
+  }
+  .palette-swatch {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: #537f48;
+    transition: background-color 300ms var(--ease-out);
+  }
+  .palette-name { font-size: 14px; color: var(--mid); font-variant-numeric: tabular-nums; }
+
+  /* GT America specimen */
+  .tile-specimen {
+    height: 300px;
+    display: grid;
+    place-items: center;
+    cursor: crosshair;
+    user-select: none;
+  }
+  .specimen-word {
+    font-size: 72px;
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: 0;
+    line-height: 1;
+  }
+  .specimen-meta {
+    position: absolute;
+    left: 20px;
+    bottom: 16px;
+    font-size: 12px;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Field */
+  .tile-field { height: 380px; }
+  .field-canvas { width: 100%; height: 100%; display: block; }
+
+  @media (max-width: 640px) {
+    .gallery-page { padding-top: 110px; }
+    .cat-tabs { flex-wrap: wrap; gap: 16px 20px; }
+    .tile-grid { columns: 1; }
+  }
+</style>
+
+<script>
+  // ── Filter tabs: one active category, click again to show everything.
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>('.cat-tab')];
+  const tileEls = [...document.querySelectorAll<HTMLElement>('.tile')];
+
+  function applyFilter(cat: string | null, animate = true) {
+    tabs.forEach((t) => t.setAttribute('aria-pressed', String(t.dataset.cat === cat)));
+    tileEls.forEach((tile) => {
+      const show = !cat || tile.dataset.cat === cat;
+      if (show && tile.hidden && animate) {
+        tile.classList.remove('is-entering');
+        void tile.offsetWidth;
+        tile.classList.add('is-entering');
+      }
+      tile.hidden = !show;
+    });
+    const url = new URL(location.href);
+    if (cat) url.searchParams.set('c', cat);
+    else url.searchParams.delete('c');
+    history.replaceState(null, '', url);
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const active = tab.getAttribute('aria-pressed') === 'true';
+      applyFilter(active ? null : tab.dataset.cat!);
+    });
+  });
+
+  const initial = new URL(location.href).searchParams.get('c');
+  if (initial && tabs.some((t) => t.dataset.cat === initial)) applyFilter(initial, false);
+
+  // ── Every word has a color: djb2 hash into Perennial's ten color palette.
+  const PALETTE: [string, string][] = [
+    ['Green', '#90c84a'], ['Grey', '#b5b5b6'], ['Brown', '#8b5d51'], ['Orange', '#e78625'],
+    ['Yellow', '#e8c547'], ['Olive', '#537f48'], ['Blue', '#2564ab'], ['Purple', '#6d50a1'],
+    ['Rose', '#dc5270'], ['Red', '#da4126'],
+  ];
+  const pInput = document.querySelector<HTMLInputElement>('.palette-input');
+  const pSwatch = document.querySelector<HTMLElement>('.palette-swatch');
+  const pName = document.querySelector<HTMLElement>('.palette-name');
+  function wordColor(word: string) {
+    let h = 5381;
+    for (let i = 0; i < word.length; i++) h = ((h << 5) + h + word.charCodeAt(i)) >>> 0;
+    return PALETTE[h % PALETTE.length];
+  }
+  function paintWord() {
+    if (!pInput || !pSwatch || !pName) return;
+    const w = pInput.value.trim().toLowerCase();
+    if (!w) { pName.textContent = ''; return; }
+    const [name, hex] = wordColor(w);
+    pSwatch.style.backgroundColor = hex;
+    pName.textContent = `${name} ${hex}`;
+  }
+  pInput?.addEventListener('input', paintWord);
+  paintWord();
+
+  // ── GT America specimen: pointer x picks the weight, y sets the tracking.
+  const spec = document.querySelector<HTMLElement>('.tile-specimen');
+  const specWord = document.querySelector<HTMLElement>('.specimen-word');
+  const specWeight = document.querySelector<HTMLElement>('.specimen-weight');
+  const WEIGHTS = [300, 400, 500, 600];
+  if (spec && specWord && specWeight) {
+    spec.addEventListener('pointermove', (e) => {
+      const r = spec.getBoundingClientRect();
+      const fx = Math.min(Math.max((e.clientX - r.left) / r.width, 0), 0.999);
+      const fy = Math.min(Math.max((e.clientY - r.top) / r.height, 0), 1);
+      const w = WEIGHTS[Math.floor(fx * WEIGHTS.length)];
+      specWord.style.fontWeight = String(w);
+      specWord.style.letterSpacing = `${((fy - 0.5) * 0.12).toFixed(3)}em`;
+      specWeight.textContent = String(w);
+    });
+    spec.addEventListener('click', () => {
+      const cur = Number(specWord.style.fontWeight || 400);
+      const next = WEIGHTS[(WEIGHTS.indexOf(cur) + 1) % WEIGHTS.length];
+      specWord.style.fontWeight = String(next);
+      specWeight.textContent = String(next);
+    });
+  }
+
+  // ── Field: a quiet grid of dots that leans toward the cursor.
+  const fieldWrap = document.querySelector<HTMLElement>('.tile-field');
+  const canvas = document.querySelector<HTMLCanvasElement>('.field-canvas');
+  if (fieldWrap && canvas) {
+    const ctx = canvas.getContext('2d')!;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let w = 0, h = 0, dpr = 1;
+    let mx = -9999, my = -9999;
+    let raf: number | null = null;
+    let visible = false;
+    const GAP = 26;
+
+    const styles = () => {
+      const cs = getComputedStyle(document.documentElement);
+      return { faint: cs.getPropertyValue('--faint').trim(), ink: cs.getPropertyValue('--ink').trim() };
+    };
+
+    function resize() {
+      dpr = Math.min(devicePixelRatio || 1, 2);
+      w = fieldWrap!.clientWidth;
+      h = fieldWrap!.clientHeight;
+      canvas!.width = w * dpr;
+      canvas!.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      draw();
+    }
+
+    function draw() {
+      const { faint, ink } = styles();
+      ctx.clearRect(0, 0, w, h);
+      for (let x = GAP / 2; x < w; x += GAP) {
+        for (let y = GAP / 2; y < h; y += GAP) {
+          const dx = mx - x, dy = my - y;
+          const d = Math.hypot(dx, dy);
+          const pull = Math.max(0, 1 - d / 150);
+          const ox = d > 0 ? (dx / d) * pull * 7 : 0;
+          const oy = d > 0 ? (dy / d) * pull * 7 : 0;
+          ctx.fillStyle = pull > 0.02 ? ink : faint;
+          ctx.globalAlpha = 0.35 + pull * 0.65;
+          ctx.beginPath();
+          ctx.arc(x + ox, y + oy, 1.5 + pull * 1.2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function tick() {
+      draw();
+      raf = visible && mx > -9000 ? requestAnimationFrame(tick) : null;
+    }
+
+    canvas.addEventListener('pointermove', (e) => {
+      const r = canvas.getBoundingClientRect();
+      mx = e.clientX - r.left;
+      my = e.clientY - r.top;
+      if (!reduce && raf === null) raf = requestAnimationFrame(tick);
+      if (reduce) draw();
+    });
+    canvas.addEventListener('pointerleave', () => {
+      mx = -9999; my = -9999;
+      draw();
+    });
+
+    new IntersectionObserver((es) => {
+      visible = es[0].isIntersecting;
+      if (visible) resize();
+      else if (raf !== null) { cancelAnimationFrame(raf); raf = null; }
+    }).observe(fieldWrap);
+
+    addEventListener('resize', resize);
+    resize();
+  }
+</script>
