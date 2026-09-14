@@ -4,6 +4,12 @@ description: Studio management SaaS tool for artists.
 order: 1
 ---
 
+## Try it
+
+Perennial is live in beta at [app.perennial.design](https://app.perennial.design). Log in and explore the full app for yourself with a seeded demo studio:
+
+Email `demo@perennial.design` with password `PerennialDemo1` gets you in, with seed data standing in for a working studio.
+
 ## Mission
 
 Perennial helps artists and designers turn their craft into a business, so they can spend more time making the work because it finally pays for itself. It gives an independent practice the tangible pieces it actually needs, without assuming you speak the language of operations.
