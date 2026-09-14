@@ -2,6 +2,7 @@
 title: Siegel
 description: Brand, messaging, and business development for an architecture firm.
 order: 4
+link: https://siegel.design
 ---
 
 ## Overview
