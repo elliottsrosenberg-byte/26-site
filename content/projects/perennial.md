@@ -40,6 +40,8 @@ I wireframed before I wrote code: 28 standalone HTML wireframes, built desktop f
 
 The interface is built on canvases. The home screen is a freeform canvas: your studio at a glance and a space to think. A tool rail on the left carries drawing tools and live studio objects, so a morning of planning can mix sketched shapes, notes, task cards, and calendar blocks on one surface. The greeting, the getting started cards, and the first conversation with the assistant all happen on the canvas itself, and the "Ask Ash anything" bar anchors the bottom of the screen. Makers think spatially and visually, so the software opens the way a studio table does: a thinking surface first, with the database working underneath it.
 
+![Home is a canvas: the studio at a glance and a space to think, with Ash anchored at the bottom.](/media/perennial/home.png)
+
 The canvas idea runs through the whole app. Every project, contact, organization, and outreach target opens onto its own canvas as the first tab, with the structured fields alongside. The canvas is shared where the entities are shared: an outreach target wraps the underlying contact, and writing on one surface writes on the other, so the same knowledge shows up in Network and in Outreach.
 
 ![A project opens as a panel over the board: canvas first, then tasks, contacts, notes, files, and a finance roll up.](/media/perennial/project-scrim-tasks.png)
