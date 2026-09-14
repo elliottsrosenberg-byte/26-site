@@ -12,6 +12,8 @@ Historically, artists and designers have been alienated from modern management t
 
 After a year of consulting for independent artists and small design studios, I realized the potential of a comprehensive software tool that provides education and a platform for business infrastructure.
 
+Perennial refers to the enduring nature of hardy plants, recurring...
+
 > Perennial is live in beta at [app.perennial.design](https://app.perennial.design). Log in and check out the app for yourself, or use:
 >
 >`email: demo@perennial.design` 
@@ -30,6 +32,8 @@ The interviews also mapped the landscape. Tools at the Salesforce end of the spe
 The research continues inside the product. Onboarding is a nine step structured interview that asks, in the user's own words, what is broken right now and what is urgent on their plate. Those answers configure the project board, seed the outreach pipelines, and brief the assistant before the first conversation.
 
 ## System
+
+![The studio graph as it stands: seven families of records under one owner, with the money chain running underneath.](/media/perennial/data-model.svg "bare")
 
 The core decision was to model the studio as one connected graph. A client connects to their projects. Projects roll up time and expenses. Time and expenses become invoice line items. Invoices get paid through Stripe and reconcile against the real bank feed. Because everything lives in one model, every surface shows one true picture of the studio.
 
