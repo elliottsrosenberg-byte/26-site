@@ -746,11 +746,15 @@ const sections = [
         if (e.key === 'ArrowDown') { e.preventDefault(); idx = Math.min(idx + 1, v.length - 1); paint(); }
         if (e.key === 'ArrowUp') { e.preventDefault(); idx = Math.max(idx - 1, 0); paint(); }
         if (e.key === 'Enter' && v[idx]) {
-          run(v[idx]);
-          input.value = '';
-          rows.forEach((r) => { r.hidden = false; });
-          idx = rows.indexOf(v[idx]);
-          paint();
+          const row = v[idx];
+          run(row);
+          // Let the confirmation land where it is, then clear and restore.
+          setTimeout(() => {
+            input.value = '';
+            rows.forEach((r) => { r.hidden = false; });
+            idx = rows.indexOf(row);
+            paint();
+          }, 950);
         }
       });
       rows.forEach((r) => {
