@@ -40,5 +40,6 @@ export default defineConfig({
   devToolbar: { enabled: false },
   markdown: {
     remarkPlugins: [remarkFigures],
+    syntaxHighlight: false,
   },
 });
