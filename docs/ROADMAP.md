@@ -35,17 +35,15 @@ Working doc for the full redesign. Production (elliottsrosenberg.com) stays on `
 - [ ] prefers-reduced-motion pass
 
 ### 4. AI redesign console
-- [ ] Build console to the Figma design (the "Console ^" pill + panel UI is approved as designed)
-- [ ] Rework the redesign engine (v2 was too slow and too inaccurate). Directions to explore:
-      - Semantic DOM contract: small, stable, documented styling surface in the prompt (accuracy)
-      - Streaming apply: inject CSS progressively as it streams so the design builds up live (perceived speed)
-      - Two-phase: instant design-token pass (colors/type applied in ~2s), full stylesheet streams behind it
-      - Structured output (tokens JSON + CSS) instead of freeform CSS+JS blob
-      - Re-evaluate model choice for the speed/creativity tradeoff
+- [x] Console built: pill opens a protected panel (input, vibe chips, status, reset); hardcoded colors survive redesigns
+- [x] Engine rebuilt (2026-09-14): claude-opus-5 streaming raw CSS; tokens-first output contract
+      lands color in under 2s, full design streams in live over ~40s; semantic DOM contract in
+      lib/redesign-prompt.mjs; CSS-only output (no JS injection); localStorage persistence restored
+      before first paint; local dev via scripts/api-dev.mjs + vite proxy
 - [ ] Hero image idea (2026-09-13): home DOM could carry a hidden hero image asset that only
       AI redesigns reveal/use, giving redesigns visual material without the default design
       paying for it. Decide during engine design.
-- [ ] Console chrome protection pattern carried over from v2
+- [x] Console chrome protection: #ai-protect style layer pins the console above any AI CSS
 - [ ] Share page: rework (v2 gallery design does not carry over as-is)
 
 ### 5. Ship
