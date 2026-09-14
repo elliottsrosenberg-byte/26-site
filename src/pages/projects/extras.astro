@@ -23,6 +23,19 @@ const WEB_TILES = [
   { src: '/extras/paxSite.mp4', title: 'Pax Hand Pokes', href: 'https://paxhandpokes.com' },
 ];
 
+const VIDEO_TILES = [
+  { src: '/extras/cal-nissen.mp4', title: 'Jacques Nissen, Callahan 2024', href: 'https://www.youtube.com/watch?v=uJf99sPJ7vs' },
+  { src: '/extras/wtg-zarah.mp4', title: 'Waiting, meet the ED3 cover stylist', href: 'https://www.instagram.com/reel/DR2oUE1iRHc/' },
+  { src: '/extras/cal-krebs.mp4', title: 'Jolie Krebs, Callahan 2024', href: 'https://www.youtube.com/watch?v=d7lv8athVaA' },
+  { src: '/extras/wtg-comedy.mp4', title: 'Waiting, a comedy origin story', href: 'https://www.instagram.com/reel/DXsXZjxjTpR/' },
+  { src: '/extras/cal-gordon.mp4', title: 'Leo Gordon, Callahan 2023', href: 'https://www.youtube.com/watch?v=fpV5XuxUWDM' },
+  { src: '/extras/wtg-adele.mp4', title: 'Waiting, drawing Adele at The Met', href: 'https://www.instagram.com/reel/DW9EjgvDphY/' },
+  { src: '/extras/cal-randolph.mp4', title: 'John Randolph, Callahan 2022', href: 'https://www.youtube.com/watch?v=UnSXCR9DoQ4' },
+  { src: '/extras/wtg-afterwork.mp4', title: 'Waiting, fashion week at AFTERWORK', href: 'https://www.instagram.com/reel/DVqojQukepn/' },
+  { src: '/extras/cal-villeneuve.mp4', title: 'Dylan Villeneuve, college highlights', href: 'https://www.youtube.com/watch?v=jMh3Zr1M-24' },
+  { src: '/extras/wtg-service.mp4', title: 'Waiting, stories from service', href: 'https://www.instagram.com/reel/DUv6-33DT2o/' },
+];
+
 const PHYSICAL_TILES = [
   { src: '/extras/sedum-colorways.jpg', title: 'Sedum lamp, four colorways' },
   { src: '/extras/UzuHero1.jpg', title: 'Uzu chair, white oak' },
@@ -49,6 +62,7 @@ const INTERACTIVE: { id: string; title: string }[] = [
 const sections = [
   { id: 'interactive', label: 'Interactive' },
   { id: 'web', label: 'Web' },
+  { id: 'video', label: 'Video' },
   { id: 'static', label: 'Static' },
   { id: 'physical', label: 'Physical' },
 ];
@@ -167,6 +181,20 @@ const sections = [
         {WEB_TILES.map((t) => (
           <figure class="tile">
             <a href={t.href} target="_blank" rel="noopener" aria-label={`${t.title}, opens the live site`}>
+              <video src={t.src} autoplay muted loop playsinline preload="metadata"></video>
+            </a>
+            <figcaption><span class="tile-title">{t.title}</span></figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <section id="video" class="gallery-section">
+      <h2 class="section-label">Video</h2>
+      <div class="tile-grid">
+        {VIDEO_TILES.map((t) => (
+          <figure class="tile">
+            <a href={t.href} target="_blank" rel="noopener" aria-label={`${t.title}, opens the full video`}>
               <video src={t.src} autoplay muted loop playsinline preload="metadata"></video>
             </a>
             <figcaption><span class="tile-title">{t.title}</span></figcaption>
