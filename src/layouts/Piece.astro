@@ -131,9 +131,8 @@ const sections = headings.filter((h) => h.depth === 2);
   /* Default media setting, per the Figma project page: the image (the UI)
      sits with rounded corners and a light shadow inside the grey surface
      block; the caption sits BELOW the block, in the case study. */
-  /* Media mirrors the header outdent: it extends past the column's right
-     edge by the same distance the section labels hang off the left. */
-  .piece :global(figure) { margin: 56px calc(-1 * var(--outdent)) 56px 0; }
+  /* Media overhangs the column's right edge at twice the header outdent. */
+  .piece :global(figure) { margin: 56px calc(-2 * var(--outdent)) 56px 0; }
   .piece :global(.media-frame) {
     display: block;
     padding: clamp(24px, 4vw, 64px);
