@@ -195,7 +195,9 @@ const sections = [
     font-size: 15px;
     transition: opacity 200ms ease, visibility 200ms;
   }
-  @media (max-width: 1119px) { .side-nav { opacity: 0; visibility: hidden; } }
+  /* The 912 measure needs more room than the piece pages' 680 before the
+     sidebar fits without overlap. */
+  @media (max-width: 1359px) { .side-nav { opacity: 0; visibility: hidden; } }
   .side-nav ul { margin: 0; padding: 0; list-style: none; }
   .side-nav li { margin-bottom: 10px; }
   .side-nav a { position: relative; color: var(--faint); text-decoration: none; transition: color 150ms ease; }
@@ -216,13 +218,14 @@ const sections = [
   .side-nav a.active { color: var(--ink); }
   .side-nav a.active::before { opacity: 1; }
 
+  /* Same centered geometry as home: the 912px measure, two tile columns. */
   .gallery-page {
-    max-width: 1360px;
+    max-width: calc(var(--measure) + 2 * var(--pad-x));
     margin-inline: auto;
     padding: 150px var(--pad-x) 120px;
   }
 
-  .gallery-section { margin-bottom: 96px; animation: rise 400ms var(--ease-out) backwards; }
+  .gallery-section { margin-bottom: 72px; animation: rise 400ms var(--ease-out) backwards; }
   .gallery-section:last-child { margin-bottom: 0; }
   .section-label {
     margin: 0 0 28px calc(-1 * var(--outdent));
@@ -231,7 +234,7 @@ const sections = [
     color: var(--faint);
   }
 
-  .tile-grid { columns: 3 340px; column-gap: 24px; }
+  .tile-grid { columns: 2; column-gap: 24px; }
   .tile { break-inside: avoid; margin: 0 0 40px; }
   .tile img {
     width: 100%;
@@ -414,7 +417,13 @@ const sections = [
   .cmd-row[hidden] { display: none; }
   .cmd-row.run { background: var(--ink); color: var(--bg); }
   .cmd-row::after {
-    content: '\2713';
+    content: '';
+    width: 5px;
+    height: 9px;
+    margin-right: 3px;
+    border: solid currentColor;
+    border-width: 0 1.5px 1.5px 0;
+    transform: rotate(45deg) translateY(-1px);
     opacity: 0;
     transition: opacity 200ms ease;
   }
@@ -736,7 +745,13 @@ const sections = [
         const v = visible();
         if (e.key === 'ArrowDown') { e.preventDefault(); idx = Math.min(idx + 1, v.length - 1); paint(); }
         if (e.key === 'ArrowUp') { e.preventDefault(); idx = Math.max(idx - 1, 0); paint(); }
-        if (e.key === 'Enter' && v[idx]) run(v[idx]);
+        if (e.key === 'Enter' && v[idx]) {
+          run(v[idx]);
+          input.value = '';
+          rows.forEach((r) => { r.hidden = false; });
+          idx = rows.indexOf(v[idx]);
+          paint();
+        }
       });
       rows.forEach((r) => {
         r.addEventListener('mouseenter', () => { const v = visible(); const j = v.indexOf(r); if (j >= 0) { idx = j; paint(); } });
