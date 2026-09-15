@@ -20,15 +20,24 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
     <link rel="preload" href="/fonts/GT-America-Bold.woff2" as="font" type="font/woff2" crossorigin />
     <script is:inline>
       (function () {
+        // Every visit starts on the system theme; the toggle overrides for
+        // this visit only (sessionStorage), and the site follows a live OS
+        // switch until then.
         var applyTheme = function () {
           try {
-            var t = localStorage.getItem('theme');
+            localStorage.removeItem('theme');
+            var t = sessionStorage.getItem('theme');
             var dark = t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches);
             if (dark) document.documentElement.dataset.theme = 'dark';
             else delete document.documentElement.dataset.theme;
           } catch (e) {}
         };
         applyTheme();
+        try {
+          matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
+            try { if (!sessionStorage.getItem('theme')) applyTheme(); } catch (e) {}
+          });
+        } catch (e) {}
         try {
           if (location.pathname === '/' && !sessionStorage.getItem('entered')) {
             document.documentElement.classList.add('home-enter');
@@ -67,7 +76,7 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
             var next = root.dataset.theme === 'dark' ? 'light' : 'dark';
             if (next === 'dark') root.dataset.theme = 'dark';
             else delete root.dataset.theme;
-            try { localStorage.setItem('theme', next); } catch (e2) {}
+            try { sessionStorage.setItem('theme', next); } catch (e2) {}
           });
         }
       })();
