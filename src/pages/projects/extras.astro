@@ -420,6 +420,7 @@ const sections = [
   }
 
   .tile-field, .tile-chain, .tile-drift { height: 340px; padding: 0; }
+  .tile-field .fx-canvas, .tile-chain .fx-canvas { touch-action: none; }
   .fx-canvas { width: 100%; height: 100%; display: block; }
 
   /* Hold to confirm */
@@ -447,14 +448,22 @@ const sections = [
   .hold-fill {
     position: absolute;
     inset: 0;
+    overflow: hidden;
+    transform: translateX(-101%);
+    transition: transform 250ms var(--ease-out);
+  }
+  .hold-fill > span {
+    position: absolute;
+    inset: 0;
     display: grid;
     place-items: center;
     background: #da4126;
     color: #ffffff;
-    clip-path: inset(0 100% 0 0);
-    transition: clip-path 250ms var(--ease-out);
+    transform: translateX(101%);
+    transition: transform 250ms var(--ease-out);
   }
-  .hold-btn.holding .hold-fill { clip-path: inset(0 0 0 0); transition: clip-path 1500ms linear; }
+  .hold-btn.holding .hold-fill,
+  .hold-btn.holding .hold-fill > span { transform: none; transition: transform 1500ms linear; }
   .hold-done {
     position: absolute;
     inset: 0;
@@ -765,7 +774,10 @@ const sections = [
         const r = el.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; fx.redraw();
       };
       el.addEventListener('pointermove', point);
-      el.addEventListener('pointerdown', point);
+      el.addEventListener('pointerdown', (e) => {
+        try { el.setPointerCapture(e.pointerId); } catch (err) {}
+        point(e);
+      });
       el.addEventListener('pointerleave', () => { mx = -9999; my = -9999; fx.redraw(); });
     }
   }
@@ -810,6 +822,7 @@ const sections = [
         const r = el.getBoundingClientRect(); tx = e.clientX - r.left; ty = e.clientY - r.top;
       });
       el.addEventListener('pointerdown', (e) => {
+        try { el.setPointerCapture(e.pointerId); } catch (err) {}
         const r = el.getBoundingClientRect();
         tx = e.clientX - r.left; ty = e.clientY - r.top;
         pulse = 1;
