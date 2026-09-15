@@ -173,6 +173,8 @@ const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
       <template shadowrootmode="open">
         <style>
           :host { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: block; pointer-events: none; }
+          ::selection { background: rgba(133, 130, 128, 0.25); }
+          :host(.dark) ::selection { background: rgba(240, 239, 237, 0.22); }
           .drawer {
             pointer-events: auto;
             position: relative;
