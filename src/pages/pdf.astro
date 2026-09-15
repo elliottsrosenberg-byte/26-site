@@ -1,0 +1,161 @@
+---
+// Print source for the portfolio PDF. Not linked from anywhere and marked
+// noindex; scripts/make-pdf.sh renders it to elliott-rosenberg-portfolio.pdf
+// with headless Chrome. Slides are fixed 1440x900 boxes, one page each.
+import '../styles/tokens.css';
+import '../styles/global.css';
+
+const SLIDES = {
+  perennialHero: '/media/perennial/banking-full.png',
+  perennialBrand: [
+    '/media/perennial/brand-colors.png',
+    '/media/perennial/brand-type.png',
+    '/media/perennial/brand-cards.png',
+    '/media/perennial/brand-layouts.png',
+  ],
+  oneg: ['/extras/oneg-rebrand-1.png', '/extras/oneg-rebrand-4.jpg', '/extras/oneg-rebrand-7.jpg'],
+  waiting: ['/extras/wb2.jpeg', '/extras/wb7.png', '/extras/wb5.jpeg'],
+  lauren: ['/extras/lg1.png', '/extras/lg2.jpg', '/extras/lg3.jpg'],
+  physical: ['/extras/sedum-colorways.jpg', '/extras/UzuHero1.jpg', '/extras/UzuChairFrontProfile.jpg'],
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Elliott Rosenberg, portfolio</title>
+  </head>
+  <body>
+    <!-- Cover -->
+    <section class="slide cover">
+      <div class="cover-inner">
+        <svg width="56" height="56" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="none" stroke="#231e17" stroke-width="2.4" /></svg>
+        <h1>Elliott Rosenberg</h1>
+        <p class="role">Designer</p>
+        <p class="contact">elliottsrosenberg.com &nbsp;·&nbsp; elliottsrosenberg@gmail.com</p>
+      </div>
+    </section>
+
+    <!-- Perennial -->
+    <section class="slide">
+      <header>
+        <h2 class="label">Perennial</h2>
+        <p class="desc">Studio management SaaS tool for artists. Founder: product, design, and development.</p>
+      </header>
+      <div class="media one"><img src={SLIDES.perennialHero} alt="Perennial banking view" /></div>
+      <p class="cap">Banking. The real feed, categorized and matched back to the invoices that produced it.</p>
+    </section>
+
+    <section class="slide">
+      <header>
+        <h2 class="label">Perennial, brand system</h2>
+        <p class="desc">Color, type, cards, and layout rules built to keep a business tool warm.</p>
+      </header>
+      <div class="media four">
+        {SLIDES.perennialBrand.map((src) => (<img src={src} alt="" />))}
+      </div>
+    </section>
+
+    <!-- Oneg -->
+    <section class="slide">
+      <header>
+        <h2 class="label">Oneg Home</h2>
+        <p class="desc">Web, product, marketing, and operations for a modern judaica e-commerce brand.</p>
+      </header>
+      <div class="media three">
+        {SLIDES.oneg.map((src) => (<img src={src} alt="" />))}
+      </div>
+    </section>
+
+    <!-- Waiting -->
+    <section class="slide">
+      <header>
+        <h2 class="label">Waiting Magazine</h2>
+        <p class="desc">A publication dedicated to NYC's working class creatives. Co-founder.</p>
+      </header>
+      <div class="media three">
+        {SLIDES.waiting.map((src) => (<img src={src} alt="" />))}
+      </div>
+    </section>
+
+    <!-- Lauren Goodman -->
+    <section class="slide">
+      <header>
+        <h2 class="label">Studio Lauren Goodman</h2>
+        <p class="desc">Identity and website.</p>
+      </header>
+      <div class="media three">
+        {SLIDES.lauren.map((src) => (<img src={src} alt="" />))}
+      </div>
+    </section>
+
+    <!-- Physical -->
+    <section class="slide">
+      <header>
+        <h2 class="label">Physical</h2>
+        <p class="desc">Sedum lamp, four colorways. Uzu chair in white oak. Furniture design at RISD.</p>
+      </header>
+      <div class="media three">
+        {SLIDES.physical.map((src) => (<img src={src} alt="" />))}
+      </div>
+    </section>
+
+    <!-- Closing -->
+    <section class="slide cover">
+      <div class="cover-inner">
+        <h1 class="closing">Thank you</h1>
+        <p class="contact">
+          elliottsrosenberg.com &nbsp;·&nbsp; elliottsrosenberg@gmail.com<br />
+          More work, writing, and an AI redesign console at the site.
+        </p>
+      </div>
+    </section>
+  </body>
+</html>
+
+<style>
+  @page { size: 1440px 900px; margin: 0; }
+  html, body { margin: 0; background: #ffffff; }
+  .slide {
+    position: relative;
+    width: 1440px;
+    height: 900px;
+    padding: 72px 96px;
+    box-sizing: border-box;
+    background: #fbfbfb;
+    color: #231e17;
+    font-family: 'GT America', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    overflow: hidden;
+    page-break-after: always;
+    break-after: page;
+  }
+
+  .cover { display: grid; place-items: center; }
+  .cover-inner { text-align: left; }
+  .cover-inner svg { margin-bottom: 40px; }
+  .cover h1 { margin: 0; font-size: 58px; font-weight: 600; letter-spacing: -0.01em; }
+  .cover .closing { font-size: 44px; }
+  .cover .role { margin: 8px 0 0; font-size: 34px; color: #858280; }
+  .cover .contact { margin: 48px 0 0; font-size: 19px; color: #858280; line-height: 1.6; }
+
+  header { margin-bottom: 36px; }
+  .label { margin: 0 0 6px -28px; font-size: 21px; font-weight: 400; color: #a19d99; }
+  .desc { margin: 0; font-size: 24px; color: #231e17; max-width: 900px; }
+
+  .media { display: grid; gap: 20px; }
+  .media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #e7e5e3;
+    background: #edecec;
+  }
+  .media.one { grid-template-columns: 1fr; height: 600px; }
+  .media.three { grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; height: 620px; }
+  .media.three img:first-child { grid-row: 1 / 3; }
+  .media.four { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; height: 620px; }
+  .cap { margin: 14px 0 0; font-size: 15px; color: #858280; }
+</style>
