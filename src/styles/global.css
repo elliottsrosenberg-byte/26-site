@@ -83,7 +83,10 @@ a {
   border-radius: 2px;
 }
 
-::selection { background: var(--faint); }
+/* Selection: a translucent grey wash, so ink, grey links, and underlines
+   all keep their own color through the highlight. */
+::selection { background: rgba(133, 130, 128, 0.25); }
+:root[data-theme='dark'] ::selection { background: rgba(240, 239, 237, 0.22); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
