@@ -1,6 +1,7 @@
 ---
 title: Onboarding Skeptics
 description: Getting designers who don't trust AI to use an assistant.
+draft: true
 order: 2
 ---
 

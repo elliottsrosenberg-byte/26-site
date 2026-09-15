@@ -4,7 +4,7 @@ import { getCollection } from 'astro:content';
 
 const byOrder = (a: any, b: any) => a.data.order - b.data.order;
 const projects = (await getCollection('projects', ({ data }) => !(import.meta.env.PROD && data.draft))).sort(byOrder);
-const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.PROD && data.draft))).sort(byOrder);
+const writing = (await getCollection('writing')).sort(byOrder);
 ---
 <Base title="Elliott Rosenberg">
   <main class="page">
@@ -58,10 +58,10 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
       <ul class="item-list">
         {writing.map((w) => (
           <li class="item">
-            <a class="item-link" href={`/writing/${w.id}/`}>
-              <span class="item-title">{w.data.title}</span>
+            <span class="item-link item-soon">
+              <span class="item-title">{w.data.title} <span class="soon-badge">coming soon</span></span>
               <span class="item-desc">{w.data.description}</span>
-            </a>
+            </span>
           </li>
         ))}
       </ul>
@@ -127,6 +127,23 @@ const writing = (await getCollection('writing', ({ data }) => !(import.meta.env.
     transition: background-size 300ms var(--ease-out);
   }
   .item-desc { display: block; margin-top: 2px; color: var(--mid); }
+
+  .item-soon { cursor: default; }
+  .item-soon .item-title {
+    color: var(--mid);
+    background-image: none;
+  }
+  .soon-badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 8px 2px;
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--faint);
+    vertical-align: 2px;
+    white-space: nowrap;
+  }
 
   @media (hover: hover) and (pointer: fine) {
     .item-link:hover .item-title { background-size: 100% 1px; }
