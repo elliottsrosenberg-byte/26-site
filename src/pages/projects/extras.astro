@@ -435,10 +435,11 @@ const sections = [
     font-size: 15px;
     padding: 10px 22px;
     cursor: pointer;
+    white-space: nowrap;
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
-    touch-action: manipulation;
+    touch-action: none;
     transition: transform 150ms var(--ease-out), border-color 200ms ease, color 200ms ease;
   }
   .hold-btn.holding { transform: scale(0.96); }
@@ -481,6 +482,7 @@ const sections = [
   /* Tasks that linger */
   .linger-list { margin: 0; padding: 0; list-style: none; }
   .linger-item {
+    cursor: pointer;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -664,7 +666,6 @@ const sections = [
     }
   }
 
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // Brand slideshows: zoned prev/next with animated height, slides
   //   preloaded as the show approaches the viewport.
@@ -729,7 +730,7 @@ const sections = [
     const loop = (t: number) => { draw(ctx, w, h, t); raf = visible ? requestAnimationFrame(loop) : null; };
     new IntersectionObserver((es) => {
       visible = es[0].isIntersecting;
-      if (visible) { resize(); if (animated && !reduce && raf === null) raf = requestAnimationFrame(loop); }
+      if (visible) { resize(); if (animated && raf === null) raf = requestAnimationFrame(loop); }
       else if (raf !== null) { cancelAnimationFrame(raf); raf = null; }
     }).observe(el);
     addEventListener('resize', () => { if (visible) resize(); });
@@ -866,10 +867,6 @@ const sections = [
   {
     const btn = document.querySelector<HTMLButtonElement>('.hold-btn');
     if (btn) {
-      // The button keeps its resting size through every state.
-      const r = btn.getBoundingClientRect();
-      btn.style.width = `${Math.ceil(r.width)}px`;
-      btn.style.height = `${Math.ceil(r.height)}px`;
       let timer: ReturnType<typeof setTimeout> | null = null;
       const arm = () => {
         if (btn.classList.contains('confirmed')) return;
@@ -878,7 +875,7 @@ const sections = [
           btn.classList.remove('holding');
           btn.classList.add('confirmed');
           setTimeout(() => btn.classList.remove('confirmed'), 1800);
-        }, reduce ? 300 : 1500);
+        }, 1500);
       };
       const disarm = () => { btn.classList.remove('holding'); if (timer) { clearTimeout(timer); timer = null; } };
       btn.addEventListener('pointerdown', arm);
@@ -893,7 +890,7 @@ const sections = [
   {
     const items = [...document.querySelectorAll<HTMLElement>('.linger-item')];
     items.forEach((item) => {
-      item.querySelector('.linger-check')?.addEventListener('click', () => {
+      item.addEventListener('click', () => {
         if (item.classList.contains('done')) return;
         item.classList.add('done');
         setTimeout(() => item.classList.add('gone'), 650);
@@ -969,25 +966,25 @@ const sections = [
         rows.forEach((r) => { r.hidden = q !== '' && !r.textContent!.toLowerCase().includes(q); });
         idx = 0; paint();
       });
+      // Run, let the confirmation land where it is, then clear and restore.
+      const commit = (row: HTMLElement) => {
+        run(row);
+        setTimeout(() => {
+          input.value = '';
+          rows.forEach((r) => { r.hidden = false; });
+          idx = rows.indexOf(row);
+          paint();
+        }, 950);
+      };
       input.addEventListener('keydown', (e) => {
         const v = visible();
         if (e.key === 'ArrowDown') { e.preventDefault(); idx = Math.min(idx + 1, v.length - 1); paint(); }
         if (e.key === 'ArrowUp') { e.preventDefault(); idx = Math.max(idx - 1, 0); paint(); }
-        if (e.key === 'Enter' && v[idx]) {
-          const row = v[idx];
-          run(row);
-          // Let the confirmation land where it is, then clear and restore.
-          setTimeout(() => {
-            input.value = '';
-            rows.forEach((r) => { r.hidden = false; });
-            idx = rows.indexOf(row);
-            paint();
-          }, 950);
-        }
+        if (e.key === 'Enter' && v[idx]) commit(v[idx]);
       });
       rows.forEach((r) => {
         r.addEventListener('mouseenter', () => { const v = visible(); const j = v.indexOf(r); if (j >= 0) { idx = j; paint(); } });
-        r.addEventListener('click', () => run(r));
+        r.addEventListener('click', () => commit(r));
       });
       paint();
     }
@@ -1064,26 +1061,30 @@ const sections = [
         const r = svg.getBoundingClientRect();
         return { x: ((e.clientX - r.left) / r.width) * 320, y: ((e.clientY - r.top) / r.height) * 80 };
       };
-      thumb.addEventListener('pointerdown', (e) => {
+      const grab = (e: PointerEvent) => {
         dragging = true;
-        thumb.setPointerCapture(e.pointerId);
+        try { svg.setPointerCapture(e.pointerId); } catch (err) {}
         if (raf !== null) { cancelAnimationFrame(raf); raf = null; }
-      });
-      thumb.addEventListener('pointermove', (e) => {
+        const p = toLocal(e);
+        x = Math.min(Math.max(p.x, X0), X1);
+        bend = Math.min(Math.max(p.y - CY, -26), 26);
+        paint();
+      };
+      svg.addEventListener('pointerdown', grab);
+      svg.addEventListener('pointermove', (e) => {
         if (!dragging) return;
         const p = toLocal(e);
         x = Math.min(Math.max(p.x, X0), X1);
-        bend = reduce ? 0 : Math.min(Math.max(p.y - CY, -26), 26);
+        bend = Math.min(Math.max(p.y - CY, -26), 26);
         paint();
       });
       const release = () => {
         if (!dragging) return;
         dragging = false;
-        if (reduce) { x = CX; bend = 0; paint(); }
-        else if (raf === null) raf = requestAnimationFrame(settle);
+        if (raf === null) raf = requestAnimationFrame(settle);
       };
-      thumb.addEventListener('pointerup', release);
-      thumb.addEventListener('pointercancel', release);
+      svg.addEventListener('pointerup', release);
+      svg.addEventListener('pointercancel', release);
       paint();
     }
   }

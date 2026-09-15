@@ -1,6 +1,7 @@
 ---
 title: People, Projects, Notes, Invoices, Tasks, Posts, Docs
 description: How Perennial keeps a task in sync everywhere it shows up.
+draft: true
 order: 3
 ---
 

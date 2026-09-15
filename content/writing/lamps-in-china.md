@@ -1,6 +1,7 @@
 ---
 title: Why I Made my Lamps in China
 description: The truth about manufacturing, and unfortunate misconceptions.
+draft: true
 order: 4
 ---
 
