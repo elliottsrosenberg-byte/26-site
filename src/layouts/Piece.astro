@@ -7,11 +7,12 @@ interface Props {
   title: string;
   description: string;
   headings: MarkdownHeading[];
+  ogImage?: string;
 }
-const { title, description, headings } = Astro.props;
+const { title, description, headings, ogImage } = Astro.props;
 const sections = headings.filter((h) => h.depth === 2);
 ---
-<Base title={`Elliott Rosenberg / ${title}`} description={description}>
+<Base title={`Elliott Rosenberg / ${title}`} description={description} ogImage={ogImage}>
   <nav class="crumb" aria-label="Breadcrumb">
     <a href="/">Elliott Rosenberg</a>
     <span class="crumb-sep" aria-hidden="true">/</span>

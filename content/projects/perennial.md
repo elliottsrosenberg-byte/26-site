@@ -2,6 +2,7 @@
 title: Perennial
 description: Studio management SaaS tool for artists.
 order: 1
+ogImage: /media/perennial/og.jpg
 ---
 
 ## Mission

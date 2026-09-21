@@ -5,10 +5,11 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  ogImage?: string;
 }
-const { title, description = 'Elliott Rosenberg, designer.' } = Astro.props;
+const { title, description = 'Elliott Rosenberg, product designer.', ogImage: ogPath = '/og.png' } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const ogImage = new URL('/og.png', Astro.site).href;
+const ogImage = new URL(ogPath, Astro.site).href;
 ---
 <!doctype html>
 <html lang="en">

@@ -8,6 +8,7 @@ const piece = z.object({
   draft: z.boolean().default(false),
   thumb: z.string().optional(),
   link: z.string().optional(),
+  ogImage: z.string().optional(),
 });
 
 export const collections = {
