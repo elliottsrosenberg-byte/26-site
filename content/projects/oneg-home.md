@@ -17,7 +17,7 @@ order: 2
 
 ## Overview
 
-<a href="https://www.oneghome.com.com/">Oneg Home</a> makes objects for Jewish ritual at home, and until this campaign it sold almost entirely for Shabbat. Rosh Hashanah was the first time the company launched a full collection for a holiday. I led the campaign end to end: three new products, a gift box, pricing and inventory, the creative, the website, email, and the weekly reporting that helped to measure success.
+<a href="https://www.oneghome.com/">Oneg Home</a> makes objects for Jewish ritual at home, and until this campaign it sold almost entirely for Shabbat. Rosh Hashanah was the first time the company launched a full collection for a holiday. I led the campaign end to end: three new products, a gift box, pricing and inventory, the creative, the website, email, and the weekly reporting that helped to measure success.
 
 The campaign produced the strongest stretch of sales in Oneg's four year history and roughly doubled the share of orders from returning customers.
 
