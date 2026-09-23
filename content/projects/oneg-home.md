@@ -288,6 +288,6 @@ The greeting cards were the surprise. Demand concentrated on an inexpensive item
 
 ## After
 
-The campaign left a playbook for the rest of the Jewishcalendar: a six-week timeline anchored to the holiday date, an asset list sized for a paid media agency, a two-track email structure, a production pipeline for a two-person creative team, and weekly reporting that catches a weak product inside a week. Hanukkah, Purim, and Passover were mapped to run the same way.
+The campaign left a playbook for the rest of the Jewish calendar: a six-week timeline anchored to the holiday date, an asset list sized for a paid media agency, a two-track email structure, a production pipeline for a two-person creative team, and weekly reporting that catches a weak product inside a week. Hanukkah, Purim, and Passover were mapped to run the same way.
 
 The work I care about here is the line from the numbers to the objects. A company losing $24 on every customer needed people to come back. Coming back required more occasions, more occasions required products that didn't exist yet, and those products needed apples painted, a box sized, a price set, a page built, and an ad account read every week. I enjoyed architecting this process, and the importance of design at every stage.
