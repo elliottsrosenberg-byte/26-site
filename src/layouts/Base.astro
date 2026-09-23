@@ -1,6 +1,7 @@
 ---
 import '../styles/tokens.css';
 import '../styles/global.css';
+import '../styles/figures.css';
 
 interface Props {
   title: string;
@@ -632,6 +633,9 @@ const ogImage = new URL(ogPath, Astro.site).href;
           syncState();
         }
       }
+    </script>
+    <script>
+      import '../scripts/figures';
     </script>
   </body>
 </html>

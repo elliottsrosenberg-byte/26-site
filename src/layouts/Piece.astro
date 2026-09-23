@@ -62,19 +62,19 @@ const sections = headings.filter((h) => h.depth === 2);
     position: fixed;
     top: 200px;
     left: 32px;
-    max-width: 150px;
+    /* A fixed width (not max-width): shrink-to-fit sizing came out 12px short
+       of the labels because of the active dot's negative margin. */
+    width: 150px;
     font-size: 15px;
     transition: opacity 200ms ease, visibility 200ms;
   }
   @media (max-width: 1119px) {
     .side-nav { opacity: 0; visibility: hidden; }
   }
+  /* Titles always show in full; a long one wraps rather than truncating. */
   .side-nav a {
     display: inline-block;
     max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
   .side-nav ul { margin: 0; padding: 0; list-style: none; }
   .side-nav li { margin-bottom: 10px; }
@@ -83,8 +83,8 @@ const sections = headings.filter((h) => h.depth === 2);
     color: var(--faint);
     text-decoration: none;
     transition: color 150ms ease;
-    /* The active dot lives inside the box so the ellipsis clipping below
-       can never cut it off; the negative margin keeps text on the axis. */
+    /* The active dot lives inside the box; the negative margin keeps the
+       text on the axis. */
     padding-left: 12px;
     margin-left: -12px;
   }
@@ -92,7 +92,7 @@ const sections = headings.filter((h) => h.depth === 2);
     content: '';
     position: absolute;
     left: 0;
-    top: 50%;
+    top: calc(var(--leading, 1.55) * 0.5em); /* centered on the first line */
     width: 4px;
     height: 4px;
     margin-top: -2px;
@@ -147,16 +147,16 @@ const sections = headings.filter((h) => h.depth === 2);
     background: var(--surface);
     border-radius: 16px;
   }
-  .piece :global(.media-frame img),
-  .piece :global(.media-frame video) {
+  .piece :global(.media-frame > img),
+  .piece :global(.media-frame > video) {
     margin: 0 auto;
     border-radius: 10px;
     box-shadow: 0 6px 28px rgba(0, 0, 0, 0.1);
   }
   /* "bare" variant: no surface block, no shadow. */
   .piece :global(figure.bare .media-frame) { padding: 0; background: none; }
-  .piece :global(figure.bare img),
-  .piece :global(figure.bare video) { box-shadow: none; }
+  .piece :global(figure.bare .media-frame > img),
+  .piece :global(figure.bare .media-frame > video) { box-shadow: none; }
   .piece :global(figcaption) {
     margin-top: 16px;
     padding: 0;
@@ -203,6 +203,7 @@ const sections = headings.filter((h) => h.depth === 2);
     font-size: inherit;
   }
 
+
   @media (max-width: 900px) {
     .crumb { position: static; padding: 20px var(--pad-x) 16px; }
     .page { padding-top: 40px; }
@@ -215,6 +216,13 @@ const sections = headings.filter((h) => h.depth === 2);
   function initScrollspy() {
     // @ts-ignore
     if (window.__spy) { window.__spy.disconnect(); window.__spy = null; }
+    // @ts-ignore
+    if (window.__spyScroll) {
+      // @ts-ignore
+      window.removeEventListener('scroll', window.__spyScroll);
+      // @ts-ignore
+      window.__spyScroll = null;
+    }
     const nav = document.querySelector('.side-nav');
     if (!nav) return;
     const links = [...nav.querySelectorAll('a')] as HTMLAnchorElement[];
@@ -236,8 +244,31 @@ const sections = headings.filter((h) => h.depth === 2);
     );
     byId.forEach((_, id) => spy.observe(document.getElementById(id)!));
     setActive([...byId.keys()][0]);
+
+    // The observer marks a section once its heading reaches a band a sixth of
+    // the way down the viewport. A last section shorter than the rest of the
+    // screen can never push its heading that high, so the page runs out of
+    // scroll first and that section never lights up. At the bottom of the
+    // page, the last section is the one you are reading.
+    const ids = [...byId.keys()];
+    const lastId = ids[ids.length - 1];
+    let raf = 0;
+    const checkBottom = () => {
+      const bottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4;
+      if (bottom) setActive(lastId);
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(checkBottom);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    checkBottom();
+
     // @ts-ignore
     window.__spy = spy;
+    // @ts-ignore
+    window.__spyScroll = onScroll;
   }
   initScrollspy();
 
@@ -255,4 +286,5 @@ const sections = headings.filter((h) => h.depth === 2);
     );
     vids.forEach((v) => io.observe(v));
   }
+
 </script>

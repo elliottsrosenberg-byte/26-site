@@ -1,0 +1,690 @@
+/* Figure patterns for project and writing pages.
+   Every pattern is plain HTML dropped into a markdown file; the markup for
+   each one is documented in content/README.md. Behavior (filmstrips and
+   scrollshots) lives in src/scripts/figures.ts, loaded on every page.
+   Images are never cropped: every pattern keeps each asset's own aspect. */
+
+:root {
+  --figure-accent: #b5602b;
+  --figure-accent-soft: rgba(181, 96, 43, 0.14);
+}
+:root[data-theme='dark'] {
+  --figure-accent: #e08a52;
+  --figure-accent-soft: rgba(224, 138, 82, 0.18);
+}
+
+/* ── Meta: role, team, timeline at the top of a piece ─────────────────── */
+.piece .fig-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 20px 32px;
+  margin: 0 0 64px;
+  padding-top: 20px;
+  border-top: 1px solid var(--hairline);
+  max-width: var(--measure);
+}
+.piece .fig-meta dt { font-size: 13px; color: var(--mid); margin-bottom: 4px; }
+.piece .fig-meta dd { margin: 0; font-size: 15px; line-height: 1.45; }
+.piece .fig-meta a { color: inherit; }
+
+/* ── Stats: a row of headline numbers ─────────────────────────────────── */
+.piece .fig-stats {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr));
+  gap: 24px;
+  margin: 8px 0 56px;
+  max-width: var(--measure);
+}
+@media (max-width: 700px) {
+  .piece .fig-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.piece .fig-stats .stat { padding-top: 14px; border-top: 1px solid var(--hairline); }
+.piece .fig-stats .stat-value {
+  display: block;
+  font-size: clamp(26px, 3vw, 34px);
+  line-height: 1.1;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+.piece .fig-stats .stat-label {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--mid);
+}
+
+/* ── Hero: the first image on a piece ───────────────────────────────── */
+.piece .fig-hero { margin-top: 0; }
+.piece .fig-hero img { width: 100%; height: auto; border-radius: 6px; }
+
+/* ── Media grid: several images side by side ──────────────────────────── */
+.piece .media-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+  gap: clamp(8px, 1.4vw, 16px);
+  align-items: end;
+}
+@media (max-width: 700px) {
+  .piece .media-grid { grid-template-columns: repeat(var(--cols-sm, 2), minmax(0, 1fr)); }
+}
+.piece .media-grid img,
+.piece .media-grid video {
+  width: 100%;
+  height: auto;
+  margin: 0;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+.piece figure.bare .media-grid img,
+.piece figure.bare .media-grid video { box-shadow: none; border-radius: 4px; }
+.piece .media-cell { display: block; }
+.piece .media-cell-label {
+  display: block;
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--mid);
+  text-align: center;
+}
+
+/* ── Filmstrip: a sideways row of tall artifacts, each shown whole ─────── */
+.piece .filmstrip .media-frame { padding-inline: 0; }
+.piece .filmstrip-track {
+  position: relative; /* offsetLeft of each card measures from the track */
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(12px, 2vw, 24px);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  padding-inline: clamp(24px, 4vw, 64px);
+  scroll-padding-inline: clamp(24px, 4vw, 64px);
+  scrollbar-width: none;
+  outline-offset: -2px;
+}
+.piece .filmstrip-track::-webkit-scrollbar { display: none; }
+.piece .filmstrip-track::after { content: ''; flex: 0 0 1px; }
+.piece .filmstrip-track > img {
+  flex: 0 0 var(--card, 260px);
+  width: var(--card, 260px);
+  height: auto;
+  margin: 0;
+  scroll-snap-align: start;
+  border-radius: 6px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+}
+@media (max-width: 700px) {
+  .piece .filmstrip-track > img,
+  .piece .filmstrip-track > .pan-card { flex-basis: var(--card-sm, 220px); width: var(--card-sm, 220px); }
+}
+.piece .filmstrip-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--mid);
+  font-variant-numeric: tabular-nums;
+}
+.piece .filmstrip-nav button {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 150ms ease, opacity 150ms ease, transform 150ms ease;
+}
+.piece .filmstrip-nav button:disabled { opacity: 0.3; cursor: default; }
+@media (hover: hover) and (pointer: fine) {
+  .piece .filmstrip-nav button:not(:disabled):hover { background: var(--surface); }
+}
+.piece .filmstrip-nav button:active:not(:disabled) { transform: scale(0.94); }
+.piece .filmstrip-count { min-width: 44px; text-align: center; }
+.piece .filmstrip figcaption { margin-top: 4px; }
+
+/* Panning cards (filmstrip.is-pan): every item gets the same window
+   (width --card, height --card x --box) and its full-length image pans top to
+   bottom and back inside it. The image is never cropped or resized; the window
+   moves over it. --r on each card is the image's height / width. Pauses on
+   hover and offscreen; reduced motion turns it into a hand-scrolled window. */
+.piece .filmstrip-track > .pan-card {
+  display: block;
+  flex: 0 0 var(--card, 220px);
+  width: var(--card, 220px);
+  scroll-snap-align: start;
+}
+@media (max-width: 700px) {
+  .piece .filmstrip-track > .pan-card { flex-basis: var(--card-sm, 190px); width: var(--card-sm, 190px); }
+}
+.piece .pan-window {
+  display: block;
+  aspect-ratio: 1 / var(--box, 1.6);
+  overflow: hidden;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+}
+.piece .pan-window img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+  --pan-end: calc((var(--box, 1.6) / var(--r) - 1) * 100%);
+  animation: pan-y calc((var(--r) - var(--box, 1.6)) * 5s + 4s) ease-in-out infinite alternate;
+  animation-delay: calc(var(--i, 0) * -2.7s);
+}
+.piece .filmstrip.is-offscreen .pan-window img,
+.piece .pan-card:hover .pan-window img { animation-play-state: paused; }
+@keyframes pan-y {
+  0%, 12% { transform: translateY(0); }
+  88%, 100% { transform: translateY(var(--pan-end)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .piece .pan-window { overflow-y: auto; }
+  .piece .pan-window img { animation: none; }
+}
+.piece .pan-text { display: block; margin-top: 12px; }
+.piece .pan-date { display: block; font-size: 12px; color: var(--mid); font-variant-numeric: tabular-nums; }
+.piece .pan-title { display: block; margin-top: 2px; font-size: 14px; font-weight: 500; }
+.piece .pan-note { display: block; margin-top: 4px; font-size: 13px; line-height: 1.4; color: var(--mid); }
+
+/* ── Scrollshot: a tall page scrolled through a pinned browser window ────
+   Markup: div.scrollshot > figure.scrollshot-stage > (.media-frame, figcaption).
+   The outer div is the scroll runway; the figure, caption included, pins.
+   Without the script (or with reduced motion) the window scrolls on its own. */
+.piece .scrollshot { margin: 56px calc(-2 * var(--outdent)) 56px 0; }
+@media (max-width: 1119px) {
+  .piece .scrollshot { margin-right: 0; }
+}
+.piece .scrollshot > .scrollshot-stage { margin: 0; }
+.piece .scrollshot.is-bound > .scrollshot-stage {
+  position: sticky;
+  top: var(--stick, 80px);
+}
+.piece .browser {
+  display: block;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.1);
+}
+.piece .browser-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  background: #f1efed;
+  border-bottom: 1px solid #e4e1de;
+  font-size: 11px;
+  color: #8a8783;
+}
+.piece .browser-bar::before {
+  content: '';
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  margin-top: -4px;
+  border-radius: 50%;
+  background: #d9d5d1;
+  box-shadow: 13px 0 0 #d9d5d1, 26px 0 0 #d9d5d1;
+}
+.piece .scrollshot-window {
+  display: block;
+  aspect-ratio: 16 / 10;
+  min-height: 0; /* with overflow: clip, auto min-height would grow to the image and void the ratio */
+  overflow-y: auto;
+}
+@media (max-width: 700px) {
+  .piece .scrollshot-window { aspect-ratio: 4 / 5; }
+}
+/* Pinned: clip (not a scroll container), so a wheel or trackpad gesture over
+   the window scrolls the page, which is what drives the animation. */
+.piece .scrollshot.is-bound .scrollshot-window { overflow: hidden; overflow: clip; }
+.piece .scrollshot-window img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.piece .scrollshot.is-bound .scrollshot-window img { will-change: transform; }
+.piece .scrollshot-progress {
+  display: block;
+  height: 2px;
+  margin-top: 14px;
+  background: var(--hairline);
+  border-radius: 1px;
+  overflow: hidden;
+}
+.piece .scrollshot-progress span {
+  display: block;
+  height: 100%;
+  background: var(--mid);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+.piece .scrollshot:not(.is-bound) .scrollshot-progress { display: none; }
+
+/* ── Lightbox: click a grid image to open it, click anywhere to close ─── */
+.piece figure.is-zoomable .media-grid img:focus-visible,
+.piece figure.is-zoomable .filmstrip-track > img:focus-visible {
+  outline: 2px solid var(--figure-accent);
+  outline-offset: 3px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .piece figure.is-zoomable .media-grid img,
+  .piece figure.is-zoomable .filmstrip-track > img { transition: opacity 150ms ease; }
+  .piece figure.is-zoomable .media-grid img:hover,
+  .piece figure.is-zoomable .filmstrip-track > img:hover { opacity: 0.78; }
+}
+
+/* The dialog sits outside .piece, on its own scrim in both themes. There is
+   no chrome: the image grows out of the grid and a click anywhere closes it. */
+.lightbox {
+  width: 100vw;
+  max-width: 100vw;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 24px;
+  border: 0;
+  background: none;
+  overflow: hidden;
+}
+.lightbox[open] { display: grid; place-items: center; }
+.lightbox::backdrop { background: rgba(12, 11, 10, 0.55); }
+/* The image shows at its own size, never upscaled. The height cap is viewport
+   math, since a percentage cannot resolve against a grid row that is itself
+   sized by this image. 48px is the dialog padding.
+   width/height auto is load-bearing: the element carries width and height
+   attributes so it can be measured before it decodes, and those attributes
+   map to the CSS width and height properties. Left alone, the two caps below
+   would then clamp each axis on its own and stretch the image. Back on auto,
+   the caps shrink a replaced element proportionally instead. */
+.lightbox-img {
+  width: auto;
+  height: auto;
+  max-width: min(92vw, 1100px);
+  max-height: calc(100dvh - 48px);
+  border-radius: 14px;
+}
+html.has-lightbox { overflow: hidden; }
+
+/* Both directions ease out: the scrim has to move the instant it is asked
+   to, and a reversed ease-out is an ease-in, which reads as a delay. */
+@keyframes lightbox-scrim-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lightbox-scrim-out { from { opacity: 1; } to { opacity: 0; } }
+@media (prefers-reduced-motion: no-preference) {
+  .lightbox[open]::backdrop { animation: lightbox-scrim-in 170ms var(--ease-out) both; }
+  /* After the rule above so it wins while closing. */
+  .lightbox.is-closing::backdrop { animation: lightbox-scrim-out 120ms var(--ease-out) both; }
+}
+
+/* ── Phones: screenshots and reels inside an iPhone frame ─────────────── */
+.piece .phones {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+  gap: clamp(12px, 2.4vw, 28px);
+  align-items: start;
+}
+@media (max-width: 700px) {
+  .piece .phones { grid-template-columns: repeat(var(--cols-sm, 2), minmax(0, 1fr)); }
+}
+.piece .phone {
+  display: block;
+  padding: 3.6%;
+  background: #121212;
+  border-radius: 15% / 7%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.piece .phone-screen {
+  position: relative;
+  display: block;
+  aspect-ratio: 1179 / 2556;
+  overflow: hidden;
+  border-radius: 11.5% / 5.3%;
+  background: #000;
+}
+.piece .phone-screen::after {
+  /* Dynamic Island */
+  content: '';
+  position: absolute;
+  top: 1.3%;
+  left: 50%;
+  width: 31%;
+  height: 4.2%;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: #000;
+}
+.piece .phone-screen img,
+.piece .phone-screen video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+  object-fit: contain;
+}
+/* Reels fill the screen edge to edge, the way full-screen video plays. */
+.piece .phone-screen video { object-fit: cover; }
+.piece .phone-label {
+  display: block;
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--mid);
+  text-align: center;
+}
+
+/* ── Diagrams: built in HTML so the numbers stay live and legible ──────── */
+.piece .diagram {
+  display: block;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.piece .diagram-title { display: block; margin-bottom: 20px; font-size: 13px; color: var(--mid); }
+.piece .diagram-foot {
+  display: block;
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid var(--hairline);
+  font-size: 13px;
+  color: var(--mid);
+}
+.piece .diagram strong { font-weight: 500; }
+
+/* Key figures: two to four headline numbers inside a diagram. */
+.piece .metrics {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+  gap: 28px 24px;
+}
+@media (max-width: 600px) {
+  .piece .metrics { grid-template-columns: 1fr; gap: 22px; }
+}
+.piece .metric { display: block; }
+.piece .metric-value {
+  display: block;
+  font-size: clamp(28px, 3.4vw, 38px);
+  line-height: 1.05;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+.piece .metric-value.is-accent { color: var(--figure-accent); }
+.piece .metric-label {
+  display: block;
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--mid);
+}
+.piece .metric-note {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--mid);
+  opacity: 0.8;
+}
+
+/* Bars: horizontal bars against a shared --max. */
+.piece .bars { display: grid; gap: 14px; }
+/* Grouped bars: one group per measure, each scaled to its own --max. */
+.piece .bar-groups { display: grid; gap: 34px; }
+.piece .bar-group { display: grid; gap: 8px; }
+.piece .bar-group-label { display: block; margin-bottom: 2px; font-weight: 500; }
+.piece .bar-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 36%) 1fr;
+  gap: 16px;
+  align-items: center;
+}
+@media (max-width: 600px) {
+  .piece .bar-row { grid-template-columns: 1fr; gap: 6px; }
+}
+.piece .bar-label { color: var(--mid); font-size: 13px; }
+.piece .bar-track { position: relative; display: block; height: 28px; }
+.piece .bar-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--from, 0) / var(--max) * 100%);
+  width: calc((var(--v) - var(--from, 0)) / var(--max) * 100%);
+  border-radius: 3px;
+  background: var(--ink);
+}
+.piece .bar-fill.is-muted { background: var(--faint); }
+.piece .bar-fill.is-accent { background: var(--figure-accent); }
+.piece .bar-fill.is-gap {
+  background: var(--figure-accent-soft);
+  box-shadow: inset 0 0 0 1px var(--figure-accent);
+}
+.piece .bar-value {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--v) / var(--max) * 100% + 10px);
+  transform: translateY(-50%);
+  white-space: nowrap;
+}
+.piece .bar-value.is-inside {
+  left: auto;
+  right: calc(100% - var(--v) / var(--max) * 100% + 10px);
+  color: var(--bg);
+}
+.piece .bar-value.is-accent { color: var(--figure-accent); }
+.piece .bar-value.is-ink { color: var(--ink); }
+/* A dashed reference line (a goal) across every row of a .bars block. */
+.piece .bars.has-marker { position: relative; padding-top: 26px; }
+.piece .bars-marker {
+  position: absolute;
+  top: 18px;
+  bottom: -6px;
+  left: calc(min(max(150px, 36%), 36%) + 16px + (64% - 16px) * var(--at) / var(--max));
+  border-left: 1px dashed var(--mid);
+  pointer-events: none;
+}
+.piece .bars-marker span {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  transform: translateX(-50%);
+  margin-bottom: 2px;
+  font-size: 12px;
+  color: var(--mid);
+  white-space: nowrap;
+}
+@media (max-width: 600px) {
+  .piece .bars-marker { left: calc(100% * var(--at) / var(--max)); }
+}
+
+/* Year: the holiday calendar as a single strip, with Shabbat as weekly ticks. */
+.piece .year { position: relative; display: block; padding-bottom: 96px; }
+.piece .year-months {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--mid);
+}
+.piece .year-track {
+  position: relative;
+  display: block;
+  height: 26px;
+  border-radius: 4px;
+  background:
+    repeating-linear-gradient(
+      to right,
+      var(--faint) 0 1px,
+      transparent 1px calc(100% / 52)
+    );
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+.piece .year-event {
+  position: absolute;
+  top: 0;
+  left: var(--at);
+  height: 100%;
+}
+.piece .year-event::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+.piece .year-event.is-current::before { background: var(--figure-accent); box-shadow: 0 0 0 4px var(--figure-accent-soft); }
+.piece .year-name {
+  position: absolute;
+  top: calc(100% + 10px + var(--row, 0) * 34px);
+  left: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 13px;
+  text-align: center;
+}
+.piece .year-event[data-align='start'] .year-name { transform: translateX(-6px); text-align: left; }
+.piece .year-name small { display: block; font-size: 12px; color: var(--mid); }
+.piece .year-event.is-current .year-name small { color: var(--figure-accent); }
+.piece .year-legend { display: block; margin-top: 8px; font-size: 12px; color: var(--mid); }
+@media (max-width: 600px) {
+  .piece .year-months span:nth-child(even) { visibility: hidden; }
+  .piece .year-name { font-size: 12px; }
+  /* Labels that collide at phone width take the second row. */
+  .piece .year-event[data-row-sm='1'] { --row: 1; }
+}
+
+/* Email sends (or any secondary event) get a small square mark. */
+.piece .timeline .timeline-item.is-email::before {
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  border-radius: 2px;
+  background: var(--ink);
+  box-shadow: none;
+}
+.piece .timeline-legend i.is-email { width: 7px; height: 7px; border-radius: 2px; background: var(--ink); }
+
+/* Timeline: dated milestones along a line; stacks vertically on phones. */
+.piece .timeline {
+  position: relative;
+  display: block;
+  height: var(--h, 124px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.piece .timeline::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--faint);
+}
+.piece .timeline-phase {
+  position: absolute;
+  top: calc(50% - 3px);
+  height: 6px;
+  left: var(--from);
+  width: calc(var(--to) - var(--from));
+  border-radius: 3px;
+  background: var(--faint);
+}
+.piece .timeline-phase.is-accent { background: var(--figure-accent); }
+.piece .timeline .timeline-item {
+  position: absolute;
+  top: 50%;
+  left: var(--at);
+}
+.piece .timeline .timeline-item::before {
+  content: '';
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+.piece .timeline .timeline-item.is-key::before { background: var(--figure-accent); box-shadow: none; }
+.piece .timeline-label {
+  position: absolute;
+  left: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 13px;
+  text-align: center;
+}
+.piece .timeline .timeline-item[data-side='above'] .timeline-label { bottom: 16px; }
+.piece .timeline .timeline-item:not([data-side='above']) .timeline-label { top: 14px; }
+/* data-tier="1" pushes a crowded label one row further from the line. */
+.piece .timeline .timeline-item[data-tier='1'] .timeline-label { top: 52px; }
+.piece .timeline .timeline-item[data-side='above'][data-tier='1'] .timeline-label { top: auto; bottom: 54px; }
+.piece .timeline .timeline-item[data-tier='1']::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 7px;
+  height: 42px;
+  border-left: 1px solid var(--faint);
+}
+.piece .timeline .timeline-item[data-side='above'][data-tier='1']::after { top: auto; bottom: 7px; }
+.piece .timeline .timeline-item[data-align='start'] .timeline-label { transform: translateX(-4px); text-align: left; }
+.piece .timeline .timeline-item[data-align='end'] .timeline-label { transform: translateX(calc(-100% + 4px)); text-align: right; }
+.piece .timeline-label time { display: block; font-size: 12px; color: var(--mid); }
+.piece .timeline-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--mid);
+}
+.piece .timeline-legend i {
+  display: inline-block;
+  width: 14px;
+  height: 6px;
+  margin-right: 6px;
+  vertical-align: middle;
+  border-radius: 3px;
+  background: var(--faint);
+}
+.piece .timeline-legend i.is-accent { background: var(--figure-accent); }
+/* Stacks below 760px, where the horizontal labels start to touch. */
+@media (max-width: 760px) {
+  .piece .timeline { height: auto; padding-left: 20px; }
+  .piece .timeline::before { top: 6px; bottom: 6px; left: 4px; right: auto; width: 1px; height: auto; }
+  .piece .timeline-phase { display: none; }
+  .piece .timeline .timeline-item[data-tier='1']::after { display: none; }
+  .piece .timeline .timeline-item { display: block; position: relative; top: auto; left: auto; margin-bottom: 14px; }
+  .piece .timeline .timeline-item::before { top: 7px; left: -16px; margin: 0; }
+  .piece .timeline .timeline-item .timeline-label,
+  .piece .timeline .timeline-item[data-side] .timeline-label,
+  .piece .timeline .timeline-item[data-align] .timeline-label {
+    position: static;
+    transform: none;
+    text-align: left;
+  }
+  .piece .timeline-label time { display: inline; margin-right: 8px; }
+}

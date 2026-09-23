@@ -10,6 +10,10 @@ The contract for how this site looks, moves, and is coded. Update as decisions l
 - Influences: Lovin/Kowalski/Coursey one-column restraint, Rauno's craft mantra ("Make it fast. Make it beautiful. Make it consistent. Make it carefully. Make it timeless. Make it soulful."), "slides style navigation and then custom pages" pattern for projects.
 - NO em dashes anywhere in site copy.
 
+## Figure patterns
+Reusable case-study blocks (scrollshot, filmstrip, media grid, phones, hero/meta/stats, bar/year/timeline diagrams) live in `src/styles/figures.css` + `src/scripts/figures.ts`, loaded site-wide from Base.astro. Markup reference: `content/README.md`. Rules: never crop an asset (natural aspect, explicit width/height); grey surface for UI, documents, and diagrams, bare for photography; diagrams are HTML/CSS, never images; one warm accent (`--figure-accent`) per diagram for the point it makes.
+- Scrollshot is the signature motion: pinned window, page driven by the reader's own scroll (not time), caption pinned with it, `overflow: clip` so wheel and trackpad over the window still scroll the page. Reduced motion falls back to a hand-scrolled window.
+
 ## Animation house rules
 Distilled from emilkowal.ski, interfaces.rauno.me, vercel.com/design/guidelines. The emilkowalski skills in `.agents/skills/` (animations, review-animations) apply when implementing.
 
