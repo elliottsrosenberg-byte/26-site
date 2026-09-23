@@ -2,6 +2,7 @@
 title: Rosh Hashanah Creative Campaign
 description: Designing the products, creative, and launch for a holiday campaign built to bring customers back.
 order: 2
+ogImage: /media/oneg/og.jpg
 ---
 
 <figure class="media bare fig-hero">
