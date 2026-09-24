@@ -1,163 +1,200 @@
 ---
 title: Perennial
-description: Studio management SaaS tool for artists.
+description: Studio management software for independent artists and designers.
 order: 1
 ogImage: /media/perennial/og.jpg
 ---
 
-## Mission
+<figure class="media is-wide fig-hero">
+<span class="media-frame">
+<video src="/media/perennial/NorthwindProjectScrimFeatures.mp4" autoplay muted loop playsinline></video>
+</span>
+<figcaption>The home canvas: sketches, notes, tasks, and live studio objects on one surface, with the assistant anchored below.</figcaption>
+</figure>
 
-Perennial helps artists and designers turn their craft into a business, so they can spend more time making the work because it finally pays for itself. It gives an independent practice the tangible pieces it actually needs, without assuming you speak the language of operations.
+<dl class="fig-meta">
+<div><dt>Role</dt><dd>Founder: research, product design, and engineering</dd></div>
+<div><dt>Timeline</dt><dd>April 2026 &ndash; Present</dd></div>
+<div><dt>Team</dt><dd>Solo</dd></div>
+<div><dt>Status</dt><dd>Live in beta</dd></div>
+</dl>
 
-Historically, artists and designers have been alienated from modern management tools because of the lack of education and accessibility. Now, there is a tool that exists that helps to guide the way towards financial independence and creative freedom, all in one place.
+> Try it at [app.perennial.design](https://app.perennial.design) with `demo@perennial.design` and `PerennialDemo1`.
 
-After a year of consulting for independent artists and small design studios, I realized the potential of a comprehensive software tool that provides education and a platform for business infrastructure.
+## Problem
 
-> Perennial is live in beta at [app.perennial.design](https://app.perennial.design). Log in and check out the app for yourself, or use:
->
->`email: demo@perennial.design` 
->`password: PerennialDemo1` 
-
-## Research
-
-The idea started in my consulting work, where every engagement ended in the same place: the work was good, and the operations around it were chaos. A notes app held the project plans, a spreadsheet acted as the CRM, email carried everything else, and the invoicing service ran in its own world.
-
-I recorded interviews with more than a dozen independent practitioners: furniture and lighting designers, ceramicists, textile designers, public artists, people running one and two person studios. The pattern held across every conversation. The craft comes easily to these people. The week quietly disappears into administration spread across a dozen disconnected tools.
+After a year consulting for small studios, every engagement ended in the same place: good work and chaotic operations. I interviewed more than a dozen practitioners, from furniture designers to ceramicists to public artists, and heard the same story each time. Plans lived in a notes app, clients in a spreadsheet, and invoicing in a service of its own.
 
 ![The research corpus: recorded calls, transcripts, and the working notes behind the product.](/media/perennial/IDIs.png "bare")
 
-The interviews also mapped the landscape. Tools at the Salesforce end of the spectrum are built for sales organizations and feel absurd at studio scale. Tools at the Notion end hand you raw blocks and leave the system design to you, which is precisely the work a maker wants to hand off. The opening was a tool shaped to how a small studio actually runs: a few clients, a couple of projects at a time, invoices that need to go out, and a reputation to keep building.
+The tools that exist sit at two extremes. Salesforce is built for sales teams and feels absurd at studio scale. Notion hands you raw blocks and leaves the system design to you, which is exactly the work a maker wants to hand off.
 
-The research continues inside the product. Onboarding is a nine step structured interview that asks, in the user's own words, what is broken right now and what is urgent on their plate. Those answers configure the project board, seed the outreach pipelines, and brief the assistant before the first conversation.
+How might we give a one-person studio the operations of a high functioning business, without asking them to become an operations person?
 
-## System
+<section class="band is-inverse">
 
-![Perennial information architecture](/media/perennial/data-model.svg)
+## Solution
 
-The core decision was to model the studio as one connected graph. A client connects to their projects. Projects roll up time and expenses. Time and expenses become invoice line items. Invoices get paid through Stripe and reconcile against the real bank feed. Because everything lives in one model, every surface shows one true picture of the studio.
+<p class="statement">One connected model.</p>
 
-The data layer is Postgres on Supabase: 43 tables, with row level security on every one from day one. Each row is scoped to its owner at the database level, which makes the database itself the authorization layer and lets most features read and write it directly. It also means going from one studio to many is a switch. That cost extra work up front for a product with a handful of users, and it was the right trade.
+A client connects to their projects. Projects roll up time and expenses, which become invoice lines, which reconcile against the real bank feed. Every screen reads from that one model, so every screen tells the same story.
 
-The linking philosophy is provenance. An invoice line item knows which time entry or expense produced it. A bank transaction links back to the invoice that generated the deposit. The Resources module indexes every file where it already lives across the app. Tasks and notes attach to any parent, whether that is a project, a person, an organization, an outreach target, or an opportunity, so a single entry shows up everywhere it matters.
+### Every record opens onto a canvas
 
-## Interface
+Projects, contacts, and organizations each open onto their own canvas, with the structured fields alongside. Makers think spatially, so the software opens the way a studio table does.
 
-I wireframed before I wrote code: 28 standalone HTML wireframes, built desktop first. Every feature started as three options, I picked a direction, then iterated. The wireframes carried their own annotation system, red for areas still to be designed, blue for decisions to revisit, and used realistic maker content, because "Walnut slab idea for gallery show" reveals things about line length and tone that placeholder text hides.
-
-![An April wireframe of the notes surface with Ash's floating window. The red sidebar marks what was still to be designed.](/media/perennial/00-claude-grabbed/wireframe-ash.png "bare")
-
-The interface is built on canvases. The home screen is a freeform canvas: your studio at a glance and a space to think. A tool rail on the left carries drawing tools and live studio objects, so a morning of planning can mix sketched shapes, notes, task cards, and calendar blocks on one surface. The greeting, the getting started cards, and the first conversation with the assistant all happen on the canvas itself, and the "Ask Ash anything" bar anchors the bottom of the screen. Makers think spatially and visually, so the software opens the way a studio table does: a thinking surface first, with the database working underneath it.
-
+<div class="media-row is-wide" style="--cols:1">
 <figure class="media">
-  <span class="media-frame">
-    <video src="/media/perennial/NorthwindProjectScrimFeatures.mp4" autoplay muted loop playsinline></video>
-  </span>
-  <figcaption>The canvas: sketches, sticky notes, checklists, and live studio objects on one surface, with Ash anchored below.</figcaption>
+<span class="media-frame"><video src="/media/perennial/canvas.mp4" autoplay muted loop playsinline></video></span>
+<figcaption>The canvas: sketches, notes, and live studio objects together.</figcaption>
 </figure>
-
-The canvas idea runs through the whole app. Every project, contact, organization, and outreach target opens onto its own canvas as the first tab, with the structured fields alongside. The canvas is shared where the entities are shared: an outreach target wraps the underlying contact, and writing on one surface writes on the other, so the same knowledge shows up in Network and in Outreach.
-
 <figure class="media">
-  <span class="media-frame">
-    <video src="/media/perennial/projects.mp4" autoplay muted loop playsinline></video>
-  </span>
-  <figcaption>The projects board. Cards carry status, tasks, and deadlines, and drag between groups.</figcaption>
+<span class="media-frame"><video src="/media/perennial/projects.mp4" autoplay muted loop playsinline></video></span>
+<figcaption>Projects: cards with status, tasks, and deadlines.</figcaption>
 </figure>
-
-The visual system is charcoal, sage, and warm white, with Newsreader for display type and Albert Sans for the interface, set on a deliberately small and dense scale. User facing labels draw from a fixed palette of ten colors, assigned by hashing the tag's name, so the same tag renders the same color everywhere, automatically. The design tokens are enforced mechanically: a repo hook checks every edit and requires a token wherever a color appears.
-
-![The brand palette: charcoal, sage, and three warm whites.](/media/perennial/brand-colors.png)
-
-![The type scale: Newsreader for display, Albert Sans for the interface.](/media/perennial/brand-type.png)
-
-![One Card primitive, three variants, used across every module.](/media/perennial/brand-cards.png)
-
-![Six layout patterns cover the whole app.](/media/perennial/brand-layouts.png)
-
-## Money
-
-Invoicing runs on Stripe Connect with direct charges, so payments land in the studio's own Stripe account and the full amount belongs to the studio. An invoice moves from draft to sent to paid, its line items pull from tracked time and expenses with provenance intact, and every invoice gets a public payment page at a tokenized link, plus a printable version and a branded email with a live preview before sending.
-
 <figure class="media">
-  <span class="media-frame">
-    <video src="/media/perennial/invoicing.mp4" autoplay muted loop playsinline></video>
-  </span>
-  <figcaption>Sending an invoice: the branded email and hosted payment page, exactly as the client receives them.</figcaption>
+<span class="media-frame"><video src="/media/perennial/notes.mp4" autoplay muted loop playsinline></video></span>
+<figcaption>Notes: asking about a contact from inside a note.</figcaption>
 </figure>
+</div>
 
-Banking connects through Plaid. Real transactions flow in, get auto categorized, and can carry receipts. When a credit lands that matches an outstanding invoice within a dollar, Perennial proposes the match, which closes the loop from work to time to invoice to actual money in the account. The Stripe webhook is idempotent and returns an error on database failure so Stripe retries, because the money path has to catch every event.
+<div class="split is-wide">
+<div>
+<span class="eyebrow">Money</span>
+<h3>From tracked time to money in the bank</h3>
+<p>Invoice lines pull from tracked time and expenses, go out as a branded email with a hosted payment page, and get paid through Stripe straight into the studio's own account.</p>
+<p>Plaid brings in the real bank feed, and a deposit that matches an open invoice gets proposed as the match.</p>
+</div>
+<video src="/media/perennial/invoicing.mp4" autoplay muted loop playsinline></video>
+</div>
 
-![Banking. The real feed, categorized and matched back to the invoices that produced it.](/media/perennial/banking-full.png)
+![Banking in dark mode: the real feed, categorized and matched back to the invoices that produced it.](/media/perennial/banking-dark.png "bare")
 
-## Ash
+</section>
 
-The assistant is named Ash: one syllable, gender neutral, quiet. The icon is a small sapling, because the assistant's job is tending a practice so it grows. It rests in the corner and grows through three states, from icon to floating window to full surface, and it lives inside every canvas: press Space at the start of any line and Ash is there. What comes back is either prose inserted into the page or a real action with a link to what it created.
+<div class="split is-wide is-flipped">
+<div>
+<span class="eyebrow">Ash</span>
+<h3>A pleasant, knowledgeable AI assistant</h3>
+<p>Press Space on any line and Ash is there. Factual questions get answers from live data. Judgment calls, like whether a 50 percent gallery split is fair, get the real options and their tradeoffs.</p>
+<p>A hand-written knowledge base and a research brief on each user's corner of the market keep the advice local to the practice.</p>
+</div>
+<video src="/media/perennial/ash.mp4" autoplay muted loop playsinline></video>
+</div>
 
+<span class="eyebrow">Outreach and opportunities</span>
+
+Pipelines for press, galleries, and stockists, with a parking lot for conversations that go quiet, beside a hand-curated feed of fairs, open calls, and grants.
+
+<div class="media-row is-wide" style="--cols:2">
 <figure class="media">
-  <span class="media-frame">
-    <video src="/media/perennial/ash-popup.mp4" autoplay muted loop playsinline></video>
-  </span>
-  <figcaption>The summon: Space on an empty line, and Ash arrives where you already are.</figcaption>
+<span class="media-frame"><video src="/media/perennial/outreach.mp4" autoplay muted loop playsinline></video></span>
+<figcaption>Outreach: logging a follow-up straight from the pipeline.</figcaption>
 </figure>
-
-The governing rule is educate, then act. Ash splits questions into two kinds. Factual questions get a direct answer pulled from live data, and every date and dollar amount comes from a fresh read. Nuanced questions, like whether a 50 percent gallery split is fair, get the real options and their tradeoffs, because the goal is an informed maker making their own call. A preference memory learns each user's stated positions across conversations, and when their preference conflicts with general best practice, their preference wins for them.
-
 <figure class="media">
-  <span class="media-frame">
-    <video src="/media/perennial/notes.mp4" autoplay muted loop playsinline></video>
-  </span>
-  <figcaption>Asked about a contact from inside a note, Ash answers from the studio's live records.</figcaption>
+<span class="media-frame"><video src="/media/perennial/opportunities.mp4" autoplay muted loop playsinline></video></span>
+<figcaption>Opportunities: curated fairs, open calls, and grants with real deadlines.</figcaption>
 </figure>
+</div>
 
-Ash's expertise is built deliberately. A hand written knowledge base covers pricing, contracts, galleries, press, sales channels, and cash flow, written as frameworks that help a maker weigh a decision, then embedded for retrieval. Right after onboarding, a background researcher browses the web for that specific user's corner of the market, the galleries, fairs, publications, and norms that fit their medium, price point, and region, and writes a private brief that gets retrieved alongside the general knowledge. Advice from Ash is local to the practice it serves.
-
-<figure class="media">
-  <span class="media-frame">
-    <video src="/media/perennial/ash.mp4" autoplay muted loop playsinline></video>
-  </span>
-  <figcaption>A full conversation on the canvas: context from the whole studio, answers that land next to your own thinking.</figcaption>
-</figure>
-
-Two pieces of honesty engineering I care about. Ash's sense of what it can do is generated from the live tool registry, all 18 tools of it, so its claims always match its actual abilities, and it names its boundaries plainly. And its behavior is tested by LLM judged evals that gate releases at 80 percent. An earlier eval graded answers on containing specific numbers and dates, which trained exactly the false confidence the product exists to avoid, so I replaced it with judged evals of the behavior itself.
-
-## Reach
-
-Outreach is kanban pipelines for the campaigns a studio actually runs: press, galleries, stockists, new business, seeded from the onboarding answers. The distinctive piece is the Ether, a parking lot attached to every pipeline. Most outreach goes dormant and comes back months later, so the system gives a paused conversation a place to wait with its history intact.
-
-<figure class="media">
-  <span class="media-frame">
-    <video src="/media/perennial/outreach.mp4" autoplay muted loop playsinline></video>
-  </span>
-  <figcaption>Logging a follow-up from the pipeline: email, call, or meeting, straight onto the record.</figcaption>
-</figure>
-
-Presence gathers the outward facing picture: website analytics, socials, newsletter performance, and a press log. Alongside it sits a curated opportunities feed of fairs, open calls, grants, and residencies, reviewed by hand and matched to each user's discipline, with deadlines flowing onto the same calendar as everything else.
-
-<figure class="media">
-  <span class="media-frame">
-    <video src="/media/perennial/opportunities.mp4" autoplay muted loop playsinline></video>
-  </span>
-  <figcaption>The opportunities feed: curated fairs, open calls, grants, and residencies with real deadlines.</figcaption>
-</figure>
-
-## Development
-
-The first commit is April 17, 2026. The last of 462 is July 4. Eleven weeks, solo, every layer from the Postgres schema to the interface. Ash is in the very first build commit, because the assistant was the thesis from day one.
-
-The build ran on a pipeline I would use again anywhere. Slack is intake, where bugs and ideas land. Linear is the queue and the brain. Claude Code is the hands, working each ticket into a branch and a pull request, with a Vercel preview before anything merges to main. A human triage gate sits between intake and the agent on purpose: text from users is untrusted input, and routing it through a person keeps prompt injection out of the code path. Sentry triages errors into the same queue weekly, and a changelog agent posts every merge back to Slack.
-
-Midway through, I wrote an honest document I think about a lot: a duplication registry cataloguing every place the codebase had grown by cloning, down to the four detail panels rebuilding the same scaffold and a Badge component with zero importers. That document drove a consolidation wave, shared shells, adopted primitives, tokenized colors, and finally the hook that enforces the design system on every future edit. Writing down where the codebase was rough made it better faster.
+<section class="band is-tint">
 
 ## Beta
 
-About ten working designers and artists used Perennial in private beta, coordinated through a Slack where we workshopped the product together. The loop was simple: a user asks a question, I ask what they are actually trying to do, the thread becomes a decision, and the decision becomes a ticket filed straight from the channel.
+<div class="fig-stats" style="--cols:3">
+<div class="stat"><span class="stat-value">11 weeks</span><span class="stat-label">From first commit to a working beta</span></div>
+<div class="stat"><span class="stat-value">462</span><span class="stat-label">Commits, every layer from schema to interface</span></div>
+<div class="stat"><span class="stat-value">10</span><span class="stat-label">Working users in beta</span></div>
+</div>
 
-![The beta Slack: the welcome note in #all-perennial, and a real bug report beside the weekly Sentry triage in #bugs.](/media/perennial/slack-msgs.png "bare")
+The beta ran through a shared Slack. A question in the channel became a conversation about what the person was actually trying to do, then a decision, then a ticket filed straight from the thread.
 
-My favorite example is task deletion. One tester wanted to delete tasks, for the ones created by mistake. Another wanted an archive, because a few weeks later a completed task stops mattering day to day while its history still does. Two asks that sound like one feature request are actually the full definition of the feature: deletion serves mistakes, and archival serves history.
+![The beta Slack: the welcome note, and a real bug report beside the weekly error triage.](/media/perennial/slack-msgs.png "bare")
+
+</section>
+
+## Process
+
+Four moments that set the direction of the app:
+
+### 1. Onboarding
+
+In order to make a custom-feeling application for users, a comprehensive user onboarding experience is important. I weighed the options of including an assisted personal demo, making the process self serve, and how much of the onboarding phase is mandatory before viewing the application.
+
+<figure class="media">
+<span class="media-frame">
+<span class="media-grid" style="--cols:2;--cols-sm:1">
+<img src="/media/perennial/onboarding-name.webp" alt="Onboarding step one: Welcome to Perennial, asking for a name and studio name." width="2000" height="1326" loading="lazy" decoding="async">
+<img src="/media/perennial/onboarding-make.webp" alt="Onboarding step two: What do you make?, with discipline pills like furniture, ceramics, and graphic design." width="2000" height="1326" loading="lazy" decoding="async">
+</span>
+</span>
+<figcaption>Key onboarding screens.</figcaption>
+</figure>
+
+### 2. Three options for every feature
+
+Before any code, I made 28 standalone HTML wireframes. Every feature started as three directions, annotated red for what was still undesigned and blue for decisions to revisit, and filled with real maker content, since "Walnut slab idea for gallery show" tests line length and tone in ways placeholder text can't.
+
+<figure class="media">
+<span class="media-frame">
+<span class="media-grid" style="--cols:2;--cols-sm:1">
+<img src="/media/perennial/00-claude-grabbed/wireframe-ash.png" alt="Wireframe of the notes surface with the assistant's floating window." width="1600" height="1000" loading="lazy" decoding="async">
+<img src="/media/perennial/00-claude-grabbed/wireframe-outreach.png" alt="Wireframe of the outreach pipeline." width="1600" height="1000" loading="lazy" decoding="async">
+</span>
+</span>
+<figcaption>April wireframes. Red marks what was still to be designed.</figcaption>
+</figure>
+
+### 3. Modeling the studio as one graph
+
+Building the connected studio graph was iterative. It came together as I built the MVP, and seeing the full graph as one was the largest source of pride for me. Every surface reads from one connected model: an invoice line knows which time entry produced it, and a deposit knows its invoice. Row level security on all 43 tables from day one made the database itself the permission layer, so going from one studio to many is a switch. 
+
+![The data model: clients, projects, time, expenses, invoices, and the bank feed as one connected graph.](/media/perennial/data-model.svg)
+
+
+### 4. Teaching Ash to act on the user's behalf
+
+Most of the people Perennial serves are skeptical of AI, so the assistant had to earn its place. I shaped Ash's behavior in three layers:
+
+- **Friendly to people who don't use AI.** Ash starts small and grows only when the user asks. Factual questions get a direct answer, and judgment calls get the real options and their tradeoffs, so the person stays the one deciding.
+- **Fluent in the studio's data.** Ash reads from the same connected model as every screen, so each date and dollar comes from a fresh read of the database. A hand-written knowledge base covers pricing, contracts, galleries, and cash flow, and a research brief written after onboarding covers the user's own corner of the market.
+- **Active, and safe about it.** Ash can take real actions across the app. Its description of what it can do is generated from that live tool registry, so its claims always match its abilities, and it names its limits plainly. Every action comes back with a link to what it created, and when a user states a preference, Ash follows it over general best practice.
+
+Every release is gated by judged evals at 80 percent. The first version graded answers on whether they contained specific numbers and dates, which rewarded exactly the false confidence skeptics spot instantly, so I rewrote the tests to grade the behavior itself.
+
+<section class="band is-inverse">
+
+<span class="eyebrow">The Stack</span>
+
+Designs start in Figma. Beta testers report bugs and ideas in Slack, and I triage every one by hand before it becomes a Linear ticket, since text from users is untrusted input. Conductor runs Claude Code on several tickets at once, each in its own branch, and every pull request on GitHub gets a Vercel preview before it merges. Supabase holds the data, PostHog shows how people actually use the app, and Sentry feeds errors back into the same queue each week.
+
+<figure class="media bare">
+<span class="media-frame">
+<span class="tools">
+<span class="tools-row">
+<span class="tool"><i class="logo-mark" style="--logo:url(/media/logos/figma.svg)" aria-hidden="true"></i><strong>Figma</strong><span>Design</span></span>
+<span class="tool"><i class="logo-mark" style="--logo:url(/media/logos/slack.svg)" aria-hidden="true"></i><strong>Slack</strong><span>Communication</span></span>
+<span class="tool"><i class="logo-mark" style="--logo:url(/media/logos/linear.svg)" aria-hidden="true"></i><strong>Linear</strong><span>Issue triaging</span></span>
+</span>
+<span class="tools-row">
+<span class="tool"><i class="logo-mark" style="--logo:url(/media/logos/conductor.svg)" aria-hidden="true"></i><strong>Conductor</strong><span>Harness</span></span>
+<span class="tool"><i class="logo-mark" style="--logo:url(/media/logos/claude.svg)" aria-hidden="true"></i><strong>Claude Code</strong><span>Model</span></span>
+<span class="tool"><i class="logo-mark" style="--logo:url(/media/logos/github.svg)" aria-hidden="true"></i><strong>GitHub</strong><span>Repo</span></span>
+<span class="tool"><i class="logo-mark" style="--logo:url(/media/logos/vercel.svg)" aria-hidden="true"></i><strong>Vercel</strong><span>Deployment</span></span>
+</span>
+<span class="tools-row">
+<span class="tool"><i class="logo-mark" style="--logo:url(/media/logos/supabase.svg)" aria-hidden="true"></i><strong>Supabase</strong><span>Database</span></span>
+<span class="tool"><i class="logo-mark" style="--logo:url(/media/logos/sentry.svg)" aria-hidden="true"></i><strong>Sentry</strong><span>Error tracking</span></span>
+<span class="tool"><i class="logo-mark" style="--logo:url(/media/logos/posthog.svg)" aria-hidden="true"></i><strong>PostHog</strong><span>Analytics</span></span>
+</span>
+</span>
+</span>
+</figure>
+
+</section>
 
 ## Status
 
-Perennial is live at app.perennial.design and usable end to end: onboarding, projects, network, outreach, notes, calendar, scheduling, invoicing, banking, presence, and Ash. I paused active development in August 2026 after a hard look at the market landscape. The beta cohort knows I intend to pick it back up, and the system was built for that moment: multi tenant from day one, documented end to end, with an eval gate waiting for the next change.
+Perennial is live and usable end to end: multi-tenant, documented, and waiting behind its eval gate for the next change. There are hundreds of features I'd like to implement, and am focusing my efforts on fixing bugs and talking with customers as I start to monetize the software. 
 
-What it demonstrates is the way I like to work. Find the disconnected mess, design the system that joins it, and build the whole thing end to end, with the honesty to write down what is rough and the discipline to fix it.
+Perennial was the tool I originally built for me, but quickly morphed to serve the hundreds of designers and artists I went to college with and met in my early career. I am excited to continue to build and pivot the software as new tooling makes creative development and operations more expansive. 

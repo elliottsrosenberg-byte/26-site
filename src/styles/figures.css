@@ -688,3 +688,227 @@ html.has-lightbox { overflow: hidden; }
   }
   .piece .timeline-label time { display: inline; margin-right: 8px; }
 }
+
+/* ── Bands: full-width sections that switch the page to the opposite theme,
+   like moving to a dark slide and back. Markdown inside a band renders
+   normally. The fixed breadcrumb and each sidebar link invert while a band is behind
+   them (figures.ts toggles html.crumb-inverse and a.on-band).
+   Markup: <section class="band is-inverse"> ...markdown... </section>
+   (blank lines around the markdown). is-tint uses the warm grey instead. */
+.piece .band.is-inverse,
+.side-nav a.on-band,
+html.crumb-inverse .crumb {
+  --bg: #161513;
+  --ink: #f0efed;
+  --mid: #8a8783;
+  --faint: #5a5650;
+  --surface: #211f1d;
+  --hairline: #2c2a27;
+  --figure-accent: #e08a52;
+}
+:root[data-theme='dark'] .piece .band.is-inverse,
+:root[data-theme='dark'] .side-nav a.on-band,
+:root[data-theme='dark'].crumb-inverse .crumb {
+  --bg: #fbfbfb;
+  --ink: #231e17;
+  --mid: #858280;
+  --faint: #cecac6;
+  --surface: #edecec;
+  --hairline: #e7e5e3;
+  --figure-accent: #b5602b;
+}
+.piece .band {
+  --band-bg: var(--bg);
+  position: relative;
+  margin: 96px 0;
+  padding: clamp(72px, 10vw, 128px) 0;
+  color: var(--ink);
+  background: var(--band-bg);
+  /* Paint edge to edge without widening the page: a huge spread shadow,
+     clipped to the band's own height. */
+  box-shadow: 0 0 0 100vmax var(--band-bg);
+  clip-path: inset(0 -100vmax);
+}
+.piece .band.is-tint { --band-bg: var(--surface); }
+.piece > .band:first-child { margin-top: 0; }
+/* Bands form their own layer; keep the fixed sidebar above them. */
+.side-nav { z-index: 10; }
+.piece .statement .eyebrow { letter-spacing: 0; font-weight: 400; line-height: 1.4; }
+.piece .band.is-tint .media-frame { background: none; padding: 0; }
+.piece .band > :first-child { margin-top: 0; }
+.piece .band > :last-child { margin-bottom: 0; }
+
+/* ── Type: statements and sub-heads for clearer hierarchy ─────────────── */
+.piece .statement {
+  margin: 0 0 32px;
+  max-width: 22ch;
+  font-size: clamp(28px, 3.6vw, 44px);
+  line-height: 1.15;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.piece .statement.is-wide { max-width: 30ch; }
+.piece h3 {
+  margin: 64px 0 12px;
+  font-size: clamp(20px, 2vw, 24px);
+  line-height: 1.3;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.piece .eyebrow {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--mid);
+  font-variant-numeric: tabular-nums;
+}
+.piece .pills { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.piece .pills li,
+.piece .pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ── Split: short text beside a piece of media ───────────────────────── */
+.piece .split {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(24px, 4vw, 48px);
+  align-items: center;
+  margin: 56px calc(-2 * var(--outdent)) 56px 0;
+}
+.piece .split.is-flipped { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+.piece .split.is-flipped > :first-child { order: 2; }
+@media (max-width: 1119px) {
+  .piece .split { margin-right: 0; }
+}
+@media (max-width: 700px) {
+  .piece .split,
+  .piece .split.is-flipped { grid-template-columns: 1fr; }
+  .piece .split.is-flipped > :first-child { order: 0; }
+}
+.piece .split h3 { margin-top: 0; }
+.piece .split p { margin: 0 0 12px; font-size: 16px; color: var(--mid); }
+.piece .split p:last-child { margin-bottom: 0; }
+.piece .split video,
+.piece .split img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  border-radius: 8px;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.12);
+}
+
+/* ── Quote: one line from a person, set large ─────────────────────────── */
+.piece figure.fig-quote { margin: 64px 0; }
+.piece figure.fig-quote blockquote {
+  margin: 0;
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  max-width: 26ch;
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.25;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+.piece figure.fig-quote figcaption { margin-top: 16px; text-align: left; font-size: 14px; }
+
+/* ── Flow: a left-to-right chain of steps (a pipeline, a funnel) ───────── */
+.piece .flow {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 28px;
+}
+.piece .flow-step { position: relative; display: block; }
+.piece .flow-step + .flow-step::before {
+  content: '\2192';
+  position: absolute;
+  left: -20px;
+  top: 0;
+  color: var(--mid);
+}
+.piece .flow-step strong { display: block; font-weight: 500; }
+.piece .flow-step span { display: block; margin-top: 4px; font-size: 13px; line-height: 1.4; color: var(--mid); }
+@media (max-width: 700px) {
+  .piece .flow { grid-auto-flow: row; gap: 18px; }
+  .piece .flow-step + .flow-step::before { content: '\2193'; left: 0; top: -18px; }
+}
+
+/* ── Wide: break out of the text column, centered on the page. Stays clear
+   of the fixed sidebar (which sits in the left ~200px) where it shows. ──── */
+.piece { --wide: min(1120px, calc(100vw - 2 * var(--pad-x))); }
+@media (min-width: 1120px) {
+  .piece { --wide: min(1120px, calc(100vw - 420px)); }
+}
+.piece figure.media.is-wide,
+.piece .split.is-wide,
+.piece .media-row.is-wide {
+  width: var(--wide);
+  max-width: none;
+  margin-left: calc((100% - var(--wide)) / 2);
+  margin-right: 0;
+}
+
+/* ── Media row: several media side by side, each with its own frame and
+   caption. ─────────────────────────────────────────────────────────── */
+.piece .media-row {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+  gap: clamp(12px, 1.6vw, 20px);
+  align-items: start;
+  margin: 56px 0;
+}
+@media (max-width: 700px) {
+  .piece .media-row { grid-template-columns: 1fr; }
+}
+.piece .media-row > figure.media { margin: 0; }
+.piece .media-row > figure .media-frame { padding: clamp(12px, 2vw, 24px); }
+.piece .media-row > figure .media-frame > video,
+.piece .media-row > figure .media-frame > img { width: 100%; height: auto; border-radius: 6px; }
+
+/* A question set as the section's one line, in bold italics. */
+.piece .statement.is-question { font-style: italic; font-weight: 600; max-width: 32ch; }
+
+/* Logo marks: single-color logos that follow the text color. The SVG is
+   used as a mask, so any one-color logo works (public/media/logos/). */
+.piece .logo-mark {
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 14px;
+  background: currentColor;
+  -webkit-mask: var(--logo) center / contain no-repeat;
+  mask: var(--logo) center / contain no-repeat;
+}
+.piece .flow:has(.logo-mark) .flow-step + .flow-step::before { top: 5px; }
+
+/* Tools: logos with a name and a one-word role, set in centered rows
+   (write each row as its own .tools-row, e.g. 3, 4, 3). */
+.piece .tools { display: grid; gap: 40px; }
+.piece .tools-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px 24px;
+}
+.piece .tool { display: block; width: 132px; text-align: center; }
+.piece .tool .logo-mark { margin: 0 auto 12px; }
+.piece .tool strong { display: block; font-weight: 500; }
+.piece .tool span { display: block; margin-top: 2px; font-size: 13px; color: var(--mid); }
+@media (max-width: 700px) {
+  /* Phones: the rows dissolve into one two-column grid. */
+  .piece .tools { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 16px; }
+  .piece .tools-row { display: contents; }
+  .piece .tool { width: auto; }
+}
+
+/* A label on its own line sits tight to the text below it. */
+.piece p:has(> .eyebrow:only-child) { margin-bottom: 0; }

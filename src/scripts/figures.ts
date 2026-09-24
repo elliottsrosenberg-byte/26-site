@@ -216,3 +216,31 @@ if (panning.length) {
   panning.forEach((el) => io.observe(el));
 }
 if (!reducedMotion()) document.querySelectorAll<HTMLElement>('.scrollshot').forEach(initScrollshot);
+
+// Bands: invert the fixed breadcrumb, and each sidebar link, while an
+// inverse band sits behind them, so they stay legible over dark sections.
+const bands = [...document.querySelectorAll<HTMLElement>('.band.is-inverse')];
+if (bands.length) {
+  const crumb = document.querySelector<HTMLElement>('.crumb');
+  const navLinks = [...document.querySelectorAll<HTMLElement>('.side-nav a')];
+  const onBand = (el: HTMLElement) => {
+    const r = el.getBoundingClientRect();
+    const y = r.top + r.height / 2;
+    return bands.some((b) => {
+      const br = b.getBoundingClientRect();
+      return br.top <= y && br.bottom >= y;
+    });
+  };
+  const fixed = (el: HTMLElement | null) => !!el && getComputedStyle(el).position === 'fixed';
+  let raf = 0;
+  const update = () => {
+    document.documentElement.classList.toggle('crumb-inverse', fixed(crumb) && onBand(crumb!));
+    navLinks.forEach((a) => a.classList.toggle('on-band', onBand(a)));
+  };
+  window.addEventListener('scroll', () => {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(update);
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+}

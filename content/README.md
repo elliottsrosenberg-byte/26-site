@@ -171,3 +171,86 @@ Built in HTML so numbers stay sharp and follow the theme. Put them in a grey `fi
 - **Timeline** (`.timeline`, height via `--h`): items with `is-email` get small square marks; `data-tier="1"` moves a crowded label one row further out. `.timeline-phase` bands (`--from`, `--to`) and `.timeline-item` milestones at `--at`, labels below by default or `data-side="above"`; `data-align="start"`/`"end"` for the first and last. Stacks into a vertical list on phones.
 
 The warm accent (`--figure-accent`) is for the one thing a diagram is about. Everything else stays in the grey steps.
+
+### Bands: full-width light and dark sections
+
+Wrap any run of markdown in a band to switch that stretch of the page to the opposite theme, like cutting to a dark slide. Keep a blank line after the opening tag and before the closing one so the markdown inside renders. The breadcrumb and sidebar links flip colors as a band passes behind them.
+
+```html
+<section class="band is-inverse">
+
+## Solution
+
+Regular markdown here.
+
+</section>
+```
+
+`is-tint` is the quieter version: the warm grey surface, good for a single image block. Use inverse bands sparingly (two or three a page) so each one reads as a moment.
+
+### Statements, sub-heads, eyebrows, quotes
+
+- `<p class="statement">Big line.</p>` for the one sentence a section is about (`is-wide` allows a longer line). Put `<span class="eyebrow">Label</span>` at the start of it for a small label above.
+- `### Heading` for a sub-section inside an `##` section.
+- A pull quote:
+
+```html
+<figure class="fig-quote">
+<blockquote>The line.</blockquote>
+<figcaption>Who said it, or why it matters.</figcaption>
+</figure>
+```
+
+### Split: short text beside media
+
+```html
+<div class="split">
+<div>
+<span class="eyebrow">Label</span>
+<h3>Title</h3>
+<p>One or two short paragraphs.</p>
+</div>
+<video src="..." autoplay muted loop playsinline></video>
+</div>
+```
+
+Add `is-flipped` to put the media on the left. Stacks on phones.
+
+### Flow: a chain of steps
+
+`<span class="flow">` of `<span class="flow-step"><strong>Step</strong><span>What happens</span></span>`, inside a diagram figure. Arrows run left to right, and top to bottom on phones.
+
+### Wide: break out of the text column
+
+Add `is-wide` to a `figure class="media"`, a `split`, or a `media-row` to make it wider than the text (up to 1120px, always clear of the sidebar). Good for a hero, a two-column split, or a row of media.
+
+### Media row: separate frames side by side
+
+Each item gets its own grey frame and caption. `--cols` sets how many; phones stack them.
+
+```html
+<div class="media-row is-wide" style="--cols:3">
+<figure class="media">
+<span class="media-frame"><video src="..." autoplay muted loop playsinline></video></span>
+<figcaption>Caption</figcaption>
+</figure>
+</div>
+```
+
+### Question and logos
+
+- `<p class="statement is-question">How might we ...?</p>` sets a question in bold italics.
+- `<i class="logo-mark" style="--logo:url(/media/logos/slack.svg)" aria-hidden="true"></i>` is a logo that takes the text color. Use it in a flow step before the `<strong>`, or in a tools grid. Logos live in `public/media/logos/` as single-color SVGs (Simple Icons is a good source).
+- A tools grid, one `tools-row` per row, centered:
+
+```html
+<figure class="media bare">
+<span class="media-frame">
+<span class="tools">
+<span class="tools-row">
+<span class="tool"><i class="logo-mark" style="--logo:url(/media/logos/figma.svg)" aria-hidden="true"></i><strong>Figma</strong><span>Design</span></span>
+</span>
+</span>
+</span>
+</figure>
+```
