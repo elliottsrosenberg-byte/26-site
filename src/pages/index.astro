@@ -3,8 +3,8 @@ import Base from '../layouts/Base.astro';
 
 // Home project grid: 2x2 on desktop, one column on mobile. Each tile is a
 // moving asset that links to its case study or live page. `kind` picks how
-// the media is shown: a looping video, the Waiting logo drawing on red, or a
-// tall page screenshot panning inside the tile.
+// the media is shown: a looping video, the Waiting logo drawing on red, or
+// campaign ads playing as Instagram stories on a spread of phones.
 const WORK = [
   {
     title: 'Perennial',
@@ -19,11 +19,8 @@ const WORK = [
     title: 'Rosh Hashanah Creative Campaign',
     desc: 'Products, creative, and launch for a holiday campaign at Oneg Home.',
     href: '/project/oneg-home/',
-    kind: 'pan',
-    src: '/media/oneg/web-home.webp',
-    w: 1400,
-    h: 5798,
-    label: 'The Oneg Home homepage during the Rosh Hashanah campaign, scrolling top to bottom.',
+    kind: 'stories',
+    label: 'Meta ads from the Oneg Rosh Hashanah campaign, playing as Instagram stories on a spread of phones.',
   },
   {
     title: 'Waiting Magazine',
@@ -44,6 +41,19 @@ const WORK = [
   },
 ];
 const external = (href: string) => href.startsWith('http');
+
+// Oneg stories: a 5 x 3 spread of phones, two ads each. Every phone opens
+// on a clean ad (13-24, no headline) so the story header has room, then
+// cuts to a headline version (1-12). The three repeats land four columns
+// apart. Each phone gets its own story length and starting point so they
+// advance at different times.
+const ad = (n: number) => `/media/oneg/ad-${String(n).padStart(2, '0')}.webp`;
+const PHONE_COLS = 5, PHONE_ROWS = 3;
+const phone = (k: number) => ({
+  deck: [ad(13 + (k % 12)), ad(1 + (k % 12))],
+  dur: (2.6 + ((k * 7) % 5) * 0.35).toFixed(2),
+  start: (((k * 0.37) % 1)).toFixed(2), // fraction of the first story already played
+});
 ---
 <Base title="Elliott Rosenberg">
   <main class="page">
@@ -88,8 +98,34 @@ const external = (href: string) => href.startsWith('http');
                 {w.kind === 'video' && (
                   <video src={w.src} poster={w.poster} autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
                 )}
-                {w.kind === 'pan' && (
-                  <img src={w.src} width={w.w} height={w.h} alt="" loading="lazy" decoding="async" style={`--r:${(w.h! / w.w!).toFixed(4)}`} />
+                {w.kind === 'stories' && (
+                  <span class="story-spread">
+                    {Array.from({ length: PHONE_COLS }, (_, c) => (
+                      <span class="story-col">
+                        {Array.from({ length: PHONE_ROWS }, (_, r) => {
+                          const ph = phone(c * PHONE_ROWS + r);
+                          return (
+                            <span class="phone" style={`--dur:${ph.dur}s`} data-start={ph.start}>
+                              <span class="phone-screen">
+                                {ph.deck.map((src, i) => (
+                                  <img src={src} width="480" height="860" alt="" loading="lazy" decoding="async" class={i === 0 ? 'on' : undefined} />
+                                ))}
+                                <span class="story-bars">
+                                  {ph.deck.map(() => <span class="story-bar"><span class="story-fill"></span></span>)}
+                                </span>
+                                <span class="story-head">
+                                  <span class="story-avatar"></span>
+                                  <span class="story-name">oneghome</span>
+                                  <span class="story-meta">Sponsored</span>
+                                </span>
+                                <span class="story-cta">Shop now</span>
+                              </span>
+                            </span>
+                          );
+                        })}
+                      </span>
+                    ))}
+                  </span>
                 )}
                 {w.kind === 'draw' && (
                   <img src={w.src} width="1196" height="392" alt="" loading="lazy" decoding="async" />
@@ -185,22 +221,143 @@ const external = (href: string) => href.startsWith('http');
   }
   .work-media.is-draw img { width: 72%; height: auto; }
 
-  /* Oneg: the full campaign homepage pans top to bottom inside the tile.
-     --box is the tile's height / width, --r the page's. */
-  .work-media.is-pan { --box: calc(1080 / 1482); background: #fff; }
-  .work-media.is-pan img {
-    display: block;
-    width: 100%;
-    height: auto;
-    --pan-end: calc((var(--box) / var(--r) - 1) * 100%);
-    animation: work-pan 22s ease-in-out infinite alternate;
+  /* Oneg: campaign ads as Instagram stories on a diagonal spread of phones,
+     on the campaign's rust. Sizes are in tile widths (cqw) so the spread
+     scales with the tile; inside a phone, 1em is a twentieth of its width. */
+  .work-media.is-stories {
+    container-type: size;
+    background: #8a4220;
+    border-color: transparent;
   }
-  @keyframes work-pan {
-    0%, 10% { transform: translateY(0); }
-    90%, 100% { transform: translateY(var(--pan-end)); }
+  .story-spread {
+    --pw: 27cqw;                                  /* phone width */
+    --ph: calc(var(--pw) * (0.928 * 2556 / 1179 + 0.072)); /* phone height */
+    --gap: 7cqw;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: flex;
+    gap: var(--gap);
+    transform: translate(-50%, -50%) rotate(30deg);
+  }
+  .story-col { display: flex; flex-direction: column; gap: var(--gap); }
+  .story-col:nth-child(even) { transform: translateY(calc(var(--ph) * -0.45)); }
+
+  /* Phone geometry matches the case study's phone frame (figures.css). */
+  .phone {
+    display: block;
+    width: var(--pw);
+    padding: 3.6%;
+    font-size: calc(var(--pw) / 20);
+    border-radius: 15% / 7%;
+    background: #121212;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+      -1.2em 1.8em 3em rgba(40, 12, 0, 0.45);
+  }
+  .phone-screen {
+    position: relative;
+    display: block;
+    aspect-ratio: 1179 / 2556;
+    overflow: hidden;
+    border-radius: 11.5% / 5.3%;
+    background: #222;
+    color: #fff;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .phone-screen::before { /* top scrim so the bars and name read on light ads */
+    content: '';
+    position: absolute;
+    z-index: 1;
+    inset: 0 0 auto;
+    height: 20%;
+    background: linear-gradient(rgba(0, 0, 0, 0.32), transparent);
+  }
+  .phone-screen::after { /* Dynamic Island */
+    content: '';
+    position: absolute;
+    z-index: 2;
+    top: 1.3%;
+    left: 50%;
+    width: 31%;
+    height: 4.2%;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: #000;
+  }
+  .phone-screen img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+  }
+  .phone-screen img.on { opacity: 1; }
+  .story-bars {
+    position: absolute;
+    z-index: 2;
+    top: 3.3em;
+    left: 0.8em;
+    right: 0.8em;
+    display: flex;
+    gap: 0.3em;
+  }
+  .story-bar {
+    flex: 1;
+    height: 0.2em;
+    overflow: hidden;
+    border-radius: 1em;
+    background: rgba(255, 255, 255, 0.4);
+  }
+  .story-fill {
+    display: block;
+    height: 100%;
+    background: #fff;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .story-fill.done { transform: scaleX(1); }
+  .story-fill.on { animation: story-fill var(--dur) linear forwards; }
+  .work-media.is-paused .story-fill.on { animation-play-state: paused; }
+  @keyframes story-fill {
+    to { transform: scaleX(1); }
+  }
+  .story-head {
+    position: absolute;
+    z-index: 2;
+    top: 4.1em;
+    left: 0.8em;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
+  .story-avatar {
+    width: 2.2em;
+    height: 2.2em;
+    border-radius: 50%;
+    background: #2c3210; /* Oneg olive */
+    box-shadow: 0 0 0 0.12em #fff;
+  }
+  .story-name { font-size: 0.95em; font-weight: 600; }
+  .story-meta { font-size: 0.85em; opacity: 0.8; }
+  .story-cta {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    bottom: 2.2em;
+    transform: translateX(-50%);
+    padding: 0.6em 1.4em;
+    border-radius: 99em;
+    background: #fff;
+    box-shadow: 0 0.2em 0.8em rgba(0, 0, 0, 0.18);
+    color: #111;
+    font-size: 0.95em;
+    font-weight: 500;
   }
   @media (prefers-reduced-motion: reduce) {
-    .work-media.is-pan img { animation: none; }
+    .story-fill.on { animation: none; transform: scaleX(1); }
   }
 
   /* Title underline draws in left to right on block hover, matching the
@@ -245,5 +402,35 @@ const external = (href: string) => href.startsWith('http');
       { threshold: 0.2 }
     );
     vids.forEach((v) => io.observe(v));
+  }
+
+  // Oneg stories: each phone plays its ads like Instagram stories. The
+  // current bar fills over the phone's --dur; when it ends, the phone cuts to
+  // its next ad. The first story starts part-way through (data-start) so the
+  // phones advance at different times. Bars pause while the tile is off
+  // screen; reduced motion leaves every phone on its first ad.
+  const storyTile = document.querySelector<HTMLElement>('.work-media.is-stories');
+  if (storyTile) {
+    storyTile.querySelectorAll<HTMLElement>('.phone').forEach((ph) => {
+      const imgs = [...ph.querySelectorAll('img')];
+      const fills = [...ph.querySelectorAll<HTMLElement>('.story-fill')];
+      const dur = parseFloat(getComputedStyle(ph).getPropertyValue('--dur'));
+      let i = 0;
+      const show = (n: number, startAt = 0) => {
+        i = n;
+        imgs.forEach((im, j) => im.classList.toggle('on', j === i));
+        fills.forEach((f, j) => {
+          f.classList.remove('on');
+          f.classList.toggle('done', j < i);
+          f.style.animationDelay = '';
+        });
+        void fills[i].offsetWidth; // restart the fill animation
+        if (startAt) fills[i].style.animationDelay = `${-startAt * dur}s`;
+        fills[i].classList.add('on');
+      };
+      fills.forEach((f) => f.addEventListener('animationend', () => show((i + 1) % fills.length)));
+      show(0, parseFloat(ph.dataset.start ?? '0'));
+    });
+    new IntersectionObserver(([e]) => storyTile.classList.toggle('is-paused', !e.isIntersecting)).observe(storyTile);
   }
 </script>
