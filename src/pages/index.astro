@@ -3,8 +3,8 @@ import Base from '../layouts/Base.astro';
 
 // Home project grid: 2x2 on desktop, one column on mobile. Each tile is a
 // moving asset that links to its case study or live page. `kind` picks how
-// the media is shown: a looping video, the Waiting logo drawing on red, or
-// campaign ads playing as Instagram stories on a spread of phones.
+// the media is shown: a looping video, or campaign ads playing as Instagram
+// stories on a spread of phones.
 const WORK = [
   {
     title: 'Perennial',
@@ -26,9 +26,11 @@ const WORK = [
     title: 'Waiting Magazine',
     desc: "Brand guidelines for a publication dedicated to NYC's working class creatives.",
     href: 'https://www.waitingmag.com/brand/introduction',
-    kind: 'draw',
-    src: '/media/home/waiting-logo-draw.webp',
-    label: 'The Waiting wordmark drawing itself in warm white on red.',
+    kind: 'video',
+    src: '/media/home/waiting-brand.mp4',
+    poster: '/media/home/waiting-brand-poster.webp',
+    bg: '#d62626', // brand red, the opening frame, shown until the poster loads
+    label: 'Pages from the Waiting brand guidelines: the wordmark, color, photography, print, and social.',
   },
   {
     title: 'Extras',
@@ -94,7 +96,7 @@ const phone = (k: number) => ({
               target={external(w.href) ? '_blank' : undefined}
               rel={external(w.href) ? 'noopener' : undefined}
             >
-              <span class={`work-media is-${w.kind}`} role="img" aria-label={w.label}>
+              <span class={`work-media is-${w.kind}`} role="img" aria-label={w.label} style={w.bg && `background:${w.bg}`}>
                 {w.kind === 'video' && (
                   <video src={w.src} poster={w.poster} autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
                 )}
@@ -126,9 +128,6 @@ const phone = (k: number) => ({
                       </span>
                     ))}
                   </span>
-                )}
-                {w.kind === 'draw' && (
-                  <img src={w.src} width="1196" height="392" alt="" loading="lazy" decoding="async" />
                 )}
               </span>
               <span class="item-title">{w.title}</span>
@@ -211,15 +210,6 @@ const phone = (k: number) => ({
     height: 100%;
     object-fit: cover;
   }
-
-  /* Waiting: the wordmark draws itself on the brand red, as on waitingmag.com/brand/logo. */
-  .work-media.is-draw {
-    display: grid;
-    place-items: center;
-    background: #d62626;
-    border-color: transparent;
-  }
-  .work-media.is-draw img { width: 72%; height: auto; }
 
   /* Oneg: campaign ads as Instagram stories on a diagonal spread of phones,
      on the campaign's rust. Sizes are in tile widths (cqw) so the spread
