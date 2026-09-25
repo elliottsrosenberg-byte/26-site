@@ -35,10 +35,9 @@ const BRAND_TILES = [
 
 const WEB_TILES = [
   { src: '/extras/waitingSite.mp4', title: 'Waiting Magazine', href: 'https://www.waitingmag.com' },
-  { src: '/extras/lgSite.mp4', title: 'Studio Lauren Goodman', href: 'https://laurengoodman.xyz' },
   { src: '/extras/siegelsite.mp4', title: 'Siegel', href: 'https://siegel.design' },
+  { src: '/extras/lgSite.mp4', title: 'Studio Lauren Goodman', href: 'https://laurengoodman.xyz' },
   { src: '/extras/paxSite.mp4', title: 'Pax Hand Pokes', href: 'https://paxhandpokes.com' },
-  { src: '/extras/oneg-redesign.mp4', title: 'Oneg Home, realign' },
 ];
 
 const VIDEO_TILES = [
@@ -96,9 +95,9 @@ const INTERACTIVE: { id: string; title: string }[] = [
 ];
 
 const sections = [
-  { id: 'interactive', label: 'Interactive' },
   { id: 'web', label: 'Web' },
   { id: 'brand', label: 'Brand' },
+  { id: 'interactive', label: 'Interactive' },
   { id: 'video', label: 'Video' },
   { id: 'physical', label: 'Physical' },
   { id: 'art', label: 'Art' },
@@ -122,6 +121,47 @@ const sections = [
   <MobileNav sections={sections.map((s) => ({ slug: s.id, text: s.label }))} />
 
   <main class="gallery-page">
+    <section id="web" class="gallery-section">
+      <h2 class="section-label">Web</h2>
+      <div class="tile-grid tile-grid-pair">
+        {WEB_TILES.map((t) => (
+          <figure class="tile">
+            {t.href ? (
+              <a href={t.href} target="_blank" rel="noopener" aria-label={`${t.title}, opens the live site`}>
+                <video src={t.src} autoplay muted loop playsinline preload="metadata"></video>
+              </a>
+            ) : (
+              <video src={t.src} autoplay muted loop playsinline preload="metadata"></video>
+            )}
+            <figcaption><span class="tile-title">{t.title}</span></figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <section id="brand" class="gallery-section">
+      <h2 class="section-label">Brand</h2>
+      <div class="tile-grid tile-grid-pair">
+        {BRAND_TILES.map((b) => (
+          <figure class="tile">
+            <div class="slides" tabindex="0" role="group" aria-label={`${b.title}, ${b.slides.length} ${b.slides.length === 1 ? 'slide' : 'slides'}`} data-count={b.slides.length}>
+              {b.slides.map((sl, i) => (
+                <img src={sl.src} width={sl.w} height={sl.h} alt={`${b.title}, slide ${i + 1} of ${b.slides.length}`} loading="lazy" class={i === 0 ? 'on' : undefined} />
+              ))}
+              {b.slides.length > 1 && (
+                <>
+                  <span class="slide-zone slide-zone-prev" aria-hidden="true"></span>
+                  <span class="slide-zone slide-zone-next" aria-hidden="true"></span>
+                  <span class="slide-count">1 / {b.slides.length}</span>
+                </>
+              )}
+            </div>
+            <figcaption><span class="tile-title">{b.title}</span></figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+
     <section id="interactive" class="gallery-section">
       <h2 class="section-label">Interactive</h2>
       <div class="tile-grid">
@@ -209,47 +249,6 @@ const sections = [
               </div>
             )}
             <figcaption><span class="tile-title">{t.title}</span></figcaption>
-          </figure>
-        ))}
-      </div>
-    </section>
-
-    <section id="web" class="gallery-section">
-      <h2 class="section-label">Web</h2>
-      <div class="tile-grid tile-grid-single">
-        {WEB_TILES.map((t) => (
-          <figure class="tile">
-            {t.href ? (
-              <a href={t.href} target="_blank" rel="noopener" aria-label={`${t.title}, opens the live site`}>
-                <video src={t.src} autoplay muted loop playsinline preload="metadata"></video>
-              </a>
-            ) : (
-              <video src={t.src} autoplay muted loop playsinline preload="metadata"></video>
-            )}
-            <figcaption><span class="tile-title">{t.title}</span></figcaption>
-          </figure>
-        ))}
-      </div>
-    </section>
-
-    <section id="brand" class="gallery-section">
-      <h2 class="section-label">Brand</h2>
-      <div class="tile-grid tile-grid-single">
-        {BRAND_TILES.map((b) => (
-          <figure class="tile">
-            <div class="slides" tabindex="0" role="group" aria-label={`${b.title}, ${b.slides.length} ${b.slides.length === 1 ? 'slide' : 'slides'}`} data-count={b.slides.length}>
-              {b.slides.map((sl, i) => (
-                <img src={sl.src} width={sl.w} height={sl.h} alt={`${b.title}, slide ${i + 1} of ${b.slides.length}`} loading="lazy" class={i === 0 ? 'on' : undefined} />
-              ))}
-              {b.slides.length > 1 && (
-                <>
-                  <span class="slide-zone slide-zone-prev" aria-hidden="true"></span>
-                  <span class="slide-zone slide-zone-next" aria-hidden="true"></span>
-                  <span class="slide-count">1 / {b.slides.length}</span>
-                </>
-              )}
-            </div>
-            <figcaption><span class="tile-title">{b.title}</span></figcaption>
           </figure>
         ))}
       </div>
@@ -356,7 +355,13 @@ const sections = [
   }
 
   .tile-grid { columns: 2; column-gap: 24px; }
-  .tile-grid-single { columns: 1; }
+  /* Web and Brand: an even 2x2 grid, read left to right. */
+  .tile-grid-pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+    align-items: start;
+  }
   .tile { break-inside: avoid; margin: 0 0 40px; }
   .tile img,
   .tile video {
@@ -648,6 +653,7 @@ const sections = [
   }
   @media (max-width: 640px) {
     .tile-grid { columns: 1; }
+    .tile-grid-pair { grid-template-columns: 1fr; }
     .gallery-section { margin-bottom: 56px; }
   }
 </style>

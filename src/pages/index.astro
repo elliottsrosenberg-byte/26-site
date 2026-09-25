@@ -1,10 +1,49 @@
 ---
 import Base from '../layouts/Base.astro';
-import { getCollection } from 'astro:content';
 
-const byOrder = (a: any, b: any) => a.data.order - b.data.order;
-const projects = (await getCollection('projects', ({ data }) => !(import.meta.env.PROD && data.draft))).sort(byOrder);
-const writing = (await getCollection('writing')).sort(byOrder);
+// Home project grid: 2x2 on desktop, one column on mobile. Each tile is a
+// moving asset that links to its case study or live page. `kind` picks how
+// the media is shown: a looping video, the Waiting logo drawing on red, or a
+// tall page screenshot panning inside the tile.
+const WORK = [
+  {
+    title: 'Perennial',
+    desc: 'Studio management software for independent artists and designers.',
+    href: '/project/perennial/',
+    kind: 'video',
+    src: '/media/home/perennial.mp4',
+    poster: '/media/home/perennial-poster.webp',
+    label: 'Perennial outreach: logging a follow-up straight from the pipeline.',
+  },
+  {
+    title: 'Rosh Hashanah Creative Campaign',
+    desc: 'Products, creative, and launch for a holiday campaign at Oneg Home.',
+    href: '/project/oneg-home/',
+    kind: 'pan',
+    src: '/media/oneg/web-home.webp',
+    w: 1400,
+    h: 5798,
+    label: 'The Oneg Home homepage during the Rosh Hashanah campaign, scrolling top to bottom.',
+  },
+  {
+    title: 'Waiting Magazine',
+    desc: "Brand guidelines for a publication dedicated to NYC's working class creatives.",
+    href: 'https://www.waitingmag.com/brand/introduction',
+    kind: 'draw',
+    src: '/media/home/waiting-logo-draw.webp',
+    label: 'The Waiting wordmark drawing itself in warm white on red.',
+  },
+  {
+    title: 'Extras',
+    desc: 'Selected works and experiments.',
+    href: '/projects/extras/',
+    kind: 'video',
+    src: '/media/home/pax.mp4',
+    poster: '/media/home/pax-poster.webp',
+    label: 'The Pax Hand Pokes website, one of the sites in Extras.',
+  },
+];
+const external = (href: string) => href.startsWith('http');
 ---
 <Base title="Elliott Rosenberg">
   <main class="page">
@@ -36,32 +75,29 @@ const writing = (await getCollection('writing')).sort(byOrder);
 
     <section class="list-section" aria-labelledby="projects-label">
       <h2 class="section-label" id="projects-label">Projects</h2>
-      <ul class="item-list">
-        {projects.map((p) => (
-          <li class="item">
+      <ul class="work-grid">
+        {WORK.map((w) => (
+          <li class="work">
             <a
-              class="item-link"
-              href={p.data.link ?? `/project/${p.id}/`}
-              target={p.data.link?.startsWith('http') ? '_blank' : undefined}
-              rel={p.data.link?.startsWith('http') ? 'noopener' : undefined}
+              class="work-link"
+              href={w.href}
+              target={external(w.href) ? '_blank' : undefined}
+              rel={external(w.href) ? 'noopener' : undefined}
             >
-              <span class="item-title">{p.data.title}</span>
-              <span class="item-desc">{p.data.description}</span>
+              <span class={`work-media is-${w.kind}`} role="img" aria-label={w.label}>
+                {w.kind === 'video' && (
+                  <video src={w.src} poster={w.poster} autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+                )}
+                {w.kind === 'pan' && (
+                  <img src={w.src} width={w.w} height={w.h} alt="" loading="lazy" decoding="async" style={`--r:${(w.h! / w.w!).toFixed(4)}`} />
+                )}
+                {w.kind === 'draw' && (
+                  <img src={w.src} width="1196" height="392" alt="" loading="lazy" decoding="async" />
+                )}
+              </span>
+              <span class="item-title">{w.title}</span>
+              <span class="item-desc">{w.desc}</span>
             </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <section class="list-section" aria-labelledby="writing-label">
-      <h2 class="section-label" id="writing-label">Writing</h2>
-      <ul class="item-list">
-        {writing.map((w) => (
-          <li class="item">
-            <span class="item-link item-soon">
-              <span class="item-title">{w.data.title} <span class="soon-badge">coming soon</span></span>
-              <span class="item-desc">{w.data.description}</span>
-            </span>
           </li>
         ))}
       </ul>
@@ -106,14 +142,67 @@ const writing = (await getCollection('writing')).sort(byOrder);
     color: var(--faint);
   }
 
-  .item-list { margin: 0; padding: 0; list-style: none; }
-  .item { margin-bottom: 36px; }
-  .item:last-child { margin-bottom: 0; }
-  .item-link {
-    display: block;
-    max-width: var(--measure);
-    text-decoration: none;
+  /* Project grid: four equal tiles, 2x2, one column on mobile. Every tile
+     shares the Perennial video's aspect so the grid stays even; each asset
+     fills it at its own proportions. */
+  .work-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 48px 24px;
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
   }
+  @media (max-width: 700px) {
+    .work-grid { grid-template-columns: 1fr; gap: 40px; }
+  }
+  .work-link { display: block; text-decoration: none; }
+  .work-media {
+    position: relative;
+    display: block;
+    aspect-ratio: 1482 / 1080;
+    margin-bottom: 12px;
+    overflow: hidden;
+    border-radius: 10px;
+    border: 1px solid var(--hairline);
+    background: var(--surface);
+    /* Safari: keep the rounded clip on transformed children */
+    isolation: isolate;
+  }
+  .work-media video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Waiting: the wordmark draws itself on the brand red, as on waitingmag.com/brand/logo. */
+  .work-media.is-draw {
+    display: grid;
+    place-items: center;
+    background: #d62626;
+    border-color: transparent;
+  }
+  .work-media.is-draw img { width: 72%; height: auto; }
+
+  /* Oneg: the full campaign homepage pans top to bottom inside the tile.
+     --box is the tile's height / width, --r the page's. */
+  .work-media.is-pan { --box: calc(1080 / 1482); background: #fff; }
+  .work-media.is-pan img {
+    display: block;
+    width: 100%;
+    height: auto;
+    --pan-end: calc((var(--box) / var(--r) - 1) * 100%);
+    animation: work-pan 22s ease-in-out infinite alternate;
+  }
+  @keyframes work-pan {
+    0%, 10% { transform: translateY(0); }
+    90%, 100% { transform: translateY(var(--pan-end)); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .work-media.is-pan img { animation: none; }
+  }
+
   /* Title underline draws in left to right on block hover, matching the
      site-wide link sweep timing. */
   .item-title {
@@ -128,25 +217,8 @@ const writing = (await getCollection('writing')).sort(byOrder);
   }
   .item-desc { display: block; margin-top: 2px; color: var(--mid); }
 
-  .item-soon { cursor: default; }
-  .item-soon .item-title {
-    color: var(--mid);
-    background-image: none;
-  }
-  .soon-badge {
-    display: inline-block;
-    margin-left: 6px;
-    padding: 1px 8px 2px;
-    border: 1px solid var(--hairline);
-    border-radius: 999px;
-    font-size: 12px;
-    color: var(--faint);
-    vertical-align: 2px;
-    white-space: nowrap;
-  }
-
   @media (hover: hover) and (pointer: fine) {
-    .item-link:hover .item-title { background-size: 100% 1px; }
+    .work-link:hover .item-title { background-size: 100% 1px; }
   }
 
   .contact p { max-width: var(--measure); margin: 0; }
@@ -157,5 +229,21 @@ const writing = (await getCollection('writing')).sort(byOrder);
   :global(html.home-enter) .bio { animation: rise 400ms var(--ease-out) 50ms backwards; }
   :global(html.home-enter) .list-section:nth-of-type(2) { animation: rise 400ms var(--ease-out) 100ms backwards; }
   :global(html.home-enter) .list-section:nth-of-type(3) { animation: rise 400ms var(--ease-out) 150ms backwards; }
-  :global(html.home-enter) .list-section:nth-of-type(4) { animation: rise 400ms var(--ease-out) 200ms backwards; }
 </style>
+
+<script>
+  // Tile videos play only while on screen.
+  const vids = document.querySelectorAll<HTMLVideoElement>('.work video[autoplay]');
+  if (vids.length) {
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => {
+          const v = e.target as HTMLVideoElement;
+          if (e.isIntersecting) v.play().catch(() => {});
+          else v.pause();
+        }),
+      { threshold: 0.2 }
+    );
+    vids.forEach((v) => io.observe(v));
+  }
+</script>
