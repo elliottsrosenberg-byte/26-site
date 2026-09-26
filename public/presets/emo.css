@@ -1,0 +1,252 @@
+/* THEME: XOXO Razorblade Romance 🖤 */
+/* PLAN: Playfair Display italic headings, Space Grotesk body, black ground with bruised crimson glow and charcoal pinstripes, signature moves: smudged eyeliner underlines on links, floating 🖤🥀 drift layer, a lyric ticker across the top. */
+
+:root {
+  --bg: #0a0708;
+  --ink: #ece7ea;
+  --mid: #b39aa4;
+  --faint: #7d5f6c;
+  --surface: #150f13;
+  --hairline: #3a2630;
+  --accent: #d1113c;
+  --accent-2: #7b2f8f;
+}
+html[data-theme='dark'] {
+  --bg: #050405;
+  --ink: #f2eef0;
+  --mid: #a88f9a;
+  --faint: #6f5260;
+  --surface: #110c10;
+  --hairline: #33212b;
+  --accent: #ff2f56;
+  --accent-2: #8e45a3;
+}
+
+html, body {
+  background-color: var(--bg) !important;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -5%, rgba(209,17,60,.28), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 90% 105%, rgba(123,47,143,.22), transparent 70%),
+    repeating-linear-gradient(135deg, rgba(255,255,255,.028) 0 2px, transparent 2px 9px) !important;
+  background-attachment: fixed !important;
+  color: var(--ink) !important;
+}
+
+body, p, .item-desc, figcaption, li, blockquote {
+  font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif !important;
+  color: var(--ink) !important;
+  letter-spacing: .005em !important;
+}
+p, .item-desc, figcaption { color: var(--mid) !important; line-height: 1.75 !important; }
+
+h1, h2, .masthead-name, .section-label, .item-title {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-style: italic !important;
+  font-weight: 600 !important;
+  color: var(--ink) !important;
+  letter-spacing: -.01em !important;
+}
+
+.masthead, .section-label { margin-left: 0 !important; }
+
+.masthead {
+  position: relative !important;
+  padding: 2.2rem 0 1.4rem !important;
+  border-bottom: 1px solid var(--hairline) !important;
+  margin-bottom: 2rem !important;
+}
+.masthead-name {
+  font-size: clamp(2.6rem, 8vw, 4.6rem) !important;
+  line-height: .95 !important;
+  text-shadow: 0 0 26px rgba(209,17,60,.45), 2px 0 0 rgba(123,47,143,.55) !important;
+}
+.masthead-role {
+  font-family: 'Space Mono', monospace !important;
+  text-transform: lowercase !important;
+  letter-spacing: .3em !important;
+  color: var(--accent) !important;
+}
+.masthead::after {
+  content: 'x0x0 nobody understands this layout 🥀🖤' !important;
+  display: block !important;
+  margin-top: .9rem !important;
+  font-family: 'Space Mono', monospace !important;
+  font-size: .68rem !important;
+  letter-spacing: .18em !important;
+  text-transform: uppercase !important;
+  color: var(--faint) !important;
+  border: 1px dashed var(--hairline) !important;
+  padding: .4rem .6rem !important;
+  display: inline-block !important;
+}
+
+.section-label {
+  font-family: 'Space Mono', monospace !important;
+  font-style: normal !important;
+  font-size: .78rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: .32em !important;
+  color: var(--accent) !important;
+  border-left: 3px solid var(--accent) !important;
+  padding-left: .7rem !important;
+  margin-top: 3rem !important;
+}
+.section-label::after { content: ' ///' !important; color: var(--faint) !important; }
+
+.item-list { border-top: 1px solid var(--hairline) !important; }
+.item {
+  border-bottom: 1px solid var(--hairline) !important;
+  transition: background .25s ease, padding-left .25s ease !important;
+}
+.item:hover { background: linear-gradient(90deg, rgba(209,17,60,.16), transparent 70%) !important; }
+.item-link { padding: .95rem .4rem !important; display: block !important; text-decoration: none !important; }
+.item:hover .item-link { padding-left: 1.1rem !important; }
+.item-title { font-size: 1.22rem !important; color: var(--ink) !important; }
+.item:hover .item-title { color: var(--accent) !important; }
+.item-link::before {
+  content: '♥ ' !important;
+  color: var(--faint) !important;
+  font-style: normal !important;
+}
+.item:hover .item-link::before { content: '💔 ' !important; }
+
+a {
+  color: var(--accent) !important;
+  text-decoration: none !important;
+  border-bottom: 1px solid rgba(209,17,60,.5) !important;
+  transition: color .2s, border-color .2s, text-shadow .2s !important;
+}
+a:hover {
+  color: #fff !important;
+  border-bottom-color: #fff !important;
+  text-shadow: 0 0 10px rgba(255,47,86,.9), 0 0 22px rgba(142,69,163,.6) !important;
+}
+
+blockquote {
+  border-left: 3px solid var(--accent-2) !important;
+  background: linear-gradient(90deg, rgba(123,47,143,.14), transparent) !important;
+  padding: .9rem 1.2rem !important;
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-style: italic !important;
+  color: var(--ink) !important;
+}
+code {
+  font-family: 'IBM Plex Mono', monospace !important;
+  background: var(--surface) !important;
+  color: var(--accent) !important;
+  border: 1px solid var(--hairline) !important;
+  padding: .06em .35em !important;
+}
+
+figure.media .media-frame, figure.bare img, .tile img, .tile video {
+  background: var(--surface) !important;
+  border: 1px solid var(--hairline) !important;
+  box-shadow: 0 0 0 1px rgba(209,17,60,.18), 0 18px 50px rgba(0,0,0,.7) !important;
+  filter: saturate(.72) contrast(1.08) !important;
+  transition: filter .35s ease, box-shadow .35s ease !important;
+}
+figure.media:hover .media-frame, .tile:hover img, .tile:hover video {
+  filter: saturate(1.1) contrast(1.05) !important;
+  box-shadow: 0 0 0 1px var(--accent), 0 18px 60px rgba(209,17,60,.28) !important;
+}
+figcaption {
+  font-family: 'Space Mono', monospace !important;
+  font-size: .72rem !important;
+  letter-spacing: .1em !important;
+  text-transform: lowercase !important;
+  color: var(--faint) !important;
+}
+
+.tile {
+  background: var(--surface) !important;
+  border: 1px solid var(--hairline) !important;
+  padding: .6rem !important;
+}
+.tile:hover { border-color: var(--accent) !important; }
+
+nav.crumb a, nav.side-nav a, nav.m-nav a {
+  font-family: 'Space Mono', monospace !important;
+  font-size: .7rem !important;
+  letter-spacing: .16em !important;
+  text-transform: uppercase !important;
+  color: var(--faint) !important;
+  border-bottom: none !important;
+}
+nav.side-nav a.active, nav.crumb a:hover, nav.side-nav a:hover { color: var(--accent) !important; }
+nav.side-nav a.active::before { content: '– ' !important; }
+nav.m-nav {
+  background: rgba(10,7,8,.97) !important;
+  border-bottom: 1px solid var(--accent) !important;
+}
+.m-nav-btn {
+  font-family: 'Space Mono', monospace !important;
+  color: var(--accent) !important;
+  background: transparent !important;
+  text-transform: uppercase !important;
+  letter-spacing: .2em !important;
+}
+.m-nav-list { background: rgba(10,7,8,.98) !important; border: 1px solid var(--hairline) !important; }
+
+button.theme-toggle {
+  background: var(--surface) !important;
+  color: var(--accent) !important;
+  border: 1px solid var(--hairline) !important;
+  font-family: 'Space Mono', monospace !important;
+  letter-spacing: .12em !important;
+}
+button.theme-toggle:hover { border-color: var(--accent) !important; color: #fff !important; }
+
+body::before {
+  content: 'i am not okay. it is not a phase. 🖤 xoxo 🥀 sad boys club 🖤 lyrics in my away message 🥀 eyeliner smudged on purpose 🖤 i am not okay. it is not a phase. 🖤 xoxo 🥀 sad boys club 🖤 lyrics in my away message 🥀 ' !important;
+  position: fixed !important;
+  top: 0; left: 0;
+  width: max-content !important;
+  white-space: nowrap !important;
+  font-family: 'Space Mono', monospace !important;
+  font-size: .62rem !important;
+  letter-spacing: .3em !important;
+  text-transform: uppercase !important;
+  color: rgba(209,17,60,.6) !important;
+  background: rgba(0,0,0,.6) !important;
+  padding: .3rem 0 !important;
+  border-bottom: 1px solid var(--hairline) !important;
+  animation: emo-ticker 38s linear infinite !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+@keyframes emo-ticker { to { transform: translateX(-50%); } }
+
+body::after {
+  content: '🖤        🥀        ♥        🖤        🥀' !important;
+  position: fixed !important;
+  inset: 12% -10% auto -10% !important;
+  font-size: 2.1rem !important;
+  letter-spacing: 6vw !important;
+  opacity: .16 !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+  animation: emo-drift 22s ease-in-out infinite alternate !important;
+}
+@keyframes emo-drift {
+  from { transform: translateY(0) rotate(-2deg); }
+  to { transform: translateY(46vh) rotate(3deg); }
+}
+
+main.page, main.gallery-page, article.piece { position: relative !important; z-index: 1 !important; }
+
+section.contact { border-top: 1px solid var(--hairline) !important; padding-top: 1.4rem !important; margin-top: 2.6rem !important; }
+section.contact::after {
+  content: 'don’t forget to leave a comment. 🖤' !important;
+  display: block !important;
+  margin-top: 1rem !important;
+  font-family: 'Caveat', cursive !important;
+  font-size: 1.3rem !important;
+  color: var(--accent-2) !important;
+}
+
+::selection { background: var(--accent) !important; color: #000 !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  body::before, body::after { animation: none !important; }
+  * { transition: none !important; }
+}

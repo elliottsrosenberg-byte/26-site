@@ -1,0 +1,248 @@
+/* THEME: SYNERGY CLOUD™ 📈 Series B Design System */
+/* PLAN: Space Grotesk headings, IBM Plex Mono eyebrow labels, Space Grotesk body on a soft indigo mesh gradient with a blueprint grid, signature moves: floating glass cards with lavender shadows, pill badges on every section label, and a compliance ticker marquee. */
+
+:root {
+  --bg: #f6f7fd;
+  --ink: #0f1330;
+  --mid: #4a5278;
+  --faint: #8b93b8;
+  --surface: #ffffff;
+  --hairline: #e2e5f4;
+  --accent: #4f46e5;
+  --accent-2: #06b6d4;
+}
+html[data-theme='dark'] {
+  --bg: #080b1c;
+  --ink: #eef0ff;
+  --mid: #a5adda;
+  --faint: #6e77a8;
+  --surface: #121734;
+  --hairline: #262d55;
+  --accent: #8b8cff;
+  --accent-2: #22d3ee;
+}
+
+html, body {
+  background-color: var(--bg) !important;
+  background-image:
+    radial-gradient(900px 500px at 12% -5%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
+    radial-gradient(700px 450px at 95% 8%, color-mix(in srgb, var(--accent-2) 20%, transparent), transparent 72%),
+    radial-gradient(800px 600px at 60% 105%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 75%),
+    linear-gradient(to right, var(--hairline) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--hairline) 1px, transparent 1px) !important;
+  background-size: auto, auto, auto, 56px 56px, 56px 56px !important;
+  background-attachment: fixed !important;
+  color: var(--ink) !important;
+}
+
+h1, h2, h3, .masthead-name, .section-label, .item-title, .m-nav-btn {
+  font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif !important;
+  letter-spacing: -0.02em !important;
+}
+body, p, .item-desc, figcaption, li, a, blockquote {
+  font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif !important;
+}
+body, p { color: var(--ink) !important; font-weight: 400 !important; }
+p { line-height: 1.72 !important; color: var(--mid) !important; }
+.item-desc, figcaption { color: var(--faint) !important; }
+
+/* ── ticker strip ── */
+body::before {
+  content: 'SOC 2 TYPE II ✓ ENTERPRISE READY ✓ 99.99% UPTIME ✓ SCALABLE BY DEFAULT ✓ TRUSTED BY 10,000+ TEAMS ✓ END TO END ENCRYPTED ✓ SOC 2 TYPE II ✓ ENTERPRISE READY ✓ 99.99% UPTIME ✓ SCALABLE BY DEFAULT ✓ TRUSTED BY 10,000+ TEAMS ✓ END TO END ENCRYPTED ✓ ';
+  position: fixed; top: 0; left: 0; width: 200vw;
+  z-index: 0; pointer-events: none; white-space: nowrap;
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.22em;
+  padding: 7px 0; color: #fff;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  animation: syn-ticker 38s linear infinite;
+  opacity: .92;
+}
+@keyframes syn-ticker { to { transform: translateX(-50%); } }
+
+/* ── ambient floaters ── */
+body::after {
+  content: '📈       ☁️        ✅        🔒        ⚡        📊';
+  position: fixed; inset: 12% 0 auto 0; z-index: 0; pointer-events: none;
+  text-align: center; font-size: 30px; opacity: .18; letter-spacing: 4vw;
+  animation: syn-drift 26s ease-in-out infinite alternate;
+}
+@keyframes syn-drift { from { transform: translateY(0); } to { transform: translateY(46vh); } }
+
+main.page, main.gallery-page { position: relative; z-index: 2; padding-top: 42px !important; }
+
+/* ── masthead as hero card ── */
+.masthead {
+  margin-left: 0 !important;
+  position: relative;
+  background: var(--surface) !important;
+  border: 1px solid var(--hairline) !important;
+  border-radius: 18px !important;
+  padding: 34px 30px 28px !important;
+  box-shadow: 0 24px 60px -30px color-mix(in srgb, var(--accent) 55%, transparent) !important;
+  margin-bottom: 40px !important;
+  overflow: hidden;
+}
+.masthead::before {
+  content: '⚡ NOW IN PUBLIC BETA';
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 10px; letter-spacing: .18em;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  padding: 5px 11px; border-radius: 999px; margin-bottom: 14px;
+}
+.masthead::after {
+  content: 'Trusted by teams that ship. No credit card required.';
+  display: block; margin-top: 10px;
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 12px; color: var(--faint); letter-spacing: .02em;
+}
+.masthead-name {
+  font-size: clamp(2.6rem, 7vw, 4rem) !important;
+  font-weight: 700 !important; line-height: 1.02 !important;
+  background: linear-gradient(100deg, var(--ink), var(--accent) 70%, var(--accent-2)) !important;
+  -webkit-background-clip: text !important; background-clip: text !important;
+  color: transparent !important;
+}
+.masthead-role {
+  font-family: 'IBM Plex Mono', monospace !important;
+  text-transform: uppercase; letter-spacing: .2em; font-size: 12px !important;
+  color: var(--mid) !important; margin-top: 8px !important;
+}
+
+/* ── section labels as badges ── */
+.section-label {
+  margin-left: 0 !important;
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 11px !important; letter-spacing: .2em !important;
+  text-transform: uppercase !important;
+  color: var(--accent) !important;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  border-radius: 999px; padding: 6px 14px !important;
+  display: inline-block !important; margin-bottom: 18px !important;
+}
+
+/* ── list as feature cards ── */
+.item-list { display: grid !important; gap: 10px !important; }
+.item { list-style: none !important; }
+.item-link {
+  display: block !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--hairline) !important;
+  border-radius: 14px !important;
+  padding: 16px 18px !important;
+  text-decoration: none !important;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease !important;
+}
+.item-link:hover {
+  transform: translateY(-3px) !important;
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent) !important;
+  box-shadow: 0 18px 40px -22px color-mix(in srgb, var(--accent) 80%, transparent) !important;
+}
+.item-title {
+  font-weight: 600 !important; color: var(--ink) !important;
+  display: block !important; font-size: 1.05rem !important;
+}
+.item-link:hover .item-title::after { content: ' →'; color: var(--accent); }
+.item-desc { display: block !important; margin-top: 4px !important; font-size: .9rem !important; }
+
+/* ── links ── */
+.bio a, .contact a, .piece a {
+  color: var(--accent) !important;
+  text-decoration: none !important;
+  border-bottom: 2px solid color-mix(in srgb, var(--accent) 30%, transparent) !important;
+  padding-bottom: 1px;
+  transition: background .15s ease, color .15s ease;
+}
+.bio a:hover, .contact a:hover, .piece a:hover {
+  background: color-mix(in srgb, var(--accent) 14%, transparent) !important;
+  border-bottom-color: var(--accent) !important;
+}
+
+.bio, .contact, .piece {
+  background: color-mix(in srgb, var(--surface) 78%, transparent) !important;
+  border: 1px solid var(--hairline) !important;
+  border-radius: 16px !important;
+  padding: 24px 26px !important;
+  backdrop-filter: blur(6px);
+  margin-bottom: 26px !important;
+}
+
+/* ── article internals ── */
+.piece h2 { font-weight: 600 !important; font-size: 1.5rem !important; color: var(--ink) !important; }
+.piece blockquote {
+  border-left: 3px solid var(--accent) !important;
+  background: color-mix(in srgb, var(--accent) 8%, transparent) !important;
+  border-radius: 0 12px 12px 0 !important;
+  padding: 14px 18px !important; margin-left: 0 !important;
+  color: var(--ink) !important; font-style: normal !important;
+}
+code {
+  font-family: 'IBM Plex Mono', monospace !important;
+  background: color-mix(in srgb, var(--accent) 12%, transparent) !important;
+  color: var(--accent) !important;
+  border-radius: 6px; padding: 2px 6px; font-size: .88em !important;
+}
+
+/* ── media ── */
+figure.media, figure.bare { margin: 28px 0 !important; }
+.media-frame {
+  background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface)) !important;
+  border: 1px solid var(--hairline) !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: 0 26px 60px -34px color-mix(in srgb, var(--accent) 80%, transparent) !important;
+}
+figcaption {
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 11px !important; letter-spacing: .08em; margin-top: 10px !important;
+}
+
+/* ── gallery tiles ── */
+.tile-grid { gap: 18px !important; }
+.tile {
+  background: var(--surface) !important;
+  border: 1px solid var(--hairline) !important;
+  border-radius: 16px !important;
+  padding: 12px !important;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.tile:hover { transform: translateY(-4px); box-shadow: 0 22px 50px -28px color-mix(in srgb, var(--accent) 85%, transparent) !important; }
+.tile img, .tile video { border-radius: 10px !important; }
+
+/* ── chrome ── */
+nav.crumb a, nav.side-nav a {
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 11px !important; letter-spacing: .1em !important;
+  text-transform: uppercase !important;
+  color: var(--faint) !important; text-decoration: none !important;
+}
+nav.crumb a:hover, nav.side-nav a:hover { color: var(--accent) !important; }
+nav.side-nav a.active { color: var(--accent) !important; font-weight: 600 !important; }
+nav.crumb { background: color-mix(in srgb, var(--bg) 85%, transparent); padding: 6px 10px; border-radius: 999px; }
+
+.m-nav {
+  background: var(--surface) !important;
+  border-bottom: 1px solid var(--hairline) !important;
+  box-shadow: 0 8px 24px -18px var(--accent);
+}
+.m-nav-btn {
+  font-family: 'IBM Plex Mono', monospace !important;
+  text-transform: uppercase !important; letter-spacing: .14em !important;
+  font-size: 11px !important; color: var(--accent) !important;
+}
+.m-nav-list a { color: var(--mid) !important; }
+
+.theme-toggle {
+  background: var(--surface) !important;
+  border: 1px solid var(--hairline) !important;
+  color: var(--accent) !important;
+  border-radius: 999px !important;
+  box-shadow: 0 10px 26px -16px color-mix(in srgb, var(--accent) 80%, transparent) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before, body::after, * { animation: none !important; }
+}
